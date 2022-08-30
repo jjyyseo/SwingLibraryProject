@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -16,8 +15,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
+import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.BookVO;
-import net.mbiz.library.data.MakeBookList;
 import net.mbiz.library.ui.common.CommonConstants;
 
 // MainPanel의 pnBody. - card 형식으로 리스트를 출력하는 패널(첫번쨰 카드)
@@ -94,8 +93,7 @@ public class BookListCardPanel extends JPanel{
 		pnPadding.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		
 		/*book data 가져와서 book Panel 만들기*/
-		List<BookVO> bookList = MakeBookList.getInstance().addReleaseDate();
-		for (BookVO bv : bookList) {	// makeList.addBookData() : list 리턴.
+		for (BookVO bv : AddBookList.bookList) {	// makeList.addBookData() : list 리턴.
 			BookPanel bookPanel = new BookPanel();
 			bookPanel.printBookPanel(bv.getBookNm(), bv.getIsBorrowed());
 			
@@ -135,7 +133,7 @@ public class BookListCardPanel extends JPanel{
 				System.err.println("여기는 schBtn ActionListener. 검색어는?-->" + schFd.getText());
 				// 검색어가 비어있지 않은 경우
 				if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
-					for (BookVO bv : bookList) {
+					for (BookVO bv : AddBookList.bookList) {
 						System.err.println("야기는 BookListCardPanel. 전체 도서 검색 결과가 있음. ");
 
 						if (schFd.getText().contains(bv.getBookNm())) {

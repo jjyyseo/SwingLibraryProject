@@ -10,19 +10,12 @@ import java.util.List;
  * 도서 데이터를 추가하는 클래스.
  * @author metabiz
  */
-public class MakeBookList {
+public class AddBookList {
 	
-	private static MakeBookList makeBookList = new MakeBookList();
-	
-	private MakeBookList() {
-	}
-	
-	public static MakeBookList getInstance() {
-	   return makeBookList;
-	}
+	public static List<BookVO> bookList = AddBookList.addData();
 
-	public List<BookVO> addBookData() {
-		List<BookVO> bookList = new ArrayList<>();
+	private static List<BookVO> addData() {
+		List<BookVO> bkList = new ArrayList<>();
 		
 		BookVO bv1 = new BookVO();
 		bv1.setBookNo(1);
@@ -478,42 +471,39 @@ public class MakeBookList {
 		bv30.setCategory("자기계발");
 		bv30.setPublisher("코리아닷컴");
 		
-		bookList.add(bv1);
-		bookList.add(bv2);
-		bookList.add(bv3);
-		bookList.add(bv4);
-		bookList.add(bv5);
-		bookList.add(bv6);
-		bookList.add(bv7);
-		bookList.add(bv8);
-		bookList.add(bv9);
-		bookList.add(bv10);
-		bookList.add(bv11);
-		bookList.add(bv12);
-		bookList.add(bv13);
-		bookList.add(bv14);
-		bookList.add(bv15);
-		bookList.add(bv16);
-		bookList.add(bv17);
-		bookList.add(bv18);
-		bookList.add(bv19);
-		bookList.add(bv20);
-		bookList.add(bv21);
-		bookList.add(bv22);
-		bookList.add(bv23);
-		bookList.add(bv24);
-		bookList.add(bv25);
-		bookList.add(bv26);
-		bookList.add(bv27);
-		bookList.add(bv28);
-		bookList.add(bv29);
-		bookList.add(bv30);
+		bkList.add(bv1);
+		bkList.add(bv2);
+		bkList.add(bv3);
+		bkList.add(bv4);
+		bkList.add(bv5);
+		bkList.add(bv6);
+		bkList.add(bv7);
+		bkList.add(bv8);
+		bkList.add(bv9);
+		bkList.add(bv10);
+		bkList.add(bv11);
+		bkList.add(bv12);
+		bkList.add(bv13);
+		bkList.add(bv14);
+		bkList.add(bv15);
+		bkList.add(bv16);
+		bkList.add(bv17);
+		bkList.add(bv18);
+		bkList.add(bv19);
+		bkList.add(bv20);
+		bkList.add(bv21);
+		bkList.add(bv22);
+		bkList.add(bv23);
+		bkList.add(bv24);
+		bkList.add(bv25);
+		bkList.add(bv26);
+		bkList.add(bv27);
+		bkList.add(bv28);
+		bkList.add(bv29);
+		bkList.add(bv30);
 
-		return bookList;
-	}
-	
-	// 파라마터 BookVO 객체의 releaseDate(출간일)을 setting하는 메서드
-	public Date getBookReleaseDate(BookVO bv) {
+
+		// 출간일 셋팅
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 		String strDate = "2022.05.01";
 	    Date releaseDate = null;
@@ -524,18 +514,13 @@ public class MakeBookList {
 			System.err.println("net.mbiz.library.data.MakeBookList : 날짜 데이터 포맷 중 오류");
 		}
 	    
-	    bv.setRegistDate(releaseDate);
-	    
-		return releaseDate;
-	}
-	
-	public List<BookVO> addReleaseDate()  {
-		List<BookVO> bkList = addBookData();
 		for (BookVO bv : bkList) {
-			bv.setReleaseDate(getBookReleaseDate(bv));
+			bv.setRegistDate(releaseDate);
 			bv.setIsBorrowed(1);
 		}
-		System.err.println("net.mbiz.library.data.MakeBookList : addReleaseDate(). 도서 데이터 추가완료");
+	    
+		
+		System.err.println("net.mbiz.library.data.MakeBookList : 도서 데이터 추가완료");
 		return bkList;
 	}
 	

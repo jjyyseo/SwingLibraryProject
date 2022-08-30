@@ -7,26 +7,14 @@ import java.util.Date;
 import java.util.List;
 
 
-public class MakeBorrowList {
-	
-	// field
-	private List<BookVO> bkList;
-	private SimpleDateFormat sdf;
+public class AddBorrowList {
 
-	private static MakeBorrowList makeBorrowList = new MakeBorrowList();
+	public static List<BorrowVO> borrowList = AddBorrowList.addData();
 	
-	private MakeBorrowList() {
-	}
-	
-	public static MakeBorrowList getInstance() {
-		 return makeBorrowList;
-	}
-	
-	/*대출 객체 생성*/
-	public List<BorrowVO> makeBorrowListData() {
+	private static List<BorrowVO> addData() {
 		List<BorrowVO> bwList = new ArrayList<>();
 		
-		sdf = new SimpleDateFormat("yyyy.MM.dd");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 		
 		Date startDate  =  null;
 		Date endDate    =  null;
@@ -44,28 +32,27 @@ public class MakeBorrowList {
 		
 	    // 임의로 더미데이터 넣기
 		for (int i = 1; i <=30; i++) {
-			BorrowVO bv = new BorrowVO();
-			bv.setBorrowNo(i);
-			bv.setBookNo(i);
-			bv.setUserId("a001");
-			bv.setStartDate(startDate);
-			bv.setEndDate(endDate);
-			bv.setReturnDate(returnDate);
-			bv.setOverdue(2);
-			bv.setBookNm(getBookNm(i));
+			BorrowVO bwVO = new BorrowVO();
+			bwVO.setBorrowNo(i);
+			bwVO.setBookNo(i);
+			bwVO.setUserId("a001");
+			bwVO.setStartDate(startDate);
+			bwVO.setEndDate(endDate);
+			bwVO.setReturnDate(returnDate);
+			bwVO.setOverdue(2);
+			bwVO.setBookNm(getBookNm(i));
 			
-			bwList.add(bv);
+			bwList.add(bwVO);
 		}
 		
 		System.err.println("net.mbiz.library.data.MakeBorrowList : 대출 기록 추가완료");
 		return bwList;
 	}
 	
-	public String getBookNm(int bookNo) {
-		bkList = MakeBookList.getInstance().addBookData();
-		for (BookVO bv : bkList) {
-			if (bookNo == bv.getBookNo()) {
-				return bv.getBookNm();
+	private static String getBookNm(int bookNo) {
+		for (BookVO bkVO : AddBookList.bookList) {
+			if (bookNo == bkVO.getBookNo()) {
+				return bkVO.getBookNm();
 			}
 		}
 		return null;

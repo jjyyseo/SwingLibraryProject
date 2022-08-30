@@ -6,11 +6,9 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -23,8 +21,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
+import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.data.MakeBorrowList;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.main.LibraryMain;
 
@@ -62,17 +60,15 @@ public class MyPagePanel extends JPanel{
 	}
 
 	private void initialize() {
-		List<BorrowVO> bwList = MakeBorrowList.getInstance().makeBorrowListData();
-		myBwList = new ArrayList<>();
 		
-		for (BorrowVO bv : bwList) {
+		for (BorrowVO bv : AddBorrowList.borrowList) {
 			// 로그인한 아이디의 대출 기록을 생성. 
 			String logInID = "a001";
 			if (logInID.equals(bv.getUserId())) {
-				myBwList.add(bv);
+				AddBorrowList.borrowList.add(bv);
 			}
 		}
-		dModel.addDataList((ArrayList) myBwList);
+		dModel.addDataList((ArrayList) AddBorrowList.borrowList);
 		dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
@@ -332,17 +328,7 @@ public class MyPagePanel extends JPanel{
 		} else {
 			JOptionPane.showMessageDialog(pnBody, "검색어를 입력해주세요.");
 		}
-		
 	}
-
 
 }
 
-//private void delete() {
-//    int index = table.getSelectedRow();
-//    if(index < 0){
-//        showMessage("삭제할 행을 선택해 주세요.");
-//    }else{
-//        model.removeRow(index);
-//    }
-//}

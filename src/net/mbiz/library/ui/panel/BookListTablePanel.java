@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -21,10 +20,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
+import net.mbiz.library.data.AddBookList;
+import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
-import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.data.MakeBookList;
-import net.mbiz.library.data.MakeBorrowList;
 import net.mbiz.library.ui.common.CommonConstants;
 
 public class BookListTablePanel extends JPanel {
@@ -49,8 +47,8 @@ public class BookListTablePanel extends JPanel {
 	private JButton pvsBtn;
 
 	private BeanTableModel<BookVO> dModel;
-	private List<BookVO> bookList;
-	private List<BorrowVO> bwList;
+//	private List<BookVO> bookList;
+//	private List<BorrowVO> bwList;
 
 	public BookListTablePanel(MainPanel pn) {
 		jbInit();
@@ -59,9 +57,7 @@ public class BookListTablePanel extends JPanel {
 	}
 
 	private void initialize() {
-		bookList = MakeBookList.getInstance().addReleaseDate(); // 북데이터 생성
-		bwList = MakeBorrowList.getInstance().makeBorrowListData(); 
-		dModel.addDataList((ArrayList) bookList); // 리스트로 한꺼번에 집어넣기 가능
+		dModel.addDataList((ArrayList) AddBookList.bookList); // 리스트로 한꺼번에 집어넣기 가능
 		dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
@@ -187,7 +183,7 @@ public class BookListTablePanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 테이블 리셋
-				dModel.addDataList((ArrayList) bookList); 
+				dModel.addDataList((ArrayList) AddBookList.bookList); 
 				dModel.fireTableDataChanged();
 			}
 		});
@@ -216,7 +212,7 @@ public class BookListTablePanel extends JPanel {
 				int idx = bookTbl.getSelectedRow();
 				System.out.println("북테이블 클릭!! 선택된 행은? --> " + idx);
 
-				BookDetailFrame detailFrame = new BookDetailFrame(bookList.get(idx),bookList, bwList);
+				BookDetailFrame detailFrame = new BookDetailFrame(AddBookList.bookList.get(idx),AddBookList.bookList, AddBorrowList.borrowList);
 				detailFrame.setLocationCenter();
 				dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 			}
@@ -277,7 +273,7 @@ public class BookListTablePanel extends JPanel {
 		
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
 			dModel.removeAll();
-			for (BookVO bv : bookList) {
+			for (BookVO bv : AddBookList.bookList) {
 				if (bv.getBookNm().contains(schFd.getText())) {
 					dModel.addData(bv);
 				}
