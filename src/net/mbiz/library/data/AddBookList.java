@@ -515,7 +515,7 @@ public class AddBookList {
 		}
 	    
 		for (BookVO bv : bkList) {
-			bv.setRegistDate(releaseDate);
+			bv.setReleaseDate(releaseDate);
 			bv.setIsBorrowed(1);
 		}
 	    

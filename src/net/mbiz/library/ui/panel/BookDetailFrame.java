@@ -21,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import net.mbiz.library.data.AddBookList;
+import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
@@ -50,14 +52,9 @@ public class BookDetailFrame extends JFrame{
 	
 	private JButton borrowBtn;	
 	
-	private List<BookVO> bkList;
-	private List<BorrowVO> bwList;
 	
-	
-	public BookDetailFrame(BookVO bv, List<BookVO> bkList, List<BorrowVO> bwList) {
+	public BookDetailFrame(BookVO bv) {
 		this.setTitle(bv.getBookNm());
-		this.bkList = bkList;
-		this.bwList = bwList;
 		jbInit(bv);
 	}
 
@@ -245,8 +242,6 @@ public class BookDetailFrame extends JFrame{
 				} else { 
 					System.out.println(bv.getBookNm() + " 대출 신청을 취소합니다.");
 				}
-				System.out.println("대출리스트 체킁 --> "+ bwList);
-				System.out.println("도서리스트 체킁 --> "+ bkList);
 			}
 
 		});
@@ -277,10 +272,10 @@ public class BookDetailFrame extends JFrame{
 		borrowVO.setEndDate(endDate);
 		borrowVO.setIsBorrowed(0); //대출중
 		
-		bwList.add(borrowVO);
+		AddBorrowList.borrowList.add(borrowVO);
 		System.out.println("대출기록 insert 완료!");
 		
-		bkList.get(bv.getBookNo()).setIsBorrowed(0);	// 전체 도서 리스트에서 대출상태도 바꾸어 줌.
+		AddBookList.bookList.get(bv.getBookNo()).setIsBorrowed(0);	// 전체 도서 리스트에서 대출상태도 바꾸어 줌.
 		
 	}	
 

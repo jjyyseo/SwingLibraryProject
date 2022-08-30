@@ -211,8 +211,8 @@ public class BookListTablePanel extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				int idx = bookTbl.getSelectedRow();
 				System.out.println("북테이블 클릭!! 선택된 행은? --> " + idx);
-
-				BookDetailFrame detailFrame = new BookDetailFrame(AddBookList.bookList.get(idx),AddBookList.bookList, AddBorrowList.borrowList);
+				System.out.println("detail Frame에 보낼 VO객체 --> " + AddBookList.bookList.get(idx));
+				BookDetailFrame detailFrame = new BookDetailFrame(AddBookList.bookList.get(idx));
 				detailFrame.setLocationCenter();
 				dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 			}

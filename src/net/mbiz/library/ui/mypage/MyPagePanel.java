@@ -50,7 +50,6 @@ public class MyPagePanel extends JPanel{
 	private JButton returnBtn;
 	private JButton deleteBtn;
 	
-	private List<BorrowVO> myBwList;
 	private BeanTableModel<BorrowVO> dModel;
 	
 	public MyPagePanel(LibraryMain f) {
@@ -61,13 +60,14 @@ public class MyPagePanel extends JPanel{
 
 	private void initialize() {
 		
-		for (BorrowVO bv : AddBorrowList.borrowList) {
-			// 로그인한 아이디의 대출 기록을 생성. 
-			String logInID = "a001";
-			if (logInID.equals(bv.getUserId())) {
-				AddBorrowList.borrowList.add(bv);
-			}
-		}
+//		List<BorrowVO> myBwList = new ArrayList<>();
+//		for (BorrowVO bv : AddBorrowList.borrowList) {
+//			// 로그인한 아이디의 대출 기록을 생성. 
+//			String logInID = "a001";
+//			if (logInID.equals(bv.getUserId())) {
+//				myBwList.add(bv);
+//			}
+//		}
 		dModel.addDataList((ArrayList) AddBorrowList.borrowList);
 		dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
@@ -236,7 +236,7 @@ public class MyPagePanel extends JPanel{
 
 			public void actionPerformed(ActionEvent e) {
 				
-				BorrowVO seletedVO = myBwList.get(borrowTbl.getSelectedRow());
+				BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
 				
 				int result = JOptionPane.showConfirmDialog(null, seletedVO.getBookNm()+" 을(를) 반납 하시겠습니까??"
 						, seletedVO.getBookNm(),JOptionPane.YES_NO_OPTION);
@@ -262,11 +262,11 @@ public class MyPagePanel extends JPanel{
 		/*대출 기록 삭제하기*/
 		deleteBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BorrowVO seletedVO = myBwList.get(borrowTbl.getSelectedRow());
+				BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
 				System.err.println("삭제 버튼 클릭");
 				
 				dModel.remove(seletedVO);
-				myBwList.remove(myBwList.get(borrowTbl.getSelectedRow()));
+				AddBorrowList.borrowList.remove(AddBorrowList.borrowList.get(borrowTbl.getSelectedRow()));
 				
 				dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 			}
@@ -317,7 +317,7 @@ public class MyPagePanel extends JPanel{
 		
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
 			dModel.removeAll();
-			for (BorrowVO bv : myBwList) {
+			for (BorrowVO bv : AddBorrowList.borrowList) {
 				if (bv.getBookNm().contains(schFd.getText())) {
 					dModel.addData(bv);
 					System.err.println("여기는 searchBorrow. for문 안. 검색결과 bv는? --->" + bv);
