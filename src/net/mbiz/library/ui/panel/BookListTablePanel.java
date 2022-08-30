@@ -1,10 +1,12 @@
-package net.mbiz.library.ui.main.panel;
+package net.mbiz.library.ui.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,9 @@ import javax.swing.JTextField;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.BookVO;
+import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.data.MakeBookList;
+import net.mbiz.library.data.MakeBorrowList;
 import net.mbiz.library.ui.common.CommonConstants;
 
 public class BookListTablePanel extends JPanel {
@@ -46,6 +50,7 @@ public class BookListTablePanel extends JPanel {
 
 	private BeanTableModel<BookVO> dModel;
 	private List<BookVO> bookList;
+	private List<BorrowVO> bwList;
 
 	public BookListTablePanel(MainPanel pn) {
 		jbInit();
@@ -55,7 +60,9 @@ public class BookListTablePanel extends JPanel {
 
 	private void initialize() {
 		bookList = MakeBookList.getInstance().addReleaseDate(); // 북데이터 생성
+		bwList = MakeBorrowList.getInstance().makeBorrowListData(); 
 		dModel.addDataList((ArrayList) bookList); // 리스트로 한꺼번에 집어넣기 가능
+		dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
 
@@ -84,7 +91,6 @@ public class BookListTablePanel extends JPanel {
 		bookTbl.setRowHeight(32);
 		bookTbl.setFont(CommonConstants.FONT_BASE_17);
 
-
 		// 테이블 스크롤
 		JScrollPane sclpn = new JScrollPane(bookTbl);
 		sclpn.setCorner(JScrollPane.UPPER_LEFT_CORNER, bookTbl.getTableHeader());
@@ -108,7 +114,7 @@ public class BookListTablePanel extends JPanel {
 		pnTitle.setPreferredSize(new Dimension(0, 55));
 		pnTitle.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		this.title = new JLabel("전체 도서");
-		title.setFont(CommonConstants.FONT_TITLE_30);
+		title.setFont(CommonConstants.FONT_TITLE_25);
 		title.setHorizontalAlignment(JLabel.CENTER);
 		title.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
@@ -132,9 +138,9 @@ public class BookListTablePanel extends JPanel {
 		this.pvsLbl = new JLabel("전체보기");
 		pvsLbl.setFont(CommonConstants.FONT_BASE_17);
 		pvsLbl.setHorizontalAlignment(JLabel.CENTER);
-//		pvsLbl.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 		pvsBtn.add(pvsLbl);
 
+		
 		/* pnSch - schFd(WEST), pnPadding(CENTER), schBtn(EAST) */
 
 		// WEST - 검색어 입력란
@@ -182,9 +188,39 @@ public class BookListTablePanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// 테이블 리셋
 				dModel.addDataList((ArrayList) bookList); 
+				dModel.fireTableDataChanged();
 			}
 		});
+		
+		bookTbl.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			
+			// 도서 상세정보 창
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int idx = bookTbl.getSelectedRow();
+				System.out.println("북테이블 클릭!! 선택된 행은? --> " + idx);
 
+				BookDetailFrame detailFrame = new BookDetailFrame(bookList.get(idx),bookList, bwList);
+				detailFrame.setLocationCenter();
+				dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+			}
+		});
 	}
 	
 	/**
@@ -197,7 +233,7 @@ public class BookListTablePanel extends JPanel {
 		
 		this.dModel = new BeanTableModel<BookVO>(topHeader, col) {
 			
-			// 객체의 컬럼 별 데이터를 한꺼번에 테이블에 뿌려줍니다.
+			// 객체의 컬럼 별 데이터를 한꺼번에 테이블에 뿌려준다.
 			@Override 
 			public Object getValueByColumIndex(int row, int col) {
 				BookVO vo = getRowAt(row);
@@ -214,7 +250,13 @@ public class BookListTablePanel extends JPanel {
 				case 4:
 					return vo.getCategory();
 				case 5:
-					return vo.getIsBorrowed();
+					if (vo.getIsBorrowed() == 1) {
+						return "대출가능";
+					} else if(vo.getIsBorrowed() == 0) {
+						return "대출중";
+					} else {
+						return "알수없음";
+					}
 				}
 				return null;
 			}
@@ -225,7 +267,6 @@ public class BookListTablePanel extends JPanel {
 			}
 		};
 		dModel.setNumbering(true); // 넘버링 여부 O
-
 		this.bookTbl.setModel(dModel);
 	}
 	
@@ -237,7 +278,7 @@ public class BookListTablePanel extends JPanel {
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
 			dModel.removeAll();
 			for (BookVO bv : bookList) {
-				if (schFd.getText().contains(bv.getBookNm())) {
+				if (bv.getBookNm().contains(schFd.getText())) {
 					dModel.addData(bv);
 				}
 			}
@@ -247,6 +288,7 @@ public class BookListTablePanel extends JPanel {
 			JOptionPane.showMessageDialog(pnBody, "검색어를 입력해주세요");
 		}
 	}
+
 	
-	
+
 }

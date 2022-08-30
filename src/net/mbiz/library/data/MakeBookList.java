@@ -20,7 +20,7 @@ public class MakeBookList {
 	public static MakeBookList getInstance() {
 	   return makeBookList;
 	}
-	
+
 	public List<BookVO> addBookData() {
 		List<BookVO> bookList = new ArrayList<>();
 		
@@ -409,7 +409,7 @@ public class MakeBookList {
 				+ "\r\n"
 				+ "당연한 것을 의심하고 낯선 진실을 발견하는 인류학자의 사고법");
 		bv26.setBookIsbn(9791167740571L);
-		bv26.setCategory("경제경영2");
+		bv26.setCategory("경제경영");
 		bv26.setPublisher("어크로스");
 
 		BookVO bv27 = new BookVO();

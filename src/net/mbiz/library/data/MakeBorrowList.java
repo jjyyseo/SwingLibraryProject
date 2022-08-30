@@ -23,7 +23,7 @@ public class MakeBorrowList {
 	}
 	
 	/*대출 객체 생성*/
-	public List<BorrowVO> makeBorrowList() {
+	public List<BorrowVO> makeBorrowListData() {
 		List<BorrowVO> bwList = new ArrayList<>();
 		
 		sdf = new SimpleDateFormat("yyyy.MM.dd");

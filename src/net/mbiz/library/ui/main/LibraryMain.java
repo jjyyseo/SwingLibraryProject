@@ -2,32 +2,20 @@ package net.mbiz.library.ui.main;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.border.LineBorder;
 
-import net.mbiz.library.data.BookVO;
-import net.mbiz.library.data.MakeBookList;
 import net.mbiz.library.ui.common.CommonConstants;
-import net.mbiz.library.ui.main.panel.MainPanel;
 import net.mbiz.library.ui.mypage.MyPagePanel;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import net.mbiz.library.ui.panel.MainPanel;
 
 public class LibraryMain extends JFrame {
 
@@ -47,7 +35,7 @@ public class LibraryMain extends JFrame {
 	/*
 	 * 기본 UI Init
 	 */
-	public void jbInit() {
+	private void jbInit() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(new Dimension(1920, 1080)); // 화면 사이즈
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH); // 풀스크린모드
@@ -142,8 +130,6 @@ public class LibraryMain extends JFrame {
 		Dimension d = this.getToolkit().getScreenSize();
 		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
 		this.setVisible(true);
-		
-
 	}
 
 	public static void main(String[] args) {

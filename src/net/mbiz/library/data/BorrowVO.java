@@ -2,14 +2,18 @@ package net.mbiz.library.data;
 
 import java.util.Date;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class BorrowVO {
 
 	private int borrowNo;          /* 대출 번호*/
 	private int bookNo;            /* 도서 번호*/
-	private String bookNm;            /* 도서 명*/                          
+	private String bookNm;         /* 도서 명*/                          
 	private String userId;         /* 유저 아이디*/
 	private int isBorrowed;        /* 대출중=0 대출가능=1*/
 	private Date startDate;        /* 대출 시작 일자*/

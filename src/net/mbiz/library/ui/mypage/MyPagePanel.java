@@ -5,8 +5,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -27,15 +31,14 @@ import net.mbiz.library.ui.main.LibraryMain;
 public class MyPagePanel extends JPanel{
 	
 	private JPanel pnBody;
-	
 	private JPanel pnTbl;
 	private JPanel pnHeader;
 	private JPanel pnFooter;
-
 	private JPanel pnSch;
 	private JPanel pnPadding;
 	private JPanel pnTitle;
 	private JPanel pnPvs;
+	private JPanel pnBtnSet;
 	
 	private JTable borrowTbl;
 	
@@ -43,10 +46,13 @@ public class MyPagePanel extends JPanel{
 	private JLabel pvsLbl;
 	
 	private JTextField schFd;
+	
 	private JButton schBtn;
 	private JButton pvsBtn;
+	private JButton returnBtn;
+	private JButton deleteBtn;
 	
-	private List<BorrowVO> bwList;
+	private List<BorrowVO> myBwList;
 	private BeanTableModel<BorrowVO> dModel;
 	
 	public MyPagePanel(LibraryMain f) {
@@ -56,8 +62,18 @@ public class MyPagePanel extends JPanel{
 	}
 
 	private void initialize() {
-		bwList = MakeBorrowList.getInstance().makeBorrowList();
-		dModel.addDataList((ArrayList) bwList);
+		List<BorrowVO> bwList = MakeBorrowList.getInstance().makeBorrowListData();
+		myBwList = new ArrayList<>();
+		
+		for (BorrowVO bv : bwList) {
+			// 로그인한 아이디의 대출 기록을 생성. 
+			String logInID = "a001";
+			if (logInID.equals(bv.getUserId())) {
+				myBwList.add(bv);
+			}
+		}
+		dModel.addDataList((ArrayList) myBwList);
+		dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
 	private void jbInit() {
@@ -96,6 +112,7 @@ public class MyPagePanel extends JPanel{
 		
 		//SOUTH		
 		this.pnFooter = new JPanel();
+		pnFooter.setLayout(new BorderLayout());
 		pnFooter.setPreferredSize(new Dimension(0,50));
 		pnFooter.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 
@@ -109,17 +126,17 @@ public class MyPagePanel extends JPanel{
 		pnTitle.setPreferredSize(new Dimension(0,55));
 		pnTitle.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		this.title = new JLabel("나의 대출리스트");
-		title.setFont(CommonConstants.FONT_TITLE_30);
+		title.setFont(CommonConstants.FONT_TITLE_25);
 		title.setHorizontalAlignment(JLabel.LEFT);
 		title.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
-		// EAST
+		//EAST
 		this.pnSch = new JPanel();
 		pnSch.setLayout(new BorderLayout());
 		pnSch.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		pnSch.setBorder(BorderFactory.createEmptyBorder(33, 0, 0, 0));
 		
-		//EAST
+		//WEST
 		this.pnPvs = new JPanel();
 		pnPvs.setLayout(new BorderLayout());
 		pnPvs.setBorder(BorderFactory.createEmptyBorder(33, 0, 0, 0));
@@ -139,6 +156,23 @@ public class MyPagePanel extends JPanel{
 		
 		
 		
+		/* pnFooter - pnBtnSet(EAST) - returnBtn(WEST), deleteBtn(EAST) */
+		this.pnBtnSet = new JPanel();
+		pnBtnSet.setLayout(new BorderLayout());
+		pnBtnSet.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		pnBtnSet.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+		pnBtnSet.add(Box.createHorizontalStrut(10), BorderLayout.CENTER);
+		
+		
+		this.returnBtn = new JButton("반납");
+		returnBtn.setPreferredSize(new Dimension(70, 70));
+		returnBtn.setFont(CommonConstants.FONT_BASE_15);
+		this.deleteBtn = new JButton("삭제");
+		deleteBtn.setPreferredSize(new Dimension(70, 70));
+		deleteBtn.setFont(CommonConstants.FONT_BASE_15);
+		
+		
+		
 		/* pnSch - schFd(WEST), pnPadding(CENTER), schBtn(EAST) */
 		// WEST - 검색어 입력란
 		this.schFd = new JTextField();
@@ -155,8 +189,12 @@ public class MyPagePanel extends JPanel{
 		pnPadding.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 
 
+		//footer
+		pnBtnSet.add(returnBtn, BorderLayout.WEST);
+		pnBtnSet.add(deleteBtn, BorderLayout.EAST);
+		pnFooter.add(pnBtnSet, BorderLayout.EAST);
 		
-		
+		//header
 		pnSch.add(pnPadding, BorderLayout.CENTER);
 		pnSch.add(schFd, BorderLayout.WEST);
 		pnSch.add(schBtn, BorderLayout.EAST);
@@ -168,6 +206,7 @@ public class MyPagePanel extends JPanel{
 		pnHeader.add(pnSch, BorderLayout.EAST);
 		pnHeader.add(pnPvs, BorderLayout.WEST);
 
+		//center
 		pnTbl.add(sclpn, BorderLayout.CENTER);
 		
 		pnBody.add(pnFooter, BorderLayout.SOUTH);
@@ -176,22 +215,64 @@ public class MyPagePanel extends JPanel{
 		
 		this.add(pnBody, BorderLayout.CENTER);
 		
-		// 검색 이벤트
+		
+		
+		
+		
+		/*검색 이벤트*/
 		schBtn.addActionListener(new ActionListener() {
-			
-			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.err.println("검색버튼 클릭");
 				searchBorrow();
 			}
 		});
 		
-		/*전체리스트로 이동*/
+		/*대출 기록 전체보기*/
 		pvsBtn.addActionListener(new ActionListener() {
-			
-			@Override
 			public void actionPerformed(ActionEvent e) {
-				dModel.addDataList((ArrayList) bwList);
+				initialize();
+				dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+			}
+		});
+		
+		/*도서 반납하기*/
+		returnBtn.addActionListener(new ActionListener() {
+			SimpleDateFormat sdf = new SimpleDateFormat();
+
+			public void actionPerformed(ActionEvent e) {
+				
+				BorrowVO seletedVO = myBwList.get(borrowTbl.getSelectedRow());
+				
+				int result = JOptionPane.showConfirmDialog(null, seletedVO.getBookNm()+" 을(를) 반납 하시겠습니까??"
+						, seletedVO.getBookNm(),JOptionPane.YES_NO_OPTION);
+				// YES_NO_OPTION, YES_OPTION -> 0,  YES_NO_CANCEL_OPTION -> 1
+				
+				if (result==JOptionPane.YES_OPTION) { 		    // '예'를 선택한 경우.
+					long gap = new Date().getTime() - seletedVO.getEndDate().getTime();
+					int overDay = (int) (gap / (1000*60*60*24));
+					
+					seletedVO.setIsBorrowed(1);				// 대출가능 상태로
+					seletedVO.setReturnDate(new Date());	// 반납일 update.
+					seletedVO.setOverdue(overDay);
+					
+					dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+					
+				} else {										// '예'를 선택하지 않음.
+					System.out.println("반납을 취소합니다.");
+				}
+			}
+			
+		});
+		
+		/*대출 기록 삭제하기*/
+		deleteBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BorrowVO seletedVO = myBwList.get(borrowTbl.getSelectedRow());
+				System.err.println("삭제 버튼 클릭");
+				
+				dModel.remove(seletedVO);
+				myBwList.remove(myBwList.get(borrowTbl.getSelectedRow()));
+				
+				dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 			}
 		});
 
@@ -233,12 +314,15 @@ public class MyPagePanel extends JPanel{
         this.borrowTbl.setModel(dModel);
 	}
 	
+	/**
+	 * 대출 기록을 삭제하는 메서드
+	 */
 	private void searchBorrow() {
 		
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
 			dModel.removeAll();
-			for (BorrowVO bv : bwList) {
-				if (schFd.getText().contains(bv.getBookNm())) {
+			for (BorrowVO bv : myBwList) {
+				if (bv.getBookNm().contains(schFd.getText())) {
 					dModel.addData(bv);
 					System.err.println("여기는 searchBorrow. for문 안. 검색결과 bv는? --->" + bv);
 				}

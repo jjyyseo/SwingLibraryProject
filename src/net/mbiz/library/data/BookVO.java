@@ -1,9 +1,14 @@
 package net.mbiz.library.data;
 
 import java.util.Date;
-import lombok.Data;
 
-@Data
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 public class BookVO {
 	
 	private int bookNo;			    /* 도서번호*/

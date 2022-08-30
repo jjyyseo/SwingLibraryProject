@@ -1,4 +1,4 @@
-package net.mbiz.library.ui.main.panel;
+package net.mbiz.library.ui.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -68,7 +68,7 @@ public class BookListCardPanel extends JPanel{
 		pnTitle.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		
 		this.title = new JLabel("전체 도서");
-		title.setFont(CommonConstants.FONT_TITLE_30);
+		title.setFont(CommonConstants.FONT_TITLE_25);
 		title.setHorizontalAlignment(JLabel.CENTER);
 		title.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 		
