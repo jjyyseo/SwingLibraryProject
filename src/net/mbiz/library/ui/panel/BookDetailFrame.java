@@ -123,7 +123,7 @@ public class BookDetailFrame extends JDialog{
 		pnBorrow.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
 		pnBorrow.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
 		
-		if (bv.getIsBorrowed() == 1) {
+		if (bv.getIsBorrowed() == 0) {
 			this.borrowBtn = new JButton("대출 신청");
 		} else {
 			this.borrowBtn = new JButton("대출중");
@@ -149,11 +149,7 @@ public class BookDetailFrame extends JDialog{
 		txtTitle.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
 		txtTitle.setBorder(BorderFactory.createEmptyBorder(15,10,10,10));
 		pnTitle.add(txtTitle, BorderLayout.NORTH);
-		
-//		this.lblTitle = new JLabel(bv.getBookNm());
-//		lblTitle.setFont(CommonConstants.FONT_TITLE_22);
-//		lblTitle.setBorder(BorderFactory.createEmptyBorder(15,10,10,10));
-//		pnTitle.add(lblTitle, BorderLayout.NORTH);
+
 		
 		//CENTER
 		this.pnCnt = new JPanel();
@@ -284,14 +280,14 @@ public class BookDetailFrame extends JDialog{
 		
 		borrowVO.setStartDate(new Date());
 		borrowVO.setEndDate(endDate);
-		borrowVO.setIsBorrowed(0); //대출중
+		borrowVO.setIsBorrowed(1); //대출중
 		
 		AddBorrowList.borrowList.add(borrowVO);
 		
 		
 		// bookList update
 		int idx = p_bv.getBookNo()-1; //도서번호 - 1 = 인덱스
-		AddBookList.bookList.get(idx).setIsBorrowed(0);
+		AddBookList.bookList.get(idx).setIsBorrowed(1);
 		
 	}	
 

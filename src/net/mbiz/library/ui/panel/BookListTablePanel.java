@@ -23,6 +23,7 @@ import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
+import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.main.LibraryMain;
 import net.mbiz.library.ui.mypage.MyPagePanel;
@@ -209,18 +210,16 @@ public class BookListTablePanel extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				if(e.getClickCount()==2) {
 					int idx = bookTbl.getSelectedRow();
-					System.out.println("BookListTablePanel.mouseClicked 북테이블 클릭!! 선택된 행은? --> " + idx);
-					System.out.println("BookListTablePanel.mouseClicked 선택된 VO객체 --> " + AddBookList.bookList.get(idx));
-					
+
 					// 도서 상세청보 창 생성
 					BookDetailFrame detailFrame = new BookDetailFrame(AddBookList.bookList.get(idx));
 					detailFrame.setLocationCenter();
 					CommonConstants.bkModel.fireTableDataChanged();
+					
 					bookTbl.repaint();
 					
 					//마이페이지 테이블 repaint()
 					CommonConstants.repaintBorrowTable();
-					System.err.println("여기는 도서 상세 창 닫음?");
 				}
 			}
 		});
@@ -253,9 +252,9 @@ public class BookListTablePanel extends JPanel {
 				case 4:
 					return vo.getCategory();
 				case 5:
-					if (vo.getIsBorrowed() == 1) {
+					if (vo.getIsBorrowed() == 0) {
 						return "대출가능";
-					} else if(vo.getIsBorrowed() == 0) {
+					} else if(vo.getIsBorrowed() == 1) {
 						return "대출중";
 					} else {
 						return "알수없음";

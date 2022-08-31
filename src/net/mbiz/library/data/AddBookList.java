@@ -516,7 +516,7 @@ public class AddBookList {
 	    
 		for (BookVO bv : bkList) {
 			bv.setReleaseDate(releaseDate);
-			bv.setIsBorrowed(1);
+			bv.setIsBorrowed(0);
 		}
 	    
 		

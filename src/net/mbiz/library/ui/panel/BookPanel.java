@@ -82,9 +82,9 @@ public class BookPanel extends JPanel {
 	private void printBorrowState(BookVO vo) {
 		// 대출 상태 라벨
 		this.lblState = new JLabel();
-		if (vo.getIsBorrowed() == 1) {
+		if (vo.getIsBorrowed() == 0) {
 			this.lblState = new JLabel("대출가능");
-		} else if (vo.getIsBorrowed() == 0) {
+		} else if (vo.getIsBorrowed() == 1) {
 			this.lblState = new JLabel("대출중");
 		}
 		lblState.setPreferredSize(new Dimension(50, 10));
