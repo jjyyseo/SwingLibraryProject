@@ -93,10 +93,8 @@ public class BookListCardPanel extends JPanel{
 		pnPadding.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		
 		/*book data 가져와서 book Panel 만들기*/
-		for (BookVO bv : AddBookList.bookList) {	// makeList.addBookData() : list 리턴.
-			BookPanel bookPanel = new BookPanel();
-			bookPanel.printBookPanel(bv.getBookNm(), bv.getIsBorrowed());
-			
+		for (BookVO bv : AddBookList.bookList) {	
+			BookPanel bookPanel = new BookPanel(bv);
 			pnCnt.add(bookPanel);
 		}
 		
@@ -138,8 +136,8 @@ public class BookListCardPanel extends JPanel{
 
 						if (schFd.getText().contains(bv.getBookNm())) {
 							
-							BookPanel pnBook = new BookPanel();
-							pnBook.printBookPanel(bv.getBookNm(), bv.getIsBorrowed());
+							BookPanel pnBook = new BookPanel(bv);
+							pnBook.printBookPanel(bv);
 							
 							pnCnt.add(pnBook);
 						}

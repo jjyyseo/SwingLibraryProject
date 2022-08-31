@@ -50,7 +50,6 @@ public class MyPagePanel extends JPanel{
 	private JButton returnBtn;
 	private JButton deleteBtn;
 	
-	private BeanTableModel<BorrowVO> dModel;
 	
 	public MyPagePanel(LibraryMain f) {
 		jbInit();
@@ -68,8 +67,8 @@ public class MyPagePanel extends JPanel{
 //				myBwList.add(bv);
 //			}
 //		}
-		dModel.addDataList((ArrayList) AddBorrowList.borrowList);
-		dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+		LibraryMain.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
+		LibraryMain.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
 	private void jbInit() {
@@ -98,7 +97,7 @@ public class MyPagePanel extends JPanel{
 		this.pnTbl = new JPanel(); 
 		pnTbl.setLayout(new BorderLayout());
 		pnTbl.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-		this.borrowTbl  = new JTable(dModel); // 데이터가 들어가는 테이블 
+		this.borrowTbl  = new JTable(LibraryMain.bwModel); // 데이터가 들어가는 테이블 
 		borrowTbl.setRowHeight(32);
 		borrowTbl.setFont(CommonConstants.FONT_BASE_17);
 		// 테이블 스크롤
@@ -225,8 +224,7 @@ public class MyPagePanel extends JPanel{
 		/*대출 기록 전체보기*/
 		pvsBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				initialize();
-				dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+				repaintTable();
 			}
 		});
 		
@@ -240,9 +238,8 @@ public class MyPagePanel extends JPanel{
 				
 				int result = JOptionPane.showConfirmDialog(null, seletedVO.getBookNm()+" 을(를) 반납 하시겠습니까??"
 						, seletedVO.getBookNm(),JOptionPane.YES_NO_OPTION);
-				// YES_NO_OPTION, YES_OPTION -> 0,  YES_NO_CANCEL_OPTION -> 1
 				
-				if (result==JOptionPane.YES_OPTION) { 		    // '예'를 선택한 경우.
+				if (result==JOptionPane.YES_OPTION) { 		 
 					long gap = new Date().getTime() - seletedVO.getEndDate().getTime();
 					int overDay = (int) (gap / (1000*60*60*24));
 					
@@ -250,9 +247,10 @@ public class MyPagePanel extends JPanel{
 					seletedVO.setReturnDate(new Date());	// 반납일 update.
 					seletedVO.setOverdue(overDay);
 					
-					dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+					LibraryMain.bwModel.fireTableDataChanged();	
 					
-				} else {										// '예'를 선택하지 않음.
+					
+				} else {										
 					System.out.println("반납을 취소합니다.");
 				}
 			}
@@ -265,10 +263,10 @@ public class MyPagePanel extends JPanel{
 				BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
 				System.err.println("삭제 버튼 클릭");
 				
-				dModel.remove(seletedVO);
+				LibraryMain.bwModel.remove(seletedVO);
 				AddBorrowList.borrowList.remove(AddBorrowList.borrowList.get(borrowTbl.getSelectedRow()));
 				
-				dModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+				repaintTable();
 			}
 		});
 
@@ -280,7 +278,7 @@ public class MyPagePanel extends JPanel{
 		String topHeader[] = {"도서명", "대출일", "반납예정일", "반납일", "연체일"};	
 		int col[] = {100 ,100 ,100 ,100 ,100};
 		
-		this.dModel = new BeanTableModel<BorrowVO>(topHeader, col) {
+		LibraryMain.bwModel = new BeanTableModel<BorrowVO>(topHeader, col) {
 			
 			// 객체의 컬럼 별 데이터를 한꺼번에 테이블에 뿌려줍니다.
 			@Override
@@ -306,8 +304,10 @@ public class MyPagePanel extends JPanel{
 				
 			}
 		};
-        dModel.setNumbering(true);
-        this.borrowTbl.setModel(dModel);
+		
+		
+		LibraryMain.bwModel.setNumbering(true);
+        this.borrowTbl.setModel(LibraryMain.bwModel);
 	}
 	
 	/**
@@ -316,18 +316,24 @@ public class MyPagePanel extends JPanel{
 	private void searchBorrow() {
 		
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
-			dModel.removeAll();
+			LibraryMain.bwModel.removeAll();
 			for (BorrowVO bv : AddBorrowList.borrowList) {
 				if (bv.getBookNm().contains(schFd.getText())) {
-					dModel.addData(bv);
+					LibraryMain.bwModel.addData(bv);
 					System.err.println("여기는 searchBorrow. for문 안. 검색결과 bv는? --->" + bv);
 				}
 			}
-			this.borrowTbl.setModel(dModel);
+			this.borrowTbl.setModel(LibraryMain.bwModel);
 
 		} else {
 			JOptionPane.showMessageDialog(pnBody, "검색어를 입력해주세요.");
 		}
+	}
+	
+	private void repaintTable() {
+		LibraryMain.bwModel.removeAll();
+		LibraryMain.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
+		LibraryMain.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
 }

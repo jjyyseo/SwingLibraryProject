@@ -3,6 +3,12 @@ package net.mbiz.library.ui.common;
 import java.awt.Color;
 import java.awt.Font;
 
+import javax.swing.JTable;
+
+import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
+import net.mbiz.library.data.BookVO;
+import net.mbiz.library.data.BorrowVO;
+
 /*
  * 공통 상수를 정의하는 클래스
  */
@@ -27,4 +33,5 @@ public class CommonConstants {
 	public static final Font FONT_BASE_15 = new Font("나눔스퀘어", Font.PLAIN, 15);
 	public static final Font FONT_TITLE_25 = new Font("예스 고딕 레귤러", Font.BOLD, 25);
 	public static final Font FONT_TITLE_22 = new Font("예스 고딕 레귤러", Font.BOLD, 22);
+	
 }
