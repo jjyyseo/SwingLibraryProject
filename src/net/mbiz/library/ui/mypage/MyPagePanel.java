@@ -64,7 +64,6 @@ public class MyPagePanel extends JPanel{
 
 	private void initialize() {
 		CommonConstants.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
-		System.out.println(AddBorrowList.borrowList);
 		CommonConstants.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
@@ -348,7 +347,6 @@ public class MyPagePanel extends JPanel{
 			public void mouseClicked(MouseEvent e) {
 				
 				BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
-				
 				System.out.println("선택한 도서기록은?? -----> " + seletedVO);
 				
 				if (seletedVO.getIsBorrowed() == 0) {

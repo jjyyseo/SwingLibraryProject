@@ -25,6 +25,8 @@ import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
+import net.mbiz.library.ui.dialog.BookDetailDialog;
+import net.mbiz.library.ui.dialog.BookRegistDialog;
 import net.mbiz.library.ui.main.LibraryMain;
 import net.mbiz.library.ui.mypage.MyPagePanel;
 
@@ -39,6 +41,7 @@ public class BookListTablePanel extends JPanel {
 	private JPanel pnPadding;
 	private JPanel pnTitle;
 	private JPanel pnPvs;
+	private JPanel pnBtnSet;
 
 	private JTable bookTbl;
 
@@ -48,6 +51,8 @@ public class BookListTablePanel extends JPanel {
 	private JTextField schFd;
 	private JButton schBtn;
 	private JButton pvsBtn;
+	private JButton registBtn;
+	private JButton deleteBtn;
 
 	public BookListTablePanel(MainPanel pn) {
 		jbInit();
@@ -97,6 +102,7 @@ public class BookListTablePanel extends JPanel {
 
 		// SOUTH
 		this.pnFooter = new JPanel();
+		pnFooter.setLayout(new BorderLayout());
 		pnFooter.setPreferredSize(new Dimension(0, 50));
 		pnFooter.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 
@@ -152,6 +158,33 @@ public class BookListTablePanel extends JPanel {
 		pnPadding.setPreferredSize(new Dimension(10, 10));
 		pnPadding.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 
+		
+		
+		
+		/* pnFooter - pnBtnSet(EAST) - returnBtn(WEST), deleteBtn(EAST) */
+		this.pnBtnSet = new JPanel();
+		pnBtnSet.setLayout(new BorderLayout());
+		pnBtnSet.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		pnBtnSet.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+		pnBtnSet.add(Box.createHorizontalStrut(10), BorderLayout.CENTER);
+		
+		
+		this.registBtn = new JButton("추가");
+		registBtn.setPreferredSize(new Dimension(70, 50));
+		registBtn.setFont(CommonConstants.FONT_BASE_15);
+		this.deleteBtn = new JButton("삭제");
+		deleteBtn.setPreferredSize(new Dimension(70, 50));
+		deleteBtn.setFont(CommonConstants.FONT_BASE_15);
+		
+		
+
+		
+		//footer
+		pnBtnSet.add(registBtn, BorderLayout.WEST);
+		pnBtnSet.add(deleteBtn, BorderLayout.EAST);
+		pnFooter.add(pnBtnSet, BorderLayout.EAST);
+		
+		//header
 		pnSch.add(pnPadding, BorderLayout.CENTER);
 		pnSch.add(schFd, BorderLayout.WEST);
 		pnSch.add(schBtn, BorderLayout.EAST);
@@ -162,12 +195,19 @@ public class BookListTablePanel extends JPanel {
 		pnHeader.add(pnTitle, BorderLayout.NORTH);
 		pnHeader.add(pnSch, BorderLayout.EAST);
 		pnHeader.add(pnPvs, BorderLayout.WEST);
-
+		
+		//center
 		pnBody.add(pnFooter, BorderLayout.SOUTH);
 		pnBody.add(pnHeader, BorderLayout.NORTH);
 
 		this.add(pnBody, BorderLayout.CENTER);
 
+		
+		
+		
+		
+		
+		
 		// 검색 이벤트
 		schBtn.addActionListener(new ActionListener() {
 			@Override
@@ -187,21 +227,23 @@ public class BookListTablePanel extends JPanel {
 			}
 		});
 		
+		registBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				BookRegistDialog registDialog = new BookRegistDialog();
+				registDialog.setLocationCenter();
+			}
+		});
+		
+		
 		bookTbl.addMouseListener(new MouseListener() {
 			
-			@Override
 			public void mouseReleased(MouseEvent e) {
 			}
-			
-			@Override
 			public void mousePressed(MouseEvent e) {
 			}
-			
-			@Override
 			public void mouseExited(MouseEvent e) {
 			}
-			
-			@Override
 			public void mouseEntered(MouseEvent e) {
 			}
 			
@@ -213,8 +255,8 @@ public class BookListTablePanel extends JPanel {
 					BookVO seletedVO = AddBookList.bookList.get(bookTbl.getSelectedRow());
 					System.out.println("선택한 도서기록은?? -----> " + seletedVO);
 					// 도서 상세청보 창 생성
-					BookDetailFrame detailFrame = new BookDetailFrame(AddBookList.bookList.get(idx));
-					detailFrame.setLocationCenter();
+					BookDetailDialog detailDialog = new BookDetailDialog(AddBookList.bookList.get(idx));
+					detailDialog.setLocationCenter();
 					CommonConstants.bkModel.fireTableDataChanged();
 					
 					bookTbl.repaint();
@@ -293,6 +335,5 @@ public class BookListTablePanel extends JPanel {
 		}
 	}
 
-	
 
 }

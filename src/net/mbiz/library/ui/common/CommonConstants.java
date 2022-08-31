@@ -1,6 +1,7 @@
 package net.mbiz.library.ui.common;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,4 +59,5 @@ public class CommonConstants {
 		CommonConstants.bkModel.addDataList((ArrayList) AddBookList.bookList);
 		CommonConstants.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
+
 }

@@ -1,4 +1,4 @@
-package net.mbiz.library.ui.panel;
+package net.mbiz.library.ui.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,7 +26,7 @@ import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
 
-public class BookDetailFrame extends JDialog{
+public class BookDetailDialog extends JDialog{
 
 	private JPanel pnMain;        
 	private JPanel pnTop;		  // in pnMain
@@ -46,13 +46,12 @@ public class BookDetailFrame extends JDialog{
 	private JLabel pnCategory;       
 	private JLabel pnIsbn;       
 	                              
-	private JLabel lblTitle;      // in pnTitle
+	private JTextArea txtTitle;	  // in pnTitle
 	private JTextArea txtArea;    // in pnIntro
-	private JTextArea txtTitle;
 	private JButton borrowBtn;	
 	
 	
-	public BookDetailFrame(BookVO bv) {
+	public BookDetailDialog(BookVO bv) {
 		this.setTitle(bv.getBookNm());
 		jbInit(bv);
 	}
@@ -63,7 +62,7 @@ public class BookDetailFrame extends JDialog{
 	private void jbInit(BookVO bv) {
 		setLocationRelativeTo(this); // 화면 중앙 설정
 		setLayout(new BorderLayout());
-		setSize(new Dimension(600,700));
+		setSize((new Dimension(600,700)));
 		setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
 		setModal(true);
 		// 여백
