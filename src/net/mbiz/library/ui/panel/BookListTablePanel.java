@@ -210,7 +210,8 @@ public class BookListTablePanel extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				if(e.getClickCount()==2) {
 					int idx = bookTbl.getSelectedRow();
-
+					BookVO seletedVO = AddBookList.bookList.get(bookTbl.getSelectedRow());
+					System.out.println("선택한 도서기록은?? -----> " + seletedVO);
 					// 도서 상세청보 창 생성
 					BookDetailFrame detailFrame = new BookDetailFrame(AddBookList.bookList.get(idx));
 					detailFrame.setLocationCenter();

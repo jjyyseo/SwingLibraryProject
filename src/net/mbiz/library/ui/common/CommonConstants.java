@@ -3,6 +3,7 @@ package net.mbiz.library.ui.common;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.JTable;
 
@@ -44,6 +45,10 @@ public class CommonConstants {
 	/*대출 테이블 다시 그리는 메서드*/
 	public static void repaintBorrowTable() {
 		CommonConstants.bwModel.removeAll();
+		
+		// 데이터 역순 정렬
+		Collections.sort(AddBorrowList.borrowList, Collections.reverseOrder());
+		
 		CommonConstants.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
 		CommonConstants.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}

@@ -268,7 +268,9 @@ public class BookDetailFrame extends JDialog{
 	 */
 	private void insertBorrow(BookVO p_bv) {
 		// borrowList에 대출 기록 추가
+		
 		BorrowVO borrowVO = new BorrowVO();
+		borrowVO.setBorrowNo(AddBorrowList.borrowList.size()+1);
 		borrowVO.setBookNm(p_bv.getBookNm());
 		borrowVO.setBookNo(p_bv.getBookNo());
 		borrowVO.setUserId("a001");

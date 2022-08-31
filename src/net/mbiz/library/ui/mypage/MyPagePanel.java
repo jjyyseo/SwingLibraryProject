@@ -9,6 +9,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -51,7 +54,7 @@ public class MyPagePanel extends JPanel{
 	private JButton returnBtn;
 	private JButton deleteBtn;
 	
-	public static JTable borrowTbl;
+	private JTable borrowTbl;
 	
 	public MyPagePanel(LibraryMain f) {
 		jbInit();
@@ -60,16 +63,8 @@ public class MyPagePanel extends JPanel{
 	}
 
 	private void initialize() {
-		
-//		List<BorrowVO> myBwList = new ArrayList<>();
-//		for (BorrowVO bv : AddBorrowList.borrowList) {
-//			// 로그인한 아이디의 대출 기록을 생성. 
-//			String logInID = "a001";
-//			if (logInID.equals(bv.getUserId())) {
-//				myBwList.add(bv);
-//			}
-//		}
 		CommonConstants.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
+		System.out.println(AddBorrowList.borrowList);
 		CommonConstants.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
@@ -83,7 +78,6 @@ public class MyPagePanel extends JPanel{
 		this.pnBody = new JPanel();
 		pnBody.setLayout(new BorderLayout());
 		pnBody.setBackground(Color.DARK_GRAY);
-
 
 		
 		//NORTH
@@ -147,7 +141,6 @@ public class MyPagePanel extends JPanel{
 		this.pvsLbl = new JLabel("전체보기");
 		pvsLbl.setFont(CommonConstants.FONT_BASE_17);
 		pvsLbl.setHorizontalAlignment(JLabel.CENTER);
-//		pvsLbl.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 		pvsBtn.add(pvsLbl);	
 		
 		
@@ -234,8 +227,11 @@ public class MyPagePanel extends JPanel{
 		returnBtn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				SimpleDateFormat sdf = new SimpleDateFormat();
-				BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
+
+				int row = borrowTbl.getSelectedRow();
+				BorrowVO seletedVO = CommonConstants.bwModel.getData(row);
+				
+				System.err.println(seletedVO.toString());
 					
 				int result = JOptionPane.showConfirmDialog(null, seletedVO.getBookNm()+" 을(를) 반납 하시겠습니까??"
 						, seletedVO.getBookNm(),JOptionPane.YES_NO_OPTION);
@@ -275,7 +271,7 @@ public class MyPagePanel extends JPanel{
 		deleteBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
-				System.err.println("삭제 버튼 클릭");
+				System.err.println("삭제 버튼 클릭." );
 				
 				CommonConstants.bwModel.remove(seletedVO);
 				AddBorrowList.borrowList.remove(AddBorrowList.borrowList.get(borrowTbl.getSelectedRow()));
@@ -290,9 +286,11 @@ public class MyPagePanel extends JPanel{
 	
 	/*테이블을 출력하는 메서드*/
 	private void initTable() {
-		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 		String topHeader[] = {"도서명", "대출일", "반납예정일", "반납일", "연체일"};	
 		int col[] = {100 ,100 ,100 ,100 ,100};
+		
+
 		
 		CommonConstants.bwModel = new BeanTableModel<BorrowVO>(topHeader, col) {
 			
@@ -304,26 +302,31 @@ public class MyPagePanel extends JPanel{
 				case 0:
 					return bv.getBookNm();
 				case 1:
-					return bv.getStartDate();
+					return sdf.format(bv.getStartDate());
 				case 2:
-					return bv.getEndDate();
+					return sdf.format(bv.getEndDate());
 				case 3:
-					return bv.getReturnDate();
+					if (bv.getReturnDate()!=null) {
+						return sdf.format(bv.getReturnDate());
+					} else {
+						return "-";
+					}
 				case 4:
 					return bv.getOverdue() + "(일)";
 				}
 				return null;
 			}
 
+			
 			@Override
 			public void setValueByColumIndex(int row, int col, Object obj) {
 				
 			}
 		};
 		
-		
 		CommonConstants.bwModel.setNumbering(true);
 		this.borrowTbl.setModel(CommonConstants.bwModel);
+		
 		
 		
 		
@@ -343,23 +346,24 @@ public class MyPagePanel extends JPanel{
 			   - 반납하지 않은 도서의 경우 삭제 버튼 비활성화.
 			*/
 			public void mouseClicked(MouseEvent e) {
+				
 				BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
-
-				System.out.println("borrowTbl 클릭!!!");
+				
 				System.out.println("선택한 도서기록은?? -----> " + seletedVO);
 				
 				if (seletedVO.getIsBorrowed() == 0) {
-					System.out.println("seletedVO.getIsBorrowed()? ----> " + seletedVO.getIsBorrowed());
+					System.err.println("seletedVO.getIsBorrowed()? ----> " + seletedVO.getIsBorrowed());
 					returnBtn.setEnabled(false);
-				} else {
+				} else if (seletedVO.getIsBorrowed() == 1) {
 					returnBtn.setEnabled(true);
 				}
 				
 				if (seletedVO.getReturnDate() == null) {
 					deleteBtn.setEnabled(false);
-					System.out.println("seletedVO.getReturnDate()? ----> " + seletedVO.getReturnDate());
-				} else {
+					System.err.println("반납일이 null임. seletedVO.getReturnDate()? ----> " + seletedVO.getReturnDate());
+				} else if (seletedVO.getReturnDate() != null){
 					deleteBtn.setEnabled(true);
+					System.err.println("반납일이 null이 아님!! seletedVO.getReturnDate()? ----> " + seletedVO.getReturnDate());
 				}
 				
 			}
@@ -385,7 +389,6 @@ public class MyPagePanel extends JPanel{
 			JOptionPane.showMessageDialog(pnBody, "검색어를 입력해주세요.");
 		}
 	}
-	
 
 
 }

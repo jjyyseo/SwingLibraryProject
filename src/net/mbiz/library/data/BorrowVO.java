@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BorrowVO {
+public class BorrowVO implements Comparable<BorrowVO>{
 
 	private int borrowNo;          /* 대출 번호*/
 	private int bookNo;            /* 도서 번호*/
@@ -20,5 +20,10 @@ public class BorrowVO {
 	private Date endDate;          /* 대출 마감 일자*/
 	private Date returnDate;       /* 반납 일자*/
 	private int overdue;           /* 연체일 수*/
+	
+	@Override
+	public int compareTo(BorrowVO o) {
+		return this.borrowNo - o.borrowNo;
+	}
 
 }
