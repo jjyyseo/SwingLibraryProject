@@ -21,6 +21,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
+import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
@@ -38,8 +39,6 @@ public class MyPagePanel extends JPanel{
 	private JPanel pnPvs;
 	private JPanel pnBtnSet;
 	
-	private JTable borrowTbl;
-	
 	private JLabel title;
 	private JLabel pvsLbl;
 	
@@ -50,6 +49,7 @@ public class MyPagePanel extends JPanel{
 	private JButton returnBtn;
 	private JButton deleteBtn;
 	
+	public static JTable borrowTbl;
 	
 	public MyPagePanel(LibraryMain f) {
 		jbInit();
@@ -224,7 +224,7 @@ public class MyPagePanel extends JPanel{
 		/*대출 기록 전체보기*/
 		pvsBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				repaintTable();
+				CommonConstants.repaintBorrowTable();
 			}
 		});
 		
@@ -240,6 +240,7 @@ public class MyPagePanel extends JPanel{
 						, seletedVO.getBookNm(),JOptionPane.YES_NO_OPTION);
 				
 				if (result==JOptionPane.YES_OPTION) { 		 
+
 					long gap = new Date().getTime() - seletedVO.getEndDate().getTime();
 					int overDay = (int) (gap / (1000*60*60*24));
 					
@@ -247,8 +248,15 @@ public class MyPagePanel extends JPanel{
 					seletedVO.setReturnDate(new Date());	// 반납일 update.
 					seletedVO.setOverdue(overDay);
 					
-					CommonConstants.bwModel.fireTableDataChanged();	
 					
+					// 북리스트의 도서 정보 대출가능으로 change
+					int idx = seletedVO.getBookNo()-1; 
+					AddBookList.bookList.get(idx).setIsBorrowed(1);
+					
+					CommonConstants.bkModel.fireTableDataChanged(); //바뀐 정보 테이블에 반영
+
+					CommonConstants.repaintBorrowTable();	
+					CommonConstants.repaintBookTable();
 					
 				} else {										
 					System.out.println("반납을 취소합니다.");
@@ -266,7 +274,7 @@ public class MyPagePanel extends JPanel{
 				CommonConstants.bwModel.remove(seletedVO);
 				AddBorrowList.borrowList.remove(AddBorrowList.borrowList.get(borrowTbl.getSelectedRow()));
 				
-				repaintTable();
+				CommonConstants.repaintBorrowTable();
 			}
 		});
 
@@ -307,7 +315,7 @@ public class MyPagePanel extends JPanel{
 		
 		
 		CommonConstants.bwModel.setNumbering(true);
-        this.borrowTbl.setModel(CommonConstants.bwModel);
+		this.borrowTbl.setModel(CommonConstants.bwModel);
 	}
 	
 	/**
@@ -330,11 +338,7 @@ public class MyPagePanel extends JPanel{
 		}
 	}
 	
-	private void repaintTable() {
-		CommonConstants.bwModel.removeAll();
-		CommonConstants.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
-		CommonConstants.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
-	}
+
 
 }
 

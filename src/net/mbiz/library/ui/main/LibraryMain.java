@@ -42,7 +42,6 @@ public class LibraryMain extends JFrame {
 		this.setSize(new Dimension(1920, 1080)); // 화면 사이즈
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH); // 풀스크린모드
 		this.setResizable(false); // 리사이즈 X
-//		this.setUndecorated(true);					    // 타이틀바 없어짐
 
 //		this.addComponentListener(this);
 

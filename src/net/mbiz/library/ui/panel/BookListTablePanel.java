@@ -25,6 +25,7 @@ import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.main.LibraryMain;
+import net.mbiz.library.ui.mypage.MyPagePanel;
 
 public class BookListTablePanel extends JPanel {
 
@@ -216,11 +217,11 @@ public class BookListTablePanel extends JPanel {
 					detailFrame.setLocationCenter();
 					CommonConstants.bkModel.fireTableDataChanged();
 					bookTbl.repaint();
-					//TODO 똑같이 마이페이지의 테이블 RepaintTable을 호출 
 					
-					
+					//마이페이지 테이블 repaint()
+					CommonConstants.repaintBorrowTable();
 					System.err.println("여기는 도서 상세 창 닫음?");
-				    }
+				}
 			}
 		});
 

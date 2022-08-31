@@ -6,18 +6,14 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -29,7 +25,6 @@ import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
-import net.mbiz.library.ui.main.LibraryMain;
 
 public class BookDetailFrame extends JDialog{
 
@@ -298,7 +293,6 @@ public class BookDetailFrame extends JDialog{
 		int idx = p_bv.getBookNo()-1; //도서번호 - 1 = 인덱스
 		AddBookList.bookList.get(idx).setIsBorrowed(0);
 		
-//		return p_bv; // setIsBorrowed(0)한 bookVO 리턴
 	}	
 
 

@@ -2,10 +2,13 @@ package net.mbiz.library.ui.common;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.ArrayList;
 
 import javax.swing.JTable;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
+import net.mbiz.library.data.AddBookList;
+import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 
@@ -37,4 +40,17 @@ public class CommonConstants {
 	/*테이블*/
 	public static BeanTableModel<BookVO> bkModel;
 	public static BeanTableModel<BorrowVO> bwModel;
+	
+	/*대출 테이블 다시 그리는 메서드*/
+	public static void repaintBorrowTable() {
+		CommonConstants.bwModel.removeAll();
+		CommonConstants.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
+		CommonConstants.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+	}
+	/*전체 도서 테이블 다시 그리는 메서드*/
+	public static void repaintBookTable() {
+		CommonConstants.bkModel.removeAll();
+		CommonConstants.bkModel.addDataList((ArrayList) AddBookList.bookList);
+		CommonConstants.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+	}
 }
