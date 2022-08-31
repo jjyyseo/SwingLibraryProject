@@ -11,12 +11,8 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 
-import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
-import net.mbiz.library.data.BookVO;
-import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.mypage.MyPagePanel;
 import net.mbiz.library.ui.panel.MainPanel;
@@ -31,8 +27,7 @@ public class LibraryMain extends JFrame {
 	
 	private CardLayout cards = new CardLayout();
 
-	public static BeanTableModel<BookVO> bkModel;
-	public static BeanTableModel<BorrowVO> bwModel;
+
 	
 	public LibraryMain() {
 		this.setTitle("도서 관리 프로그램");

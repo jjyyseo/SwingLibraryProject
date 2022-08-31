@@ -67,8 +67,8 @@ public class MyPagePanel extends JPanel{
 //				myBwList.add(bv);
 //			}
 //		}
-		LibraryMain.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
-		LibraryMain.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+		CommonConstants.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
+		CommonConstants.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
 	private void jbInit() {
@@ -97,7 +97,7 @@ public class MyPagePanel extends JPanel{
 		this.pnTbl = new JPanel(); 
 		pnTbl.setLayout(new BorderLayout());
 		pnTbl.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-		this.borrowTbl  = new JTable(LibraryMain.bwModel); // 데이터가 들어가는 테이블 
+		this.borrowTbl  = new JTable(CommonConstants.bwModel); // 데이터가 들어가는 테이블 
 		borrowTbl.setRowHeight(32);
 		borrowTbl.setFont(CommonConstants.FONT_BASE_17);
 		// 테이블 스크롤
@@ -247,7 +247,7 @@ public class MyPagePanel extends JPanel{
 					seletedVO.setReturnDate(new Date());	// 반납일 update.
 					seletedVO.setOverdue(overDay);
 					
-					LibraryMain.bwModel.fireTableDataChanged();	
+					CommonConstants.bwModel.fireTableDataChanged();	
 					
 					
 				} else {										
@@ -263,7 +263,7 @@ public class MyPagePanel extends JPanel{
 				BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
 				System.err.println("삭제 버튼 클릭");
 				
-				LibraryMain.bwModel.remove(seletedVO);
+				CommonConstants.bwModel.remove(seletedVO);
 				AddBorrowList.borrowList.remove(AddBorrowList.borrowList.get(borrowTbl.getSelectedRow()));
 				
 				repaintTable();
@@ -278,7 +278,7 @@ public class MyPagePanel extends JPanel{
 		String topHeader[] = {"도서명", "대출일", "반납예정일", "반납일", "연체일"};	
 		int col[] = {100 ,100 ,100 ,100 ,100};
 		
-		LibraryMain.bwModel = new BeanTableModel<BorrowVO>(topHeader, col) {
+		CommonConstants.bwModel = new BeanTableModel<BorrowVO>(topHeader, col) {
 			
 			// 객체의 컬럼 별 데이터를 한꺼번에 테이블에 뿌려줍니다.
 			@Override
@@ -306,8 +306,8 @@ public class MyPagePanel extends JPanel{
 		};
 		
 		
-		LibraryMain.bwModel.setNumbering(true);
-        this.borrowTbl.setModel(LibraryMain.bwModel);
+		CommonConstants.bwModel.setNumbering(true);
+        this.borrowTbl.setModel(CommonConstants.bwModel);
 	}
 	
 	/**
@@ -316,14 +316,14 @@ public class MyPagePanel extends JPanel{
 	private void searchBorrow() {
 		
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
-			LibraryMain.bwModel.removeAll();
+			CommonConstants.bwModel.removeAll();
 			for (BorrowVO bv : AddBorrowList.borrowList) {
 				if (bv.getBookNm().contains(schFd.getText())) {
-					LibraryMain.bwModel.addData(bv);
+					CommonConstants.bwModel.addData(bv);
 					System.err.println("여기는 searchBorrow. for문 안. 검색결과 bv는? --->" + bv);
 				}
 			}
-			this.borrowTbl.setModel(LibraryMain.bwModel);
+			this.borrowTbl.setModel(CommonConstants.bwModel);
 
 		} else {
 			JOptionPane.showMessageDialog(pnBody, "검색어를 입력해주세요.");
@@ -331,9 +331,9 @@ public class MyPagePanel extends JPanel{
 	}
 	
 	private void repaintTable() {
-		LibraryMain.bwModel.removeAll();
-		LibraryMain.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
-		LibraryMain.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+		CommonConstants.bwModel.removeAll();
+		CommonConstants.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
+		CommonConstants.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
 }

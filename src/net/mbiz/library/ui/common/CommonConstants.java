@@ -34,4 +34,7 @@ public class CommonConstants {
 	public static final Font FONT_TITLE_25 = new Font("예스 고딕 레귤러", Font.BOLD, 25);
 	public static final Font FONT_TITLE_22 = new Font("예스 고딕 레귤러", Font.BOLD, 22);
 	
+	/*테이블*/
+	public static BeanTableModel<BookVO> bkModel;
+	public static BeanTableModel<BorrowVO> bwModel;
 }

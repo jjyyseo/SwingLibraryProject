@@ -54,8 +54,8 @@ public class BookListTablePanel extends JPanel {
 	}
 
 	private void initialize() {
-		LibraryMain.bkModel.addDataList((ArrayList) AddBookList.bookList); // 리스트로 한꺼번에 집어넣기 가능
-		LibraryMain.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+		CommonConstants.bkModel.addDataList((ArrayList) AddBookList.bookList); // 리스트로 한꺼번에 집어넣기 가능
+		CommonConstants.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
 
@@ -81,7 +81,7 @@ public class BookListTablePanel extends JPanel {
 		this.pnTbl = new JPanel();
 		pnTbl.setLayout(new BorderLayout());
 		pnTbl.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-		this.bookTbl = new JTable(LibraryMain.bkModel); // 데이터가 들어가는 테이블
+		this.bookTbl = new JTable(CommonConstants.bkModel); // 데이터가 들어가는 테이블
 		bookTbl.setRowHeight(32);
 		bookTbl.setFont(CommonConstants.FONT_BASE_17);
 
@@ -180,8 +180,8 @@ public class BookListTablePanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 테이블 리셋
-				LibraryMain.bkModel.addDataList((ArrayList) AddBookList.bookList); 
-				LibraryMain.bkModel.fireTableDataChanged();
+				CommonConstants.bkModel.addDataList((ArrayList) AddBookList.bookList); 
+				CommonConstants.bkModel.fireTableDataChanged();
 			}
 		});
 		
@@ -214,7 +214,7 @@ public class BookListTablePanel extends JPanel {
 					// 도서 상세청보 창 생성
 					BookDetailFrame detailFrame = new BookDetailFrame(AddBookList.bookList.get(idx));
 					detailFrame.setLocationCenter();
-					LibraryMain.bkModel.fireTableDataChanged();
+					CommonConstants.bkModel.fireTableDataChanged();
 					bookTbl.repaint();
 					//TODO 똑같이 마이페이지의 테이블 RepaintTable을 호출 
 					
@@ -234,7 +234,7 @@ public class BookListTablePanel extends JPanel {
 		String topHeader[] = { "도서명", "저자", "출판사", "출간일", "카테고리", "대출상태" };	// 헤더 setting
 		int[] col = { 100, 100, 100, 100, 100, 100 };								// 열 넓이
 		
-		LibraryMain.bkModel = new BeanTableModel<BookVO>(topHeader, col) {
+		CommonConstants.bkModel = new BeanTableModel<BookVO>(topHeader, col) {
 			// 객체의 컬럼 별 데이터를 한꺼번에 테이블에 뿌려준다.
 			@Override 
 			public Object getValueByColumIndex(int row, int col) {
@@ -268,9 +268,9 @@ public class BookListTablePanel extends JPanel {
 				// 체크박스 처럼 체크한 위치의 값을 받고 싶을 때 사용.
 			}
 		};
-		LibraryMain.bkModel.setNumbering(true); // 넘버링 여부 O
+		CommonConstants.bkModel.setNumbering(true); // 넘버링 여부 O
 		
-		this.bookTbl.setModel(LibraryMain.bkModel);
+		this.bookTbl.setModel(CommonConstants.bkModel);
 	}
 	
 	/**
@@ -279,13 +279,13 @@ public class BookListTablePanel extends JPanel {
 	private void searchBookList() {
 		
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
-			LibraryMain.bkModel.removeAll();
+			CommonConstants.bkModel.removeAll();
 			for (BookVO bv : AddBookList.bookList) {
 				if (bv.getBookNm().contains(schFd.getText())) {
-					LibraryMain.bkModel.addData(bv);
+					CommonConstants.bkModel.addData(bv);
 				}
 			}
-			this.bookTbl.setModel(LibraryMain.bkModel);
+			this.bookTbl.setModel(CommonConstants.bkModel);
 			
 		} else {
 			JOptionPane.showMessageDialog(pnBody, "검색어를 입력해주세요");
