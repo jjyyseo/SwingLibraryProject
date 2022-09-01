@@ -47,6 +47,10 @@ public class MyCalenderDialog extends JDialog implements ActionListener, MouseLi
 	private DefaultComboBoxModel<Integer> yearModel;
 	private DefaultComboBoxModel<Integer> monthModel;
 	
+	private String selectDay = "";
+	private String selectMonth = "";
+	private String selectYear = "";
+	
 	Calendar now = null;
 	int year = 0;
 	int month = 0;
@@ -163,6 +167,26 @@ public class MyCalenderDialog extends JDialog implements ActionListener, MouseLi
 		nextBtn.addActionListener(this);
 		cbbYear.addActionListener(this);
 		cbbMonth.addActionListener(this);
+		
+		
+		/*콤보박스 선택 이벤트*/
+		cbbMonth.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				selectMonth = cbbMonth.getSelectedItem().toString();
+				System.out.println("콤보박스 선택!!! " + selectMonth);
+			}
+		});
+		
+		cbbYear.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				selectYear = cbbYear.getSelectedItem().toString();
+				System.out.println("콤보박스 선택!!! " + selectYear);
+			}
+		});
 	}
 
 	/**
@@ -294,20 +318,35 @@ public class MyCalenderDialog extends JDialog implements ActionListener, MouseLi
 	}
 
 	
-	private String getSelectedDate( ) {
-		// 콤보박스의 값을 받아서 문자열 더하기 해서 날짜 반환하기.
-		// 선택된 값이 없을 경우 현재 일자이므로 임의로 데이터 넣기.
-		return "";
+	/**
+	 * 선택한 날짜를 문자열로 반환하는 메서드.
+	 * @param day
+	 * @return
+	 */
+	private String getSelectedDate(String day) {
+		
+		if (selectYear.equals("") || selectYear.isEmpty()) {
+			selectYear = Integer.toString(year);
+		}
+		if (selectMonth.equals("") || selectMonth.isEmpty()) {
+			selectMonth = Integer.toString(month);
+		}
+		String rslt = selectYear + "년 "+ selectMonth + "월 " + day + "일";
+
+		System.out.println("여기는 getSelectedDate ----> 선택한 날짜는?" + rslt);
+		return rslt;
 	}
 	
 	
 	
-	
+
 //---------------------------------- Override
 	public void mouseClicked(MouseEvent e) {
-		String selectDay = "";
 		JLabel eventLbl = (JLabel) e.getSource(); 
+		eventLbl.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		selectDay = eventLbl.getText();
+		System.out.println(selectDay);
+		getSelectedDate(selectDay);
 		
 	}
 

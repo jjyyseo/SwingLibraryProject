@@ -55,6 +55,7 @@ public class BookRegistDialog extends JDialog {
 	private JTextField tfPublisher;
 	private JComboBox<String> cbbCategory;
 	private JTextField tfIsbn;
+	private JTextField tfDate;
 	private JPanel pnReleaseDate;
 	private JButton calenderBtn;
 
@@ -78,14 +79,14 @@ public class BookRegistDialog extends JDialog {
 	 */
 	private void jbInit() {
 		setLocationRelativeTo(null);
-		setLayout(new BorderLayout());
+		getContentPane().setLayout(new BorderLayout());
 		setSize((new Dimension(600,700)));
 		setModal(true); // 배경 클릭 ㄴㄴ
 		
-		this.add(Box.createHorizontalStrut(20), BorderLayout.WEST);
-		this.add(Box.createHorizontalStrut(20), BorderLayout.EAST);
-		this.add(Box.createVerticalStrut(20), BorderLayout.NORTH);
-		this.add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
+		getContentPane().add(Box.createHorizontalStrut(20), BorderLayout.WEST);
+		getContentPane().add(Box.createHorizontalStrut(20), BorderLayout.EAST);
+		getContentPane().add(Box.createVerticalStrut(20), BorderLayout.NORTH);
+		getContentPane().add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
 		
 		/*pnMain - pnTop(NORTH),pnBottom(SOUTH)*/
 		this.pnMain = new JPanel();
@@ -166,11 +167,9 @@ public class BookRegistDialog extends JDialog {
 		this.tfIsbn = new JTextField();
 		this.pnReleaseDate= new JPanel();
 		pnReleaseDate.setLayout(new BorderLayout());;
-		pnReleaseDate.setBackground(Color.black);
-		
 		
 		this.calenderBtn = new JButton();
-		calenderBtn.setPreferredSize(new Dimension(45,0));
+		calenderBtn.setPreferredSize(new Dimension(45,35));
 		
 		this.lblBookNm = new JLabel("도서명");
 		this.lblBookWtr = new JLabel("저자");
@@ -185,7 +184,12 @@ public class BookRegistDialog extends JDialog {
 		lblCategory.setFont(CommonConstants.FONT_BASE_17);
 		lblReleaseDate.setFont(CommonConstants.FONT_BASE_17);
 		
+		this.tfDate = new JTextField();
+		tfDate.setPreferredSize(new Dimension(215,0));
+
 		pnReleaseDate.add(calenderBtn, BorderLayout.EAST);
+		pnReleaseDate.add(tfDate, BorderLayout.WEST);
+		
 		pnCntEast.add(tfBookNm);
 		pnCntEast.add(tfBookWtr);
 		pnCntEast.add(tfPublisher);
@@ -199,8 +203,6 @@ public class BookRegistDialog extends JDialog {
 		pnCntWest.add(lblIsbn);
 		pnCntWest.add(lblCategory);
 		pnCntWest.add(lblReleaseDate);
-		
-		
 		
 		
 		
@@ -237,11 +239,11 @@ public class BookRegistDialog extends JDialog {
 		pnTop.add(pnWest, BorderLayout.WEST);
 		pnTop.add(pnEast, BorderLayout.EAST);
 		pnBottom.add(pnIntro, BorderLayout.NORTH);
-		pnBottom.add(pnFooter, BorderLayout.CENTER);
+		pnBottom.add(pnFooter, BorderLayout.SOUTH);
 		
 		pnMain.add(pnTop, BorderLayout.NORTH);
 		pnMain.add(pnBottom, BorderLayout.SOUTH);
-		this.add(pnMain, BorderLayout.CENTER);
+		getContentPane().add(pnMain, BorderLayout.CENTER);
 		
 		
 		
@@ -252,8 +254,6 @@ public class BookRegistDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				category = cbbCategory.getSelectedItem().toString();
-
-				
 				System.out.println("콤보박스 선택!!! " + category);
 			}
 		});
