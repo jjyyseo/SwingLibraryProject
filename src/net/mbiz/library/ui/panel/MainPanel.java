@@ -46,14 +46,13 @@ public class MainPanel extends JPanel{
 		pnCard.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
 		pnCard.setLayout(cards);
 		
-		BookListCardPanel pnBody = new BookListCardPanel(this);
+		BookListTablePanel pnBody = new BookListTablePanel(this);
 		pnCard.add(pnBody);
 
 		pnCard.add("card", new BookListCardPanel(this));
 		pnCard.add("table", new BookListTablePanel(this));
 		
 		this.add(pnCard, BorderLayout.CENTER);
-		
 		
 	}
 
@@ -82,7 +81,6 @@ public class MainPanel extends JPanel{
 		btnSet.add(cardBtn, BorderLayout.WEST);
 		btnSet.add(tblBtn, BorderLayout.EAST);
 		pnTap.add(btnSet, BorderLayout.EAST);
-		
 
 		this.add(pnTap, BorderLayout.NORTH);
 		
