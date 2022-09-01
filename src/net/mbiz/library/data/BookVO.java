@@ -17,7 +17,7 @@ public class BookVO {
 	private String publisher;       /* 출판사*/
 	private Date releaseDate;		/* 출간일*/
 	private String category;        /* 카테고리*/
-	private int isBorrowed;         /* 대출중=0 대출가능=1*/
+	private int isBorrowed;         /* 대출가능=0 대출중=1*/
 	private long bookIsbn;			/* 도서 isbn*/
 	private String booksub;			/* 도서 소개글*/
 	

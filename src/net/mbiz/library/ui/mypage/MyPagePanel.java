@@ -9,11 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -273,7 +269,7 @@ public class MyPagePanel extends JPanel{
 				System.err.println("삭제 버튼 클릭." );
 				
 				CommonConstants.bwModel.remove(seletedVO);
-				AddBorrowList.borrowList.remove(AddBorrowList.borrowList.get(borrowTbl.getSelectedRow()));
+				AddBorrowList.borrowList.remove(seletedVO);
 				
 				CommonConstants.repaintBorrowTable();
 			}
@@ -369,7 +365,7 @@ public class MyPagePanel extends JPanel{
 	}
 	
 	/**
-	 * 대출 기록을 삭제하는 메서드
+	 * 대출 기록을 검색하는 메서드
 	 */
 	private void searchBorrow() {
 		

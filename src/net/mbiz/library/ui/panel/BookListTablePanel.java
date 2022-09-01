@@ -21,14 +21,10 @@ import javax.swing.JTextField;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.AddBookList;
-import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
-import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.dialog.BookDetailDialog;
 import net.mbiz.library.ui.dialog.BookRegistDialog;
-import net.mbiz.library.ui.main.LibraryMain;
-import net.mbiz.library.ui.mypage.MyPagePanel;
 
 public class BookListTablePanel extends JPanel {
 
@@ -208,7 +204,7 @@ public class BookListTablePanel extends JPanel {
 		
 		
 		
-		// 검색 이벤트
+		/*도서 검색*/
 		schBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -217,24 +213,43 @@ public class BookListTablePanel extends JPanel {
 			}
 		});
 
-		// 전체보기
+		/*전체보기*/
 		pvsBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 테이블 리셋
-				CommonConstants.bkModel.addDataList((ArrayList) AddBookList.bookList); 
-				CommonConstants.bkModel.fireTableDataChanged();
+				CommonConstants.repaintBookTable();
 			}
 		});
 		
+		/*도서 추가하기*/
 		registBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				BookRegistDialog registDialog = new BookRegistDialog();
 				registDialog.setLocationCenter();
+				
+				// Dialog 종료 후 repaint
+				CommonConstants.repaintBookTable();
+				bookTbl.removeAll();
+				bookTbl.setModel(CommonConstants.bkModel);
 			}
 		});
 		
+		/*도서 삭제하기*/
+		deleteBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BookVO seletedVO = AddBookList.bookList.get(bookTbl.getSelectedRow());
+				System.err.println("삭제 버튼 클릭." );
+				
+				CommonConstants.bkModel.remove(seletedVO);
+				AddBookList.bookList.remove(seletedVO);
+				
+				CommonConstants.repaintBookTable();
+				bookTbl.removeAll();
+				bookTbl.setModel(CommonConstants.bkModel);
+			}
+		});
 		
 		bookTbl.addMouseListener(new MouseListener() {
 			
@@ -314,6 +329,7 @@ public class BookListTablePanel extends JPanel {
 		CommonConstants.bkModel.setNumbering(true); // 넘버링 여부 O
 		
 		this.bookTbl.setModel(CommonConstants.bkModel);
+		CommonConstants.bkModel.addTableModelListener(bookTbl);
 	}
 	
 	/**

@@ -1,12 +1,9 @@
 package net.mbiz.library.ui.common;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import javax.swing.JTable;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.AddBookList;
@@ -25,7 +22,6 @@ public class CommonConstants {
 	public static final Color COLOR_CONTENT_BACKGROUND = new Color(200,200,200);
 	public static final Color COLOR_MENUBAR_BACKGROUND = new Color(051,051,120);
 	public static final Color COLOR_LABEL_BACKGROUND = new Color(255,255,154);
-//	public static final Color COLOR_STATE_lINE = new Color(152,163,230);
 	
 	/*폰트 색상*/
 	public static final Color COLOR_MENU_FONT = new Color(216,216,230);
@@ -52,6 +48,7 @@ public class CommonConstants {
 		
 		CommonConstants.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
 		CommonConstants.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+		
 	}
 	/*전체 도서 테이블 다시 그리는 메서드*/
 	public static void repaintBookTable() {

@@ -1,18 +1,28 @@
 package net.mbiz.library.ui.dialog;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
+import net.mbiz.library.data.AddBookList;
+import net.mbiz.library.data.BookVO;
 import net.mbiz.library.ui.common.CommonConstants;
 
 public class BookRegistDialog extends JDialog {
@@ -25,13 +35,30 @@ public class BookRegistDialog extends JDialog {
 	private JPanel pnEast;        // in pnTop
 	private JPanel pnImg;         // in pnWest
 	private JPanel pnAttach;      // in pnWest
-	private JPanel pnTitle;       // in pnEast
 	private JPanel pnCnt;         // in pnEast
-	private JPanel pnFooter;      // in pnEast
+	private JPanel pnCntWest;         // in pnEast
+	private JPanel pnCntEast;         // in pnEast
 	private JPanel pnIntro;       // in pnBottom
+	private JPanel pnFooter;      // in pnBottom
+	
+	private JButton attachBtn;	  // in pnAttach
+	private JButton registBtn;	  // in pnFooter
 	
 	private JTextArea txtArea;    // in pnIntro
-	private JButton attachBtn;	  // in pnAttach
+	
+	private JTextField tfBookNm;
+	private JTextField tfBookWtr;
+	private JTextField tfPublisher;
+	private JTextField tfCategory;
+	private JTextField tfReleaseDate;
+	private JTextField tfIsbn;
+
+	private JLabel lblBookNm;
+	private JLabel lblBookWtr;
+	private JLabel lblPublisher;
+	private JLabel lblCategory;
+	private JLabel lblReleaseDate;
+	private JLabel lblIsbn;
 	
 	public BookRegistDialog(){
 		setTitle("도서 정보 추가하기");
@@ -55,24 +82,18 @@ public class BookRegistDialog extends JDialog {
 		/*pnMain - pnTop(NORTH),pnBottom(SOUTH)*/
 		this.pnMain = new JPanel();
 		pnMain.setLayout(new BorderLayout());
-		pnMain.setPreferredSize(new Dimension(560,660));
-		pnMain.setBackground(Color.blue);
+		pnMain.setPreferredSize(new Dimension(550,660));
 
 		//NORTH
 		this.pnTop = new JPanel();
 		pnTop.setLayout(new BorderLayout());
-		pnTop.setPreferredSize(new Dimension(0,363));
+		pnTop.setPreferredSize(new Dimension(0,318));
 		pnTop.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
-		pnTop.setBackground(Color.green);
 		//SOUTH
 		this.pnBottom = new JPanel();
 		pnBottom.setLayout(new BorderLayout());
-		pnBottom.setPreferredSize(new Dimension(560,260));
-		pnBottom.setBackground(Color.magenta);
-		pnBottom.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
-		pnBottom.add(Box.createHorizontalStrut(10), BorderLayout.EAST);
+		pnBottom.setPreferredSize(new Dimension(0,305));
 		pnBottom.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-		pnBottom.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
 		
 		
 		
@@ -80,74 +101,188 @@ public class BookRegistDialog extends JDialog {
 		//WEST
 		this.pnWest = new JPanel();
 		pnWest.setLayout(new BorderLayout());
-		pnWest.setPreferredSize(new Dimension(215,0));
-		pnWest.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
+		pnWest.setPreferredSize(new Dimension(180,0));
+		pnWest.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		//EAST
 		this.pnEast = new JPanel();
 		pnEast.setLayout(new BorderLayout());
-		pnEast.setPreferredSize(new Dimension(332,0));
-		pnEast.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
-		pnEast.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
+		pnEast.setPreferredSize(new Dimension(367,0));
+		pnEast.setBorder(BorderFactory.createEmptyBorder(0,0,0,5));
+		
+
 		
 		/*pnWest - pnImg(CENTER), pnBorrow(SOUTH)*/
 		this.pnImg = new JPanel();
-		pnImg.setPreferredSize(new Dimension(205,230));
-		pnImg.setBackground(Color.magenta);
+		pnImg.setPreferredSize(new Dimension(185,260));
+		pnImg.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		pnWest.add(pnImg, BorderLayout.CENTER);
-		
 		this.pnAttach = new JPanel();
 		pnAttach.setLayout(new BorderLayout());
-		pnAttach.setPreferredSize(new Dimension(205,100));
-		pnAttach.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
+		pnAttach.setPreferredSize(new Dimension(185,70));
 		pnAttach.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
 		pnAttach.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);		
-		
 		this.attachBtn = new JButton("사진 첨부");
+		attachBtn.setFont(CommonConstants.FONT_BASE_17);
+
 		pnAttach.add(attachBtn, BorderLayout.CENTER);
 		pnWest.add(pnAttach, BorderLayout.SOUTH);
 		
 		
 		
-		/*pnEast - pnTitle(NORTH), pnCnt(CENTER), pnFooter(SOUTH)*/
-		//NORTH
-		this.pnTitle = new JPanel();
-		pnTitle.setLayout(new BorderLayout());
-		pnTitle.setPreferredSize(new Dimension(0, 130));
-		pnTitle.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
-		pnTitle.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
+		/*pnEast - pnCnt(CENTER)*/
 		//CENTER
 		this.pnCnt = new JPanel();
-		pnCnt.setLayout(new GridLayout(2,2, 10,10));
-		pnCnt.setPreferredSize(new Dimension(0, 173));
-		pnCnt.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-		pnCnt.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
+		pnCnt.setLayout(new BorderLayout());
+		pnCnt.setPreferredSize(new Dimension(0, 163));
+		this.pnCntWest = new JPanel();
+		pnCntWest.setLayout(new GridLayout(6,1));
+		pnCntWest.setPreferredSize(new Dimension(80, 0));
+		pnCntWest.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
+		this.pnCntEast = new JPanel();
+		pnCntEast.setLayout(new GridLayout(6,1, 5 ,10));
+		pnCntEast.setPreferredSize(new Dimension(283, 0));
+		pnCntEast.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
+		pnCnt.add(pnCntEast, BorderLayout.EAST);
+		pnCnt.add(pnCntWest, BorderLayout.WEST);
+		
+		this.tfBookNm = new JTextField();
+		this.tfBookWtr = new JTextField();
+		this.tfPublisher = new JTextField();
+		this.tfReleaseDate= new JTextField();
+		this.tfIsbn = new JTextField();
+		this.tfCategory = new JTextField();
+		
+		this.lblBookNm = new JLabel("도서명");
+		this.lblBookWtr = new JLabel("저자");
+		this.lblPublisher = new JLabel("출판사");
+		this.lblReleaseDate = new JLabel("출간일");
+		this.lblIsbn = new JLabel("ISBN");
+		this.lblCategory = new JLabel("카테고리");
+		lblBookNm.setFont(CommonConstants.FONT_BASE_17);
+		lblBookWtr.setFont(CommonConstants.FONT_BASE_17); 
+		lblPublisher.setFont(CommonConstants.FONT_BASE_17);
+		lblReleaseDate.setFont(CommonConstants.FONT_BASE_17);
+		lblIsbn.setFont(CommonConstants.FONT_BASE_17);
+		lblCategory.setFont(CommonConstants.FONT_BASE_17);
+		
+		pnCntEast.add(tfBookNm);
+		pnCntEast.add(tfBookWtr);
+		pnCntEast.add(tfPublisher);
+		pnCntEast.add(tfReleaseDate);
+		pnCntEast.add(tfIsbn);
+		pnCntEast.add(tfCategory);
+		
+		pnCntWest.add(lblBookNm);
+		pnCntWest.add(lblBookWtr);
+		pnCntWest.add(lblPublisher);
+		pnCntWest.add(lblReleaseDate);
+		pnCntWest.add(lblIsbn);
+		pnCntWest.add(lblCategory);
 		
 		
-		/*pnBottom - pnIntro(CENTER)*/
+		
+		
+		/*pnBottom - pnIntro(NORTH), pnFooter(SOUTH)*/
+		//NORTH
 		this.pnIntro = new JPanel();
 		pnIntro.setLayout(new BorderLayout());
-		pnIntro.setBackground(Color.GREEN);
-		
+		pnIntro.setPreferredSize(new Dimension(0,240));
+		pnIntro.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
 		this.txtArea = new JTextArea();
-		txtArea.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
-		txtArea.setEditable(false);
 		txtArea.setLineWrap(true); 
+		txtArea.setPreferredSize(new Dimension(0,230));
 		txtArea.setFont(CommonConstants.FONT_BASE_17);
+		
 		JScrollPane srlPn = new JScrollPane(txtArea);
 		pnIntro.add(srlPn, BorderLayout.CENTER);
 		
+		//SOUTH		
+		this.pnFooter = new JPanel();
+		pnFooter.setLayout(new FlowLayout());
+		pnFooter.setPreferredSize(new Dimension(0,50));
+		pnFooter.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
+		this.registBtn = new JButton("등록");
+		registBtn.setPreferredSize(new Dimension(100,50));
+		registBtn.setFont(CommonConstants.FONT_BASE_17);
+		pnFooter.add(registBtn);
 		
-		pnEast.add(pnTitle, BorderLayout.NORTH);
+		
+		
+		
 		pnEast.add(pnCnt, BorderLayout.CENTER);
 
 		pnTop.add(pnWest, BorderLayout.WEST);
 		pnTop.add(pnEast, BorderLayout.EAST);
-		pnBottom.add(pnIntro, BorderLayout.CENTER);
+		pnBottom.add(pnIntro, BorderLayout.NORTH);
+		pnBottom.add(pnFooter, BorderLayout.CENTER);
 		
 		pnMain.add(pnTop, BorderLayout.NORTH);
 		pnMain.add(pnBottom, BorderLayout.SOUTH);
 		this.add(pnMain, BorderLayout.CENTER);
+		
+		
+		
+		// 이벤트
+		registBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 어느 하나 빈칸이 있는 경우
+				if( tfBookNm.getText().isEmpty() || tfBookWtr.getText().isEmpty()
+						|| tfPublisher.getText().isEmpty() || tfCategory.getText().isEmpty()
+						|| tfReleaseDate.getText().isEmpty() || tfIsbn.getText().isEmpty()
+						||txtArea.getText().isEmpty() ) {
+					
+					JOptionPane.showMessageDialog(null, "정보가 모두 입력되지 않았습니다. 모두 입력 해주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
+
+				} else {
+
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+					BookVO vo = new BookVO();
+					
+					int bkNo = AddBookList.bookList.size() + 1;
+					String bkNm = tfBookNm.getText();
+					String bkWtr = tfBookWtr.getText();
+					String publisher = tfPublisher.getText();
+					String releaseDate = tfReleaseDate.getText();
+					String category = tfCategory.getText();
+					String bookIsbn = tfIsbn.getText();
+					String booksub = txtArea.getText();
+					
+					vo.setBookNo(bkNo);
+					vo.setBookNm(bkNm);
+					vo.setBookWtr(bkWtr);
+					vo.setPublisher(publisher);
+					try {
+						vo.setReleaseDate(sdf.parse(releaseDate));
+					} catch (ParseException e1) {
+						e1.printStackTrace();
+						System.err.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 등록 중 출간일 파싱에러 발생!");
+					}
+					vo.setBookIsbn(Long.parseLong(bookIsbn));
+					vo.setCategory(category);
+					vo.setBooksub(booksub);
+					vo.setRegistDate(new Date());
+					
+					AddBookList.bookList.add(vo);
+//					System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 정보가 등록되었습니다. /n 등록된 도서 정보 ----> " + AddBookList.bookList.get(bkNo) );
+					
+					
+					if (AddBookList.bookList.size() == bkNo) {
+						JOptionPane.showMessageDialog(null, bkNm + "(이)가 등록되었습니다.", bkNm, JOptionPane.INFORMATION_MESSAGE);
+						System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 리스트 체크" + AddBookList.bookList );
+						dispose();
+					} else {
+						JOptionPane.showMessageDialog(null, "도서 추가 실패", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
+						System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 추가 실패. " + AddBookList.bookList );
+					}
+					
+				}
+			}
+		});
+		
+		
 		
 	}
 	
