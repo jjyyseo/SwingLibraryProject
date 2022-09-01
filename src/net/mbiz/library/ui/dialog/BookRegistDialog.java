@@ -12,7 +12,9 @@ import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -36,8 +38,8 @@ public class BookRegistDialog extends JDialog {
 	private JPanel pnImg;         // in pnWest
 	private JPanel pnAttach;      // in pnWest
 	private JPanel pnCnt;         // in pnEast
-	private JPanel pnCntWest;         // in pnEast
-	private JPanel pnCntEast;         // in pnEast
+	private JPanel pnCntWest;     // in pnEast
+	private JPanel pnCntEast;     // in pnEast
 	private JPanel pnIntro;       // in pnBottom
 	private JPanel pnFooter;      // in pnBottom
 	
@@ -46,10 +48,11 @@ public class BookRegistDialog extends JDialog {
 	
 	private JTextArea txtArea;    // in pnIntro
 	
+	// 도서 정보 입력란
 	private JTextField tfBookNm;
 	private JTextField tfBookWtr;
 	private JTextField tfPublisher;
-	private JTextField tfCategory;
+	private JComboBox<String> cbbCategory;
 	private JTextField tfReleaseDate;
 	private JTextField tfIsbn;
 
@@ -59,6 +62,9 @@ public class BookRegistDialog extends JDialog {
 	private JLabel lblCategory;
 	private JLabel lblReleaseDate;
 	private JLabel lblIsbn;
+	
+	private String category = "";
+	
 	
 	public BookRegistDialog(){
 		setTitle("도서 정보 추가하기");
@@ -151,7 +157,6 @@ public class BookRegistDialog extends JDialog {
 		this.tfPublisher = new JTextField();
 		this.tfReleaseDate= new JTextField();
 		this.tfIsbn = new JTextField();
-		this.tfCategory = new JTextField();
 		
 		this.lblBookNm = new JLabel("도서명");
 		this.lblBookWtr = new JLabel("저자");
@@ -171,7 +176,6 @@ public class BookRegistDialog extends JDialog {
 		pnCntEast.add(tfPublisher);
 		pnCntEast.add(tfReleaseDate);
 		pnCntEast.add(tfIsbn);
-		pnCntEast.add(tfCategory);
 		
 		pnCntWest.add(lblBookNm);
 		pnCntWest.add(lblBookWtr);
@@ -179,6 +183,14 @@ public class BookRegistDialog extends JDialog {
 		pnCntWest.add(lblReleaseDate);
 		pnCntWest.add(lblIsbn);
 		pnCntWest.add(lblCategory);
+		
+		
+		
+		JComboBox<String> cbbCategory = new JComboBox<>();
+		cbbCategory.setModel(new DefaultComboBoxModel<>(new String[] {"소설","어린이","경제경영","자기계발","자연과락"}));
+		cbbCategory.setFont(CommonConstants.FONT_BASE_15);
+		pnCntEast.add(cbbCategory);
+		
 		
 		
 		
@@ -223,62 +235,26 @@ public class BookRegistDialog extends JDialog {
 		
 		
 		
-		// 이벤트
+		
+		
+		cbbCategory.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				category = cbbCategory.getSelectedItem().toString();
+
+				
+				System.out.println("콤보박스 선택!!! " + category);
+			}
+		});
+		
+		
+		/*도서 정보 insert*/
 		registBtn.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// 어느 하나 빈칸이 있는 경우
-				if( tfBookNm.getText().isEmpty() || tfBookWtr.getText().isEmpty()
-						|| tfPublisher.getText().isEmpty() || tfCategory.getText().isEmpty()
-						|| tfReleaseDate.getText().isEmpty() || tfIsbn.getText().isEmpty()
-						||txtArea.getText().isEmpty() ) {
-					
-					JOptionPane.showMessageDialog(null, "정보가 모두 입력되지 않았습니다. 모두 입력 해주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
-
-				} else {
-
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
-					BookVO vo = new BookVO();
-					
-					int bkNo = AddBookList.bookList.size() + 1;
-					String bkNm = tfBookNm.getText();
-					String bkWtr = tfBookWtr.getText();
-					String publisher = tfPublisher.getText();
-					String releaseDate = tfReleaseDate.getText();
-					String category = tfCategory.getText();
-					String bookIsbn = tfIsbn.getText();
-					String booksub = txtArea.getText();
-					
-					vo.setBookNo(bkNo);
-					vo.setBookNm(bkNm);
-					vo.setBookWtr(bkWtr);
-					vo.setPublisher(publisher);
-					try {
-						vo.setReleaseDate(sdf.parse(releaseDate));
-					} catch (ParseException e1) {
-						e1.printStackTrace();
-						System.err.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 등록 중 출간일 파싱에러 발생!");
-					}
-					vo.setBookIsbn(Long.parseLong(bookIsbn));
-					vo.setCategory(category);
-					vo.setBooksub(booksub);
-					vo.setRegistDate(new Date());
-					
-					AddBookList.bookList.add(vo);
-//					System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 정보가 등록되었습니다. /n 등록된 도서 정보 ----> " + AddBookList.bookList.get(bkNo) );
-					
-					
-					if (AddBookList.bookList.size() == bkNo) {
-						JOptionPane.showMessageDialog(null, bkNm + "(이)가 등록되었습니다.", bkNm, JOptionPane.INFORMATION_MESSAGE);
-						System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 리스트 체크" + AddBookList.bookList );
-						dispose();
-					} else {
-						JOptionPane.showMessageDialog(null, "도서 추가 실패", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
-						System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 추가 실패. " + AddBookList.bookList );
-					}
-					
-				}
+				insertBookVO();
 			}
 		});
 		
@@ -291,5 +267,63 @@ public class BookRegistDialog extends JDialog {
 		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
 		this.setVisible(true);
 	}
+	
+	private void insertBookVO(){
+		if (category.equals("") || category.isEmpty() ) {
+			category = "소설" ;
+		}
+		System.out.println("여기는 등록 " + category);
+		
+		
+		// 어느 하나 빈칸이 있는 경우
+		if( tfBookNm.getText().isEmpty() || tfBookWtr.getText().isEmpty()
+				|| tfPublisher.getText().isEmpty() || category.equals("") || category.isEmpty()
+				|| tfReleaseDate.getText().isEmpty() || tfIsbn.getText().isEmpty()
+				||txtArea.getText().isEmpty() ) {
+			
+			JOptionPane.showMessageDialog(null, "정보가 모두 입력되지 않았습니다. 모두 입력 해주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
+
+		} else {
+
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+			BookVO vo = new BookVO();
+			
+			int bkNo = AddBookList.bookList.size() + 1;
+			String bkNm = tfBookNm.getText();
+			String bkWtr = tfBookWtr.getText();
+			String publisher = tfPublisher.getText();
+			String releaseDate = tfReleaseDate.getText();
+			String bookIsbn = tfIsbn.getText();
+			String booksub = txtArea.getText();
+			
+			vo.setBookNo(bkNo);
+			vo.setBookNm(bkNm);
+			vo.setBookWtr(bkWtr);
+			vo.setPublisher(publisher);
+			try {
+				vo.setReleaseDate(sdf.parse(releaseDate));
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+				System.err.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 등록 중 출간일 파싱에러 발생!");
+			}
+			vo.setBookIsbn(Long.parseLong(bookIsbn));
+			vo.setCategory(category);
+			vo.setBooksub(booksub);
+			vo.setRegistDate(new Date());
+			
+			AddBookList.bookList.add(vo);
+			
+			
+			
+			if (AddBookList.bookList.size() == bkNo) {
+				JOptionPane.showMessageDialog(null, bkNm + "(이)가 등록되었습니다.", bkNm, JOptionPane.INFORMATION_MESSAGE);
+				dispose();
+				System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 정보가 등록되었습니다. /n 등록된 도서 정보 ----> " + AddBookList.bookList.get(AddBookList.bookList.size()-1));
+			} else {
+				JOptionPane.showMessageDialog(null, "도서 추가 실패", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+		}
+	};
 
 }

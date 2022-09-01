@@ -288,8 +288,9 @@ public class BookDetailDialog extends JDialog{
 		
 		// bookList update
 		int idx = p_bv.getBookNo()-1; //도서번호 - 1 = 인덱스
+		System.out.println("도서리스트의 인덱스" + idx);
+		System.out.println("도서리스트의 사이즈" + AddBookList.bookList.size());
 		AddBookList.bookList.get(idx).setIsBorrowed(1);
-		
 	}	
 
 
