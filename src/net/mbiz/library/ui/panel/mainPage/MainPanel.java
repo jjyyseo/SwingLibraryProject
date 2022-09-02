@@ -14,11 +14,8 @@ import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.main.LibraryMain;
 
 
-/*
- * 메인화면 패널.
- * 검색 패널, 스크롤페인 추가예정@!!
- */
-public class MainPanel extends JPanel{
+
+public class MainPanel extends JPanel implements ActionListener{ 
 	
 	private JPanel pnCard;
 	private JPanel pnTap;
@@ -40,41 +37,23 @@ public class MainPanel extends JPanel{
 		this.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 		
-		printTap();		//NORTH
-
-		this.pnCard = new JPanel();
-		pnCard.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
-		pnCard.setLayout(cards);
 		
-		BookListTablePanel pnBody = new BookListTablePanel(this);
-		pnCard.add(pnBody);
-
-		pnCard.add("card", new BookListCardPanel(this));
-		pnCard.add("table", new BookListTablePanel(this));
-		
-		this.add(pnCard, BorderLayout.CENTER);
-		
-	}
-
-	/*
-	 * MainPanel의 tap을 print하는 메서드
-	 */
-	public void printTap() {
-
+		/*NORTH : printTap*/
 		this.pnTap = new JPanel();
 		pnTap.setLayout(new BorderLayout());
 		pnTap.setPreferredSize(new Dimension(60,50));
 		pnTap.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-		
-		// 카드로 보기, 테이블로 보기
+			
 		this.btnSet = new JPanel();
 		btnSet.setLayout(new BorderLayout());
 		btnSet.setPreferredSize(new Dimension(140,50));
+	
 		this.cardBtn = new JButton("card");
 		cardBtn.setPreferredSize(new Dimension(70, 0));
 		cardBtn.setFont(CommonConstants.FONT_BASE_15);
 		cardBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		cardBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
+		
 		this.tblBtn = new JButton("table");
 		tblBtn.setPreferredSize(new Dimension(70, 0));
 		tblBtn.setFont(CommonConstants.FONT_BASE_15);
@@ -85,33 +64,53 @@ public class MainPanel extends JPanel{
 		btnSet.add(cardBtn, BorderLayout.CENTER);
 		pnTap.add(btnSet, BorderLayout.WEST);
 
+		cardBtn.addActionListener(this);
+		tblBtn.addActionListener(this);
+
+
 		this.add(pnTap, BorderLayout.SOUTH);
+
 		
-		/* card 버튼 클릭 이벤트 */
-		cardBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				cardBtn.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
-				cardBtn.setForeground(CommonConstants.COLOR_MENU_FONT);
-				tblBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-				tblBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
-				cards.show(pnCard, "card");
-			}
-		});
-		/* table 버튼 클릭 이벤트 */
-		tblBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				tblBtn.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
-				tblBtn.setForeground(CommonConstants.COLOR_MENU_FONT);
-				cardBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-				cardBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
-				cards.show(pnCard, "table");
-			}
-		});
+		this.pnCard = new JPanel();
+		pnCard.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
+		pnCard.setLayout(cards);
+		
+		BookListTablePanel pnBody = new BookListTablePanel(this);
+		pnCard.add(pnBody);
+		
+		pnCard.add("card", new BookListCardPanel(this));
+		pnCard.add("table", new BookListTablePanel(this));
+		this.add(pnCard, BorderLayout.CENTER);
+		
+	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(cardBtn)) {
+			changeMenuCard(cardBtn);
+		} else if (e.getSource().equals(tblBtn)) {
+			changeMenuCard(tblBtn);
+		}
+		
+	}
 
-
+	private void changeMenuCard(JButton btn) {
+		if (btn.equals(cardBtn)) {
+			cardBtn.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
+			cardBtn.setForeground(CommonConstants.COLOR_MENU_FONT);
+			tblBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+			tblBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
+			cards.show(pnCard, "card");
+			
+		} else if (btn.equals(tblBtn)) {
+			tblBtn.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
+			tblBtn.setForeground(CommonConstants.COLOR_MENU_FONT);
+			cardBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+			cardBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
+			cards.show(pnCard, "table");
+			
+		}
+		
 	}
 	
 }

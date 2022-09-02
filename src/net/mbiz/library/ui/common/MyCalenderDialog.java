@@ -90,7 +90,7 @@ public class MyCalenderDialog extends JDialog implements ActionListener, MouseLi
 		pnBottom.setLayout(new BorderLayout());
 		pnBottom.setPreferredSize(new Dimension(0,45));
 		pnBottom.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-//		pnBottom.setBackground(Color.blue);
+		
 		this.pickBtn = new JButton("확인");
 		pickBtn.setFont(CommonConstants.FONT_BASE_12);
 		pickBtn.setPreferredSize(new Dimension(50,0));

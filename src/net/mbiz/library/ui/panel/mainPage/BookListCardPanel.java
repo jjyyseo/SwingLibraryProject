@@ -23,7 +23,7 @@ import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.panel.BookPanel;
 
 // MainPanel의 pnBody. - card 형식으로 리스트를 출력하는 패널(첫번쨰 카드)
-public class BookListCardPanel extends JPanel{
+public class BookListCardPanel extends JPanel implements ActionListener{
 	
 	private JPanel pnHeader;
 	private JPanel pnBody;
@@ -110,7 +110,6 @@ public class BookListCardPanel extends JPanel{
 		}
 		
 		
-		
 		pnTitle.add(title, BorderLayout.CENTER);
 
 		pnSchSet.add(schFd, BorderLayout.WEST);
@@ -164,5 +163,12 @@ public class BookListCardPanel extends JPanel{
 		
 		
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+	}
+	
+	
 
 }

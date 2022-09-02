@@ -17,7 +17,7 @@ import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.panel.mainPage.MainPanel;
 import net.mbiz.library.ui.panel.myPage.MyPageTablePanel;
 
-public class LibraryMain extends JFrame {
+public class LibraryMain extends JFrame implements ActionListener{
 
 	private JPanel pnCard;
 	private JPanel pnMenu;
@@ -28,7 +28,6 @@ public class LibraryMain extends JFrame {
 	private CardLayout cards = new CardLayout();
 
 
-	
 	public LibraryMain() {
 		this.setTitle("도서 관리 프로그램");
 		jbInit();
@@ -43,8 +42,6 @@ public class LibraryMain extends JFrame {
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH); // 풀스크린모드
 		this.setResizable(false); // 리사이즈 X
 
-//		this.addComponentListener(this);
-
 		this.add(Box.createHorizontalStrut(50), BorderLayout.EAST);
 		this.add(Box.createHorizontalStrut(50), BorderLayout.WEST);
 		this.add(Box.createVerticalStrut(50), BorderLayout.NORTH);
@@ -55,25 +52,16 @@ public class LibraryMain extends JFrame {
 		pnCard.setLayout(cards);
 
 		MainPanel pnMain = new MainPanel(this);
-		pnMain.printTap();
 		pnCard.add(pnMain);
 
-		printMenu(this);
-
-		pnCard.add("main", new MainPanel(this));
-		pnCard.add("mypage", new MyPageTablePanel(this));
-
-		getContentPane().add(pnCard);
-	}
-
-	public void printMenu(LibraryMain f) {
-		/* 메뉴 바 패널 */
+		
+		
+		/*print Menu*/
 		this.pnMenu = new JPanel();
 		pnMenu.setPreferredSize(new Dimension(0, 100));
 		pnMenu.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
 		pnMenu.setLayout(new BorderLayout());
 
-		/* 메뉴버튼 영역 패널 */
 		this.btnSet = new JPanel();
 		btnSet.setLayout(new BorderLayout());
 		btnSet.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
@@ -100,33 +88,51 @@ public class LibraryMain extends JFrame {
 
 		pnMenu.add(btnSet, BorderLayout.WEST);
 		this.add(pnMenu, BorderLayout.NORTH);
+		
+		
+		pnCard.add("main", new MainPanel(this));
+		pnCard.add("mypage", new MyPageTablePanel(this));
 
-		/* Main 버튼 클릭 이벤트 */
-		mainBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				myPageBtn.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
-				myPageBtn.setForeground(CommonConstants.COLOR_MENU_FONT);
-				mainBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-				mainBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
-				cards.show(pnCard, "main");
-			}
-		});
+		this.add(pnCard);
 
-		/* MyPage 버튼 클릭 이벤트 */
-		myPageBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				myPageBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-				myPageBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
-				mainBtn.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
-				mainBtn.setForeground(CommonConstants.COLOR_MENU_FONT);
-				cards.show(pnCard, "mypage");
-			}
-		});
-
+		mainBtn.addActionListener(this);
+		myPageBtn.addActionListener(this);
 	}
+	
 
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		if (e.getSource().equals(mainBtn)) {
+			changeMenuCard(mainBtn);
+			
+		} else if(e.getSource().equals(myPageBtn)) {
+			changeMenuCard(myPageBtn);
+		}
+		
+	}
+	
+	private void changeMenuCard(JButton btn) {
+		if (btn.equals(mainBtn)) {
+			myPageBtn.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
+			myPageBtn.setForeground(CommonConstants.COLOR_MENU_FONT);
+			mainBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+			mainBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
+			cards.show(pnCard, "main");
+			
+		} else if (btn.equals(myPageBtn)) {
+			myPageBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+			myPageBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
+			mainBtn.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
+			mainBtn.setForeground(CommonConstants.COLOR_MENU_FONT);
+			cards.show(pnCard, "mypage");
+		
+		}
+		
+	}
+	
+	
 	public void setLocationCenter() {
 		Dimension d = this.getToolkit().getScreenSize();
 		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
@@ -136,5 +142,7 @@ public class LibraryMain extends JFrame {
 	public static void main(String[] args) {
 		new LibraryMain().setLocationCenter();;
 	}
+
+
 
 }

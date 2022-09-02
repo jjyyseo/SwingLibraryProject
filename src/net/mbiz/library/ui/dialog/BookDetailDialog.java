@@ -28,7 +28,7 @@ import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
 
-public class BookDetailDialog extends JDialog{
+public class BookDetailDialog extends JDialog implements ActionListener{
 
 	private JPanel pnMain;        
 	// in pnMain
@@ -253,7 +253,7 @@ public class BookDetailDialog extends JDialog{
 		this.add(pnMain, BorderLayout.CENTER);
 		
 		
-		
+		borrowBtn.addActionListener(this);
 		/*EVENT - 대출 신청하기*/
 		borrowBtn.addActionListener(new ActionListener() {
 			
@@ -311,6 +311,23 @@ public class BookDetailDialog extends JDialog{
 		System.out.println("도서리스트의 인덱스" + idx);
 		System.out.println("도서리스트의 사이즈" + AddBookList.bookList.size());
 		AddBookList.bookList.get(idx).setIsBorrowed(1);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+//		if (e.getSource().equals(borrowBtn)) {
+//			
+//			int rslt = JOptionPane.showConfirmDialog(null, bv.getBookNm()+ " 을(를) 대출 신청 하시겠습니까?", bv.getBookNm(), JOptionPane.YES_NO_OPTION);
+//			if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
+//				insertBorrow(bv);
+//				JOptionPane.showMessageDialog(null, "대출 신청이 완료되었습니다.");
+//				dispose();
+//			} else { 
+//				System.out.println(bv.getBookNm() + " 대출 신청을 취소합니다.");
+//			}
+//			
+//			System.out.println("대출 상태 ----> " + bv.getIsBorrowed());
+//		}
 	}	
 
 
