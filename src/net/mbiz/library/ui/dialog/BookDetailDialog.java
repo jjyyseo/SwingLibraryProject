@@ -13,12 +13,14 @@ import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.AddBorrowList;
@@ -29,24 +31,46 @@ import net.mbiz.library.ui.common.CommonConstants;
 public class BookDetailDialog extends JDialog{
 
 	private JPanel pnMain;        
-	private JPanel pnTop;		  // in pnMain
-	private JPanel pnBottom;      // in pnMain
-	private JPanel pnWest;        // in pnTop
-	private JPanel pnEast;        // in pnTop
-	private JPanel pnImg;         // in pnWest
-	private JPanel pnBorrow;      // in pnWest
-	private JPanel pnTitle;       // in pnEast
-	private JPanel pnCnt;         // in pnEast
-	private JPanel pnFooter;      // in pnEast
-	private JPanel pnIntro;       // in pnBottom
+	// in pnMain
+	private JPanel pnTop;		  
+	private JPanel pnCenter;      
+	private JPanel pnBottom;      
+	// in pnTop
+	private JPanel pnWest;        
+	private JPanel pnEast;        
+	// in pnWest
+	private JPanel pnImg;         
+	private JPanel pnBorrow;      
+	// in pnEast
+	private JPanel pnTitle;       
+	private JPanel pnLeft;         
+	private JPanel pnRight;      
+	// in pnBottom
+	private JPanel pnIntro;       
 	
-	private JLabel pnWtr;       
-	private JLabel pnPublisher;       
-	private JLabel pnRelease;       
-	private JLabel pnCategory;       
-	private JLabel pnIsbn;       
+	private JLabel lblBookWtr;
+	private JLabel lblPublisher;
+	private JLabel lblCategory;
+	private JLabel lblReleaseDate;
+	private JLabel lblIsbn;   
+	
+	// 도서 정보 입력란
+	private JTextArea tfBookNm;	  // in pnTitle
+                                                                
+	private JLabel bookWtr;                                  
+	private JLabel category;                                 
+	private JLabel publisher;                                
+	private JLabel releaseDate;                              
+	private JLabel isbn;
+	
+	
+	
+	
+	
+	
+	
+	
 	                              
-	private JTextArea txtTitle;	  // in pnTitle
 	private JTextArea txtArea;    // in pnIntro
 	private JButton borrowBtn;	
 	
@@ -63,7 +87,6 @@ public class BookDetailDialog extends JDialog{
 		setLocationRelativeTo(this); // 화면 중앙 설정
 		setLayout(new BorderLayout());
 		setSize((new Dimension(600,700)));
-		setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
 		setModal(true);
 		// 여백
 		this.add(Box.createHorizontalStrut(20), BorderLayout.WEST);
@@ -72,55 +95,34 @@ public class BookDetailDialog extends JDialog{
 		this.add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
 		
 		
-		/*pnMain - pnTop(NORTH),pnBottom(SOUTH)*/
+		/*pnMain - pnTop(NORTH), pnCenter(CENTER), pnBottom(SOUTH)*/
 		this.pnMain = new JPanel();
 		pnMain.setLayout(new BorderLayout());
 		pnMain.setPreferredSize(new Dimension(560,660));
-		pnMain.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
 
 		//NORTH
 		this.pnTop = new JPanel();
 		pnTop.setLayout(new BorderLayout());
-		pnTop.setPreferredSize(new Dimension(0,363));
+		pnTop.setPreferredSize(new Dimension(0,290));
 		pnTop.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
-		pnTop.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
+		//CENTER
+		this.pnCenter = new JPanel();
+		pnCenter.setLayout(new BorderLayout());
+		pnCenter.setPreferredSize(new Dimension(0,250));
+		pnCenter.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+		pnCenter.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
 		//SOUTH
 		this.pnBottom = new JPanel();
 		pnBottom.setLayout(new BorderLayout());
-		pnBottom.setPreferredSize(new Dimension(560,260));
-		pnBottom.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
-		pnBottom.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
-		pnBottom.add(Box.createHorizontalStrut(10), BorderLayout.EAST);
-		pnBottom.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-		pnBottom.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
-		
-		
-		
-//---------- pnTop - pnWest(WEST), pnEast(EAST)---------------------------------
-		//WEST
-		this.pnWest = new JPanel();
-		pnWest.setLayout(new BorderLayout());
-		pnWest.setPreferredSize(new Dimension(215,0));
-		pnWest.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
-		//EAST
-		this.pnEast = new JPanel();
-		pnEast.setLayout(new BorderLayout());
-		pnEast.setPreferredSize(new Dimension(332,0));
-		pnEast.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
-		pnEast.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
-		
-		/*pnWest - pnImg(CENTER), pnBorrow(SOUTH)*/
-		this.pnImg = new JPanel();
-		pnImg.setPreferredSize(new Dimension(205,230));
-		pnImg.setBackground(Color.magenta);
-		pnWest.add(pnImg, BorderLayout.CENTER);
+		pnBottom.setPreferredSize(new Dimension(0,80));
 		
 		this.pnBorrow = new JPanel();
 		pnBorrow.setLayout(new BorderLayout());
-		pnBorrow.setPreferredSize(new Dimension(205,100));
-		pnBorrow.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
+		pnBorrow.setPreferredSize(new Dimension(205,80));
 		pnBorrow.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-		pnBorrow.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
+		pnBorrow.add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
+		pnBorrow.add(Box.createHorizontalStrut(200), BorderLayout.WEST);
+		pnBorrow.add(Box.createHorizontalStrut(200), BorderLayout.EAST);
 		
 		if (bv.getIsBorrowed() == 0) {
 			this.borrowBtn = new JButton("대출 신청");
@@ -129,89 +131,114 @@ public class BookDetailDialog extends JDialog{
 			borrowBtn.setEnabled(false); 	// 버튼 비활성화
 		}
 		pnBorrow.add(borrowBtn, BorderLayout.CENTER);
-		pnWest.add(pnBorrow, BorderLayout.SOUTH);
+		pnBottom.add(pnBorrow, BorderLayout.CENTER);
+		
+		
+//---------- pnTop - pnWest(WEST), pnEast(EAST)---------------------------------
+		//WEST
+		this.pnWest = new JPanel();
+		pnWest.setLayout(new BorderLayout());
+		pnWest.setPreferredSize(new Dimension(205,0));
+		pnWest.setBorder(BorderFactory.createEmptyBorder(10,0,0,5));
+		//EAST
+		this.pnEast = new JPanel();
+		pnEast.setLayout(new BorderLayout());
+		pnEast.setPreferredSize(new Dimension(342,0));
+		pnEast.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
+		
+		/*pnWest - pnImg(CENTER), pnBorrow(SOUTH)*/
+		this.pnImg = new JPanel();
+//		pnImg.setPreferredSize(new Dimension(0,170));
+		pnImg.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		pnWest.add(pnImg, BorderLayout.CENTER);
 		
 		
 		
-		/*pnEast - pnTitle(NORTH), pnCnt(CENTER), pnFooter(SOUTH)*/
+		
+		
+		/*pnEast*/
 		//NORTH
 		this.pnTitle = new JPanel();
 		pnTitle.setLayout(new BorderLayout());
-		pnTitle.setPreferredSize(new Dimension(0, 130));
+		pnTitle.setPreferredSize(new Dimension(0, 80));
 		pnTitle.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
-		pnTitle.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
 		
-		this.txtTitle = new JTextArea(bv.getBookNm());
-		txtTitle.setFont(CommonConstants.FONT_TITLE_22);
-		txtTitle.setEditable(false);
-		txtTitle.setLineWrap(true); 
-		txtTitle.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
-		txtTitle.setBorder(BorderFactory.createEmptyBorder(15,10,10,10));
-		pnTitle.add(txtTitle, BorderLayout.NORTH);
-
-		
-		//CENTER
-		this.pnCnt = new JPanel();
-		pnCnt.setLayout(new GridLayout(2,2, 10,10));
-		pnCnt.setPreferredSize(new Dimension(0, 173));
-		pnCnt.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-		pnCnt.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
-		//SOUTH
-		this.pnFooter = new JPanel();
-		pnFooter.setLayout(new BorderLayout());
-		pnFooter.setPreferredSize(new Dimension(0, 60));
-		pnFooter.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
-		pnFooter.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
-
-		/*도서 정보를 출력할 패널. (in pnCnt) */
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
-		
-		this.pnWtr = new JLabel( "저자     | " + bv.getBookWtr());
-		pnWtr.setPreferredSize(new Dimension(0, 0));
-		pnWtr.setFont(CommonConstants.FONT_BASE_17);
-		pnWtr.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
-		pnWtr.setOpaque(true);
-		this.pnCategory = new JLabel(bv.getCategory());
-		pnCategory.setPreferredSize(new Dimension(0, 0));
-		pnCategory.setFont(CommonConstants.FONT_BASE_17);
-		pnCategory.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
-		pnCategory.setOpaque(true);
-		this.pnPublisher = new JLabel("출판사 | " + bv.getPublisher());
-		pnPublisher.setPreferredSize(new Dimension(0, 0));
-		pnPublisher.setFont(CommonConstants.FONT_BASE_17);
-		pnPublisher.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
-		pnPublisher.setOpaque(true);
-		this.pnRelease = new JLabel("출간 | " + sdf.format(bv.getReleaseDate()));
-		pnRelease.setPreferredSize(new Dimension(0, 0));
-		pnRelease.setFont(CommonConstants.FONT_BASE_17);
-		pnRelease.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
-		pnRelease.setOpaque(true);
-
-		String isbn = "ISBN   | " + Long.toString(bv.getBookIsbn());
-
-		this.pnIsbn = new JLabel();
-		pnIsbn.setText(isbn);
-		pnIsbn.setPreferredSize(new Dimension(0, 0));
-		pnIsbn.setFont(CommonConstants.FONT_BASE_17);
-		pnIsbn.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
-		pnIsbn.setOpaque(true);
-
-		pnCnt.add(pnWtr);
-		pnCnt.add(pnCategory);
-		pnCnt.add(pnPublisher);
-		pnCnt.add(pnRelease);
-		pnFooter.add(pnIsbn, BorderLayout.CENTER);
+		this.tfBookNm = new JTextArea(bv.getBookNm());
+		tfBookNm.setFont(CommonConstants.FONT_TITLE_22);
+		tfBookNm.setEditable(false);
+		tfBookNm.setLineWrap(true); // 줄바꿈 되도록.
+		tfBookNm.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+		tfBookNm.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
+		pnTitle.add(tfBookNm, BorderLayout.NORTH);
 
 		
 		
 		
-//---------------pnBottom - pnIntro(CENTER)---------------------------------------
+		
+		//WEST
+		this.pnLeft = new JPanel();
+		pnLeft.setLayout(new GridLayout(5,1,5,10));
+		
+		pnLeft.setPreferredSize(new Dimension(80,0));
+		pnLeft.setBorder(BorderFactory.createEmptyBorder(10,10,0,10));
+		
+		this.lblBookWtr = new JLabel("저자");
+		this.lblCategory = new JLabel("카테고리");
+		this.lblPublisher = new JLabel("출판사");
+		this.lblReleaseDate = new JLabel("출간일");
+		this.lblIsbn = new JLabel("ISBN");
+		lblBookWtr.setFont(CommonConstants.FONT_BASE_17); 
+		lblCategory.setFont(CommonConstants.FONT_BASE_17);
+		lblPublisher.setFont(CommonConstants.FONT_BASE_17);
+		lblReleaseDate.setFont(CommonConstants.FONT_BASE_17);
+		lblIsbn.setFont(CommonConstants.FONT_BASE_17);
+
+		pnLeft.add(lblBookWtr);
+		pnLeft.add(lblCategory);
+		pnLeft.add(lblPublisher);
+		pnLeft.add(lblReleaseDate);
+		pnLeft.add(lblIsbn);
+		
+		
+		//EAST
+		this.pnRight = new JPanel();
+		pnRight.setLayout(new GridLayout(5,1,5,10));
+		pnRight.setPreferredSize(new Dimension(242,0));
+		pnRight.setBorder(BorderFactory.createEmptyBorder(10,10,0,0));
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일");
+		
+		this.bookWtr = new JLabel(bv.getBookWtr());
+		this.category = new JLabel(bv.getCategory());
+		this.publisher = new JLabel(bv.getPublisher());
+		this.releaseDate = new JLabel(sdf.format(bv.getReleaseDate()));
+		this.isbn = new JLabel(Long.toString(bv.getBookIsbn()));
+		bookWtr.setFont(CommonConstants.FONT_BASE_17); 
+		category.setFont(CommonConstants.FONT_BASE_17);
+		publisher.setFont(CommonConstants.FONT_BASE_17);
+		releaseDate.setFont(CommonConstants.FONT_BASE_17);
+		isbn.setFont(CommonConstants.FONT_BASE_17);
+
+		pnRight.add(bookWtr);
+		pnRight.add(category);
+		pnRight.add(publisher);
+		pnRight.add(releaseDate);
+		pnRight.add(isbn);
+
+
+		
+
+
+		
+		
+		
+	    /*pnCenter - pnIntro(CENTER)*/
 		this.pnIntro = new JPanel();
 		pnIntro.setLayout(new BorderLayout());
 		pnIntro.setBackground(Color.GREEN);
 		
 		this.txtArea = new JTextArea(bv.getBooksub());
-		txtArea.setBackground(CommonConstants.COLOR_WHITE_BACKGROUND);
+		txtArea.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
 		txtArea.setEditable(false);
 		txtArea.setLineWrap(true); 
 		txtArea.setFont(CommonConstants.FONT_BASE_17);
@@ -219,16 +246,20 @@ public class BookDetailDialog extends JDialog{
 		pnIntro.add(srlPn, BorderLayout.CENTER);
 		
 		
-
+		/*pnCenter - pnIntro(CENTER)*/
+		
+		
+		
+		pnEast.add(pnLeft, BorderLayout.WEST);
+		pnEast.add(pnRight, BorderLayout.EAST);
 		pnEast.add(pnTitle, BorderLayout.NORTH);
-		pnEast.add(pnCnt, BorderLayout.CENTER);
-		pnEast.add(pnFooter, BorderLayout.SOUTH);
 
 		pnTop.add(pnWest, BorderLayout.WEST);
 		pnTop.add(pnEast, BorderLayout.EAST);
-		pnBottom.add(pnIntro, BorderLayout.CENTER);
+		pnCenter.add(pnIntro, BorderLayout.CENTER);
 		
 		pnMain.add(pnTop, BorderLayout.NORTH);
+		pnMain.add(pnCenter, BorderLayout.CENTER);
 		pnMain.add(pnBottom, BorderLayout.SOUTH);
 		this.add(pnMain, BorderLayout.CENTER);
 		
