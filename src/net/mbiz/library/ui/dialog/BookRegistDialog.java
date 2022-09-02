@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
@@ -14,17 +15,17 @@ import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.text.NumberFormatter;
 
 import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.BookVO;
@@ -70,7 +71,7 @@ public class BookRegistDialog extends JDialog {
 	private JLabel lblIsbn;
 	
 	private String category = "";
-	
+	private ImageIcon calImg = null;
 	
 	public BookRegistDialog(){
 		setTitle("도서 정보 추가하기");
@@ -148,10 +149,9 @@ public class BookRegistDialog extends JDialog {
 		this.pnCntWest = new JPanel();
 		pnCntWest.setLayout(new GridLayout(6,1));
 		pnCntWest.setPreferredSize(new Dimension(80, 0));
-		pnCntWest.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
 		this.pnCntEast = new JPanel();
 		pnCntEast.setLayout(new GridLayout(6,1, 5 ,10));
-		pnCntEast.setPreferredSize(new Dimension(283, 0));
+		pnCntEast.setPreferredSize(new Dimension(273, 0));
 		pnCntEast.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
 		pnCnt.add(pnCntEast, BorderLayout.EAST);
@@ -160,7 +160,7 @@ public class BookRegistDialog extends JDialog {
 		
 		
 		this.cbbCategory = new JComboBox<>();
-		cbbCategory.setModel(new DefaultComboBoxModel<>(new String[] {"소설","어린이","경제경영","자기계발","자연과락"}));
+		cbbCategory.setModel(new DefaultComboBoxModel<>(new String[] {"소설","어린이","경제경영","자기계발","자연과학"}));
 		cbbCategory.setFont(CommonConstants.FONT_BASE_15);
 		
 		this.tfBookNm = new JTextField();
@@ -169,11 +169,31 @@ public class BookRegistDialog extends JDialog {
 		this.tfIsbn = new JTextField(14);
 		this.tfDate = new JTextField();
 		tfDate.setPreferredSize(new Dimension(215,0));
-		tfDate.setEnabled(false);
+		tfDate.setEditable(false);
+		
+		tfBookNm.setFont(CommonConstants.FONT_BASE_17);
+		tfBookWtr.setFont(CommonConstants.FONT_BASE_17);
+		tfPublisher.setFont(CommonConstants.FONT_BASE_17);
+		tfIsbn.setFont(CommonConstants.FONT_BASE_17);
+		tfDate.setFont(CommonConstants.FONT_BASE_17);
+		tfDate.setForeground(Color.black);
 
+		
+//		this.calImg = new ImageIcon("C:/Work/03.Workspace/Test/SwingLibrary/src/net/mbiz/library/ui/img/calendar-icon.png");
+//		JLabel lbl = new JLabel(calImg, JLabel.CENTER);
+
+		this.calImg = new ImageIcon("C:/Work/03.Workspace/Test/SwingLibrary/src/net/mbiz/library/ui/img/calendar-icon.png");
+		Image img = calImg.getImage();
+		Image changeImg = img.getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+		ImageIcon chImg = new ImageIcon(changeImg);
+		
+		
+		JLabel lbl = new JLabel(chImg);
 		
 		this.calenderBtn = new JButton();
 		calenderBtn.setPreferredSize(new Dimension(45,35));
+		calenderBtn.add(lbl);
+		
 		
 		this.lblBookNm = new JLabel("도서명");
 		this.lblBookWtr = new JLabel("저자");
@@ -208,7 +228,6 @@ public class BookRegistDialog extends JDialog {
 		pnCntWest.add(lblIsbn);
 		pnCntWest.add(lblCategory);
 		pnCntWest.add(lblReleaseDate);
-		
 		
 		
 		
@@ -253,7 +272,7 @@ public class BookRegistDialog extends JDialog {
 		
 		
 		
-		
+		/*도서 카테고리 콤보 박스*/		
 		cbbCategory.addActionListener(new ActionListener() {
 			
 			@Override
@@ -263,8 +282,7 @@ public class BookRegistDialog extends JDialog {
 			}
 		});
 		
-		
-		/*도서 정보 insert*/
+		/*도서 정보 추가하기*/
 		registBtn.addActionListener(new ActionListener() {
 			
 			@Override
@@ -272,7 +290,7 @@ public class BookRegistDialog extends JDialog {
 				insertBookVO();
 			}
 		});
-		
+		/*달력 Dialog open*/
 		calenderBtn.addActionListener(new ActionListener() {
 			
 			@Override
@@ -283,15 +301,20 @@ public class BookRegistDialog extends JDialog {
 				tfDate.setText(MyCalenderDialog.rsltDate);
 			}
 		});
+		/*사진 첨부(준비중)*/
+		attachBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "서비스 준비 중입니다.", "도서 사진 첨부하기", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
 		
 	}
 	
-	public void setLocationCenter() {
-		Dimension d = this.getToolkit().getScreenSize(); 
-		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
-		this.setVisible(true);
-	}
-	
+	/**
+	 * 입력된 정보로 BookVO를 생성하여 BookList에 add하는 데서드.
+	 */
 	private void insertBookVO(){
 		if (category.equals("") || category.isEmpty() ) {
 			category = "소설" ;
@@ -300,13 +323,16 @@ public class BookRegistDialog extends JDialog {
 		
 		
 		// 어느 하나 빈칸이 있는 경우
-		if( tfBookNm.getText().isEmpty() || tfBookWtr.getText().isEmpty()
+		if ( tfBookNm.getText().isEmpty() || tfBookWtr.getText().isEmpty()
 				|| tfPublisher.getText().isEmpty() || category.equals("") || category.isEmpty()
-//				|| pnReleaseDate.getText().isEmpty() || tfIsbn.getText().isEmpty()
-				||txtArea.getText().isEmpty() ) {
+				|| tfDate.getText().isEmpty() || tfIsbn.getText().isEmpty()
+				|| txtArea.getText().isEmpty() ) {
 			
-			JOptionPane.showMessageDialog(null, "정보가 모두 입력되지 않았습니다. 모두 입력 해주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
-
+			JOptionPane.showMessageDialog(null, "정보가 모두 입력되지 않았습니다. 모두 입력해 주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
+			
+		} else if (tfIsbn.getText().length() != 14) {	// isbn이 14자리가 아닌 경우  
+			JOptionPane.showMessageDialog(null, "도서 isbn은 14자리 숫자로 입력해 주세요.", "isbn이 유효하지 않습니다. ", JOptionPane.INFORMATION_MESSAGE);
+			
 		} else {
 
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
@@ -349,5 +375,12 @@ public class BookRegistDialog extends JDialog {
 			
 		}
 	};
+	
+	
+	public void setLocationCenter() {
+		Dimension d = this.getToolkit().getScreenSize(); 
+		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
+		this.setVisible(true);
+	}
 
 }

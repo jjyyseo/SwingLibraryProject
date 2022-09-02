@@ -62,14 +62,6 @@ public class BookDetailDialog extends JDialog{
 	private JLabel publisher;                                
 	private JLabel releaseDate;                              
 	private JLabel isbn;
-	
-	
-	
-	
-	
-	
-	
-	
 	                              
 	private JTextArea txtArea;    // in pnIntro
 	private JButton borrowBtn;	
@@ -224,9 +216,6 @@ public class BookDetailDialog extends JDialog{
 		pnRight.add(publisher);
 		pnRight.add(releaseDate);
 		pnRight.add(isbn);
-
-
-		
 
 
 		

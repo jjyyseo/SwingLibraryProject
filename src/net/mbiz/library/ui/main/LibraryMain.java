@@ -14,8 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import net.mbiz.library.ui.common.CommonConstants;
-import net.mbiz.library.ui.mypage.MyPagePanel;
-import net.mbiz.library.ui.panel.MainPanel;
+import net.mbiz.library.ui.panel.mainPage.MainPanel;
+import net.mbiz.library.ui.panel.myPage.MyPageTablePanel;
 
 public class LibraryMain extends JFrame {
 
@@ -61,7 +61,7 @@ public class LibraryMain extends JFrame {
 		printMenu(this);
 
 		pnCard.add("main", new MainPanel(this));
-		pnCard.add("mypage", new MyPagePanel(this));
+		pnCard.add("mypage", new MyPageTablePanel(this));
 
 		getContentPane().add(pnCard);
 	}
@@ -131,6 +131,10 @@ public class LibraryMain extends JFrame {
 		Dimension d = this.getToolkit().getScreenSize();
 		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
 		this.setVisible(true);
+	}
+	
+	public static void main(String[] args) {
+		new LibraryMain().setLocationCenter();;
 	}
 
 }

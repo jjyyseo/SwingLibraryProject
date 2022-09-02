@@ -1,4 +1,4 @@
-package net.mbiz.library.ui.panel;
+package net.mbiz.library.ui.panel.mainPage;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -38,7 +38,7 @@ public class MainPanel extends JPanel{
 	private void jbInit() {
 		this.setLayout(new BorderLayout());
 		this.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-		setBorder(BorderFactory.createEmptyBorder(20,14,20,14));
+		setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 		
 		printTap();		//NORTH
 
@@ -63,7 +63,7 @@ public class MainPanel extends JPanel{
 
 		this.pnTap = new JPanel();
 		pnTap.setLayout(new BorderLayout());
-		pnTap.setPreferredSize(new Dimension(70,50));
+		pnTap.setPreferredSize(new Dimension(60,50));
 		pnTap.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		
 		// 카드로 보기, 테이블로 보기
@@ -73,16 +73,19 @@ public class MainPanel extends JPanel{
 		this.cardBtn = new JButton("card");
 		cardBtn.setPreferredSize(new Dimension(70, 0));
 		cardBtn.setFont(CommonConstants.FONT_BASE_15);
+		cardBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		cardBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
 		this.tblBtn = new JButton("table");
 		tblBtn.setPreferredSize(new Dimension(70, 0));
 		tblBtn.setFont(CommonConstants.FONT_BASE_15);
+		tblBtn.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
+		tblBtn.setForeground(CommonConstants.COLOR_MENU_FONT);
 		
-		
-		btnSet.add(cardBtn, BorderLayout.WEST);
-		btnSet.add(tblBtn, BorderLayout.EAST);
-		pnTap.add(btnSet, BorderLayout.EAST);
+		btnSet.add(tblBtn, BorderLayout.WEST);
+		btnSet.add(cardBtn, BorderLayout.CENTER);
+		pnTap.add(btnSet, BorderLayout.WEST);
 
-		this.add(pnTap, BorderLayout.NORTH);
+		this.add(pnTap, BorderLayout.SOUTH);
 		
 		/* card 버튼 클릭 이벤트 */
 		cardBtn.addActionListener(new ActionListener() {

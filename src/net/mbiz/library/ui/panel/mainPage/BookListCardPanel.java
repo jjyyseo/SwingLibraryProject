@@ -1,12 +1,14 @@
-package net.mbiz.library.ui.panel;
+package net.mbiz.library.ui.panel.mainPage;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -18,6 +20,7 @@ import javax.swing.ScrollPaneConstants;
 import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.ui.common.CommonConstants;
+import net.mbiz.library.ui.panel.BookPanel;
 
 // MainPanel의 pnBody. - card 형식으로 리스트를 출력하는 패널(첫번쨰 카드)
 public class BookListCardPanel extends JPanel{
@@ -87,8 +90,16 @@ public class BookListCardPanel extends JPanel{
 		this.schFd = new JTextField();
 		schFd.setPreferredSize(new Dimension(500,47));
 		schFd.setFont(CommonConstants.FONT_BASE_17);
+		
+		
+		ImageIcon calImg = new ImageIcon("C:\\Work\\03.Workspace\\Test\\SwingLibrary\\src\\net\\mbiz\\library\\ui\\img\\sch_icon.png");
+		Image img = calImg.getImage();
+		Image changeImg = img.getScaledInstance(17,17, Image.SCALE_SMOOTH);
+		ImageIcon chImg = new ImageIcon(changeImg);
+		JLabel lbl = new JLabel(chImg);
 		this.schBtn = new JButton();
 		schBtn.setPreferredSize(new Dimension(50,47));
+		schBtn.add(lbl);
 		this.pnPadding = new JPanel();
 		pnPadding.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		

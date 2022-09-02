@@ -1,8 +1,9 @@
-package net.mbiz.library.ui.panel;
+package net.mbiz.library.ui.panel.mainPage;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -37,7 +39,8 @@ public class BookListTablePanel extends JPanel {
 	private JPanel pnPadding;
 	private JPanel pnTitle;
 	private JPanel pnPvs;
-	private JPanel pnBtnSet;
+	private JPanel pnEastBtn;
+	private JPanel pnWestBtn;
 
 	private JTable bookTbl;
 
@@ -145,10 +148,17 @@ public class BookListTablePanel extends JPanel {
 		schFd.setPreferredSize(new Dimension(550, 30));
 		schFd.setFont(CommonConstants.FONT_BASE_17);
 
+		
+		ImageIcon calImg = new ImageIcon("C:\\Work\\03.Workspace\\Test\\SwingLibrary\\src\\net\\mbiz\\library\\ui\\img\\sch_icon.png");
+		Image img = calImg.getImage();
+		Image changeImg = img.getScaledInstance(17,17, Image.SCALE_SMOOTH);
+		ImageIcon chImg = new ImageIcon(changeImg);
+		JLabel lbl = new JLabel(chImg);
 		// EAST - 검색 버튼
 		this.schBtn = new JButton();
 		schBtn.setPreferredSize(new Dimension(50, 30));
-
+		schBtn.add(lbl);
+		
 		// CENTER
 		this.pnPadding = new JPanel();
 		pnPadding.setPreferredSize(new Dimension(10, 10));
@@ -158,11 +168,17 @@ public class BookListTablePanel extends JPanel {
 		
 		
 		/* pnFooter - pnBtnSet(EAST) - returnBtn(WEST), deleteBtn(EAST) */
-		this.pnBtnSet = new JPanel();
-		pnBtnSet.setLayout(new BorderLayout());
-		pnBtnSet.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-		pnBtnSet.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-		pnBtnSet.add(Box.createHorizontalStrut(10), BorderLayout.CENTER);
+		this.pnEastBtn = new JPanel();
+		pnEastBtn.setLayout(new BorderLayout());
+		pnEastBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		pnEastBtn.add(Box.createVerticalStrut(5), BorderLayout.NORTH);
+		pnEastBtn.add(Box.createHorizontalStrut(10), BorderLayout.CENTER);
+	
+		this.pnWestBtn = new JPanel();
+		pnWestBtn.setLayout(new BorderLayout());
+		pnWestBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		pnWestBtn.add(Box.createVerticalStrut(5), BorderLayout.NORTH);
+		pnWestBtn.add(Box.createHorizontalStrut(10), BorderLayout.CENTER);
 		
 		
 		this.registBtn = new JButton("추가");
@@ -176,9 +192,11 @@ public class BookListTablePanel extends JPanel {
 
 		
 		//footer
-		pnBtnSet.add(registBtn, BorderLayout.WEST);
-		pnBtnSet.add(deleteBtn, BorderLayout.EAST);
-		pnFooter.add(pnBtnSet, BorderLayout.EAST);
+		pnEastBtn.add(registBtn, BorderLayout.WEST);
+		pnEastBtn.add(deleteBtn, BorderLayout.EAST);
+		
+		pnFooter.add(pnEastBtn, BorderLayout.EAST);
+		pnFooter.add(pnWestBtn, BorderLayout.WEST);
 		
 		//header
 		pnSch.add(pnPadding, BorderLayout.CENTER);
@@ -239,16 +257,25 @@ public class BookListTablePanel extends JPanel {
 		/*도서 삭제하기*/
 		deleteBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BookVO seletedVO = AddBookList.bookList.get(bookTbl.getSelectedRow());
-				System.err.println("삭제 버튼 클릭." );
-				
-				CommonConstants.bkModel.remove(seletedVO);
-				AddBookList.bookList.remove(seletedVO);
-				
-				CommonConstants.repaintBookTable();
-				bookTbl.removeAll();
-				bookTbl.setModel(CommonConstants.bkModel);
+				if(bookTbl.getSelectedRow()>-1) {
+					BookVO seletedVO = AddBookList.bookList.get(bookTbl.getSelectedRow());
+					System.err.println("삭제 버튼 클릭." );
+	
+					int rslt = JOptionPane.showConfirmDialog(null, " '" + seletedVO.getBookNm()+ "' " +" 을(를) 삭제 하시겠습니까?", seletedVO.getBookNm(), JOptionPane.YES_NO_OPTION);
+					if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
+						deleteBookVO(seletedVO);
+						JOptionPane.showMessageDialog(null, seletedVO.getBookNm()+" 이(가) 삭제 되었습니다.");
+					} else { 
+						System.out.println(" '" + seletedVO.getBookNm() + " 도서 삭제를 취소합니다.");
+						JOptionPane.showMessageDialog(null," '" + seletedVO.getBookNm() + "' "+" 삭제가 취소 되었습니다.", seletedVO.getBookNm(), JOptionPane.INFORMATION_MESSAGE);
+					}
+					
+				} else {
+					JOptionPane.showMessageDialog(null,"삭제할 도서를 선택하세요.","선택된 도서 없음", JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
+				
+
 		});
 		
 		bookTbl.addMouseListener(new MouseListener() {
@@ -349,6 +376,16 @@ public class BookListTablePanel extends JPanel {
 		} else {
 			JOptionPane.showMessageDialog(pnBody, "검색어를 입력해주세요");
 		}
+	}
+	
+	private void deleteBookVO(BookVO vo) {
+		CommonConstants.bkModel.remove(vo);
+		AddBookList.bookList.remove(vo);
+		
+		CommonConstants.repaintBookTable();
+		bookTbl.removeAll();
+		bookTbl.setModel(CommonConstants.bkModel);
+		
 	}
 
 

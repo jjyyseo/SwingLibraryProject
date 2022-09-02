@@ -50,7 +50,7 @@ public class MyCalenderDialog extends JDialog implements ActionListener, MouseLi
 	private String selectDay = "";
 	private String selectMonth = "";
 	private String selectYear = "";
-	
+
 	
 	Calendar now = null;
 	int year = 0;
@@ -73,7 +73,6 @@ public class MyCalenderDialog extends JDialog implements ActionListener, MouseLi
 		setLocationRelativeTo(null);
 		setLayout(new BorderLayout());
 		setSize(new Dimension(400,350));
-//		setDefaultCloseOperation(); //자원 해제 후 종료??
 		setTitle("날짜를 선택하세요.");
 		setModal(true);
 		
@@ -89,12 +88,12 @@ public class MyCalenderDialog extends JDialog implements ActionListener, MouseLi
 		
 		this.pnBottom = new JPanel();
 		pnBottom.setLayout(new BorderLayout());
-		pnBottom.setPreferredSize(new Dimension(0,40));
-		pnBottom.setBorder(BorderFactory.createEmptyBorder(5,5,10,5));
-		pnBottom.setBackground(Color.blue);
+		pnBottom.setPreferredSize(new Dimension(0,45));
+		pnBottom.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+//		pnBottom.setBackground(Color.blue);
 		this.pickBtn = new JButton("확인");
-		pickBtn.setFont(CommonConstants.FONT_BASE_15);
-		pickBtn.setPreferredSize(new Dimension(20,0));
+		pickBtn.setFont(CommonConstants.FONT_BASE_12);
+		pickBtn.setPreferredSize(new Dimension(50,0));
 		
 		pnBottom.add(pickBtn, BorderLayout.EAST);
 		
@@ -179,9 +178,6 @@ public class MyCalenderDialog extends JDialog implements ActionListener, MouseLi
 		
 		prevBtn.addActionListener(this);
 		nextBtn.addActionListener(this);
-//		pickBtn.addActionListener(this);
-//		cbbYear.addActionListener(this);
-//		cbbMonth.addActionListener(this);
 		
 		
 		/*콤보박스 선택 이벤트*/

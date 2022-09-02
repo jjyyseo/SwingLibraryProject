@@ -1,8 +1,9 @@
-package net.mbiz.library.ui.mypage;
+package net.mbiz.library.ui.panel.myPage;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -13,6 +14,7 @@ import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,11 +26,12 @@ import javax.swing.JTextField;
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.AddBorrowList;
+import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.main.LibraryMain;
 
-public class MyPagePanel extends JPanel{
+public class MyPageTablePanel extends JPanel{
 	
 	private JPanel pnBody;
 	private JPanel pnTbl;
@@ -52,7 +55,7 @@ public class MyPagePanel extends JPanel{
 	
 	private JTable borrowTbl;
 	
-	public MyPagePanel(LibraryMain f) {
+	public MyPageTablePanel(LibraryMain f) {
 		jbInit();
 		initTable();	// 테이블 생성 먼저.
 		initialize();	// 데이터 초기화
@@ -163,10 +166,15 @@ public class MyPagePanel extends JPanel{
 		this.schFd = new JTextField();
 		schFd.setPreferredSize(new Dimension(550, 30));
 		schFd.setFont(CommonConstants.FONT_BASE_17);
-
+		ImageIcon calImg = new ImageIcon("C:\\Work\\03.Workspace\\Test\\SwingLibrary\\src\\net\\mbiz\\library\\ui\\img\\sch_icon.png");
+		Image img = calImg.getImage();
+		Image changeImg = img.getScaledInstance(17,17, Image.SCALE_SMOOTH);
+		ImageIcon chImg = new ImageIcon(changeImg);
+		JLabel lbl = new JLabel(chImg);
 		// EAST - 검색 버튼
 		this.schBtn = new JButton();
 		schBtn.setPreferredSize(new Dimension(50, 30));
+		schBtn.add(lbl);
 
 		// CENTER
 		this.pnPadding = new JPanel();
@@ -262,24 +270,30 @@ public class MyPagePanel extends JPanel{
 			
 		});
 		
-		/*대출 기록 삭제하기*/
+
+		/*대출 기록 삭제 Event*/
 		deleteBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
 				System.err.println("삭제 버튼 클릭." );
-				
-				CommonConstants.bwModel.remove(seletedVO);
-				AddBorrowList.borrowList.remove(seletedVO);
-				
-				CommonConstants.repaintBorrowTable();
+
+				int rslt = JOptionPane.showConfirmDialog(null, " '" + seletedVO.getBookNm()+ "' " + " 대출 기록을 삭제 하시겠습니까?", seletedVO.getBookNm(), JOptionPane.YES_NO_OPTION);
+				if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
+					deleteBorrowVO(seletedVO);
+					JOptionPane.showMessageDialog(null,"대출 기록이 삭제 되었습니다.");
+				} else { 
+					System.out.println(seletedVO.getBookNm() + " 대출 기록 삭제를 취소합니다.");
+					JOptionPane.showMessageDialog(null, "삭제가 취소 되었습니다.", seletedVO.getBookNm(), JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
+
 		});
-		
-		
 
 	}
 	
-	/*테이블을 출력하는 메서드*/
+	/**
+	 * 대출 기록 테이블을 출력하는 메서드.
+	 * */
 	private void initTable() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 		String topHeader[] = {"도서명", "대출일", "반납예정일", "반납일", "연체일"};	
@@ -383,7 +397,17 @@ public class MyPagePanel extends JPanel{
 			JOptionPane.showMessageDialog(pnBody, "검색어를 입력해주세요.");
 		}
 	}
-
+	
+	/**
+	 * 대출 기록을 삭제하는 메서드
+	 */
+	private void deleteBorrowVO(BorrowVO vo) {
+		CommonConstants.bwModel.remove(vo);
+		AddBorrowList.borrowList.remove(vo);
+		
+		CommonConstants.repaintBorrowTable();
+		
+	}
 
 }
 

@@ -32,6 +32,7 @@ public class CommonConstants {
 	public static final Font FONT_BASE_18 = new Font("나눔스퀘어", Font.PLAIN, 18);
 	public static final Font FONT_BASE_17 = new Font("나눔스퀘어", Font.PLAIN, 17);
 	public static final Font FONT_BASE_15 = new Font("나눔스퀘어", Font.PLAIN, 15);
+	public static final Font FONT_BASE_12 = new Font("나눔스퀘어", Font.PLAIN, 12);
 	public static final Font FONT_TITLE_25 = new Font("예스 고딕 레귤러", Font.BOLD, 25);
 	public static final Font FONT_TITLE_22 = new Font("예스 고딕 레귤러", Font.BOLD, 22);
 	
