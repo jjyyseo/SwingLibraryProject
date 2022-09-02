@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -16,12 +17,14 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.NumberFormatter;
 
 import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.BookVO;
@@ -97,7 +100,6 @@ public class BookRegistDialog extends JDialog {
 		this.pnTop = new JPanel();
 		pnTop.setLayout(new BorderLayout());
 		pnTop.setPreferredSize(new Dimension(0,318));
-		pnTop.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
 		//SOUTH
 		this.pnBottom = new JPanel();
 		pnBottom.setLayout(new BorderLayout());
@@ -111,12 +113,12 @@ public class BookRegistDialog extends JDialog {
 		this.pnWest = new JPanel();
 		pnWest.setLayout(new BorderLayout());
 		pnWest.setPreferredSize(new Dimension(180,0));
-		pnWest.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+		pnWest.setBorder(BorderFactory.createEmptyBorder(18,10,10,10));
 		//EAST
 		this.pnEast = new JPanel();
 		pnEast.setLayout(new BorderLayout());
 		pnEast.setPreferredSize(new Dimension(367,0));
-		pnEast.setBorder(BorderFactory.createEmptyBorder(0,0,0,5));
+		pnEast.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		
 
 		
@@ -129,7 +131,7 @@ public class BookRegistDialog extends JDialog {
 		pnAttach.setLayout(new BorderLayout());
 		pnAttach.setPreferredSize(new Dimension(185,70));
 		pnAttach.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-		pnAttach.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);		
+		pnAttach.add(Box.createVerticalStrut(8), BorderLayout.SOUTH);		
 		this.attachBtn = new JButton("사진 첨부");
 		attachBtn.setFont(CommonConstants.FONT_BASE_17);
 
@@ -164,9 +166,11 @@ public class BookRegistDialog extends JDialog {
 		this.tfBookNm = new JTextField();
 		this.tfBookWtr = new JTextField();
 		this.tfPublisher = new JTextField();
-		this.tfIsbn = new JTextField();
-		this.pnReleaseDate= new JPanel();
-		pnReleaseDate.setLayout(new BorderLayout());;
+		this.tfIsbn = new JTextField(14);
+		this.tfDate = new JTextField();
+		tfDate.setPreferredSize(new Dimension(215,0));
+		tfDate.setEnabled(false);
+
 		
 		this.calenderBtn = new JButton();
 		calenderBtn.setPreferredSize(new Dimension(45,35));
@@ -184,9 +188,10 @@ public class BookRegistDialog extends JDialog {
 		lblCategory.setFont(CommonConstants.FONT_BASE_17);
 		lblReleaseDate.setFont(CommonConstants.FONT_BASE_17);
 		
-		this.tfDate = new JTextField();
-		tfDate.setPreferredSize(new Dimension(215,0));
 
+		this.pnReleaseDate= new JPanel();
+		pnReleaseDate.setLayout(new BorderLayout());;
+		
 		pnReleaseDate.add(calenderBtn, BorderLayout.EAST);
 		pnReleaseDate.add(tfDate, BorderLayout.WEST);
 		
@@ -211,11 +216,11 @@ public class BookRegistDialog extends JDialog {
 		//NORTH
 		this.pnIntro = new JPanel();
 		pnIntro.setLayout(new BorderLayout());
-		pnIntro.setPreferredSize(new Dimension(0,240));
-		pnIntro.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
+		pnIntro.setPreferredSize(new Dimension(0,230));
+		pnIntro.setBorder(BorderFactory.createEmptyBorder(20,10,0,10));
 		this.txtArea = new JTextArea();
 		txtArea.setLineWrap(true); 
-		txtArea.setPreferredSize(new Dimension(0,230));
+		txtArea.setPreferredSize(new Dimension(0,210));
 		txtArea.setFont(CommonConstants.FONT_BASE_17);
 		
 		JScrollPane srlPn = new JScrollPane(txtArea);
@@ -224,8 +229,8 @@ public class BookRegistDialog extends JDialog {
 		//SOUTH		
 		this.pnFooter = new JPanel();
 		pnFooter.setLayout(new FlowLayout());
-		pnFooter.setPreferredSize(new Dimension(0,50));
-		pnFooter.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
+		pnFooter.setPreferredSize(new Dimension(0,70));
+		pnFooter.setBorder(BorderFactory.createEmptyBorder(5,0,0,0));
 		this.registBtn = new JButton("등록");
 		registBtn.setPreferredSize(new Dimension(100,50));
 		registBtn.setFont(CommonConstants.FONT_BASE_17);
@@ -275,7 +280,7 @@ public class BookRegistDialog extends JDialog {
 				new MyCalenderDialog().setLocationCenter();
 				
 				// 다이어로그 종료 후 
-				
+				tfDate.setText(MyCalenderDialog.rsltDate);
 			}
 		});
 		
@@ -312,7 +317,7 @@ public class BookRegistDialog extends JDialog {
 			String bkWtr = tfBookWtr.getText();
 			String publisher = tfPublisher.getText();
 			String bookIsbn = tfIsbn.getText();
-//			String releaseDate = tfReleaseDate.getText();
+			String releaseDate = tfDate.getText();
 			String booksub = txtArea.getText();
 			
 			vo.setBookNo(bkNo);
@@ -320,12 +325,12 @@ public class BookRegistDialog extends JDialog {
 			vo.setBookWtr(bkWtr);
 			vo.setPublisher(publisher);
 			vo.setBookIsbn(Long.parseLong(bookIsbn));
-//			try {
-//				vo.setReleaseDate(sdf.parse(releaseDate));
-//			} catch (ParseException e1) {
-//				e1.printStackTrace();
-//				System.err.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 등록 중 출간일 파싱에러 발생!");
-//			}
+			try {
+				vo.setReleaseDate(sdf.parse(releaseDate));
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+				System.err.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 등록 중 출간일 파싱에러 발생!");
+			}
 			vo.setCategory(category);
 			vo.setBooksub(booksub);
 			vo.setRegistDate(new Date());
