@@ -31,7 +31,7 @@ import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.main.LibraryMain;
 
-public class MyPageTablePanel extends JPanel{
+public class MyPageTablePanel extends JPanel implements ActionListener, MouseListener{
 	
 	private JPanel pnBody;
 	private JPanel pnTbl;
@@ -166,15 +166,11 @@ public class MyPageTablePanel extends JPanel{
 		this.schFd = new JTextField();
 		schFd.setPreferredSize(new Dimension(550, 30));
 		schFd.setFont(CommonConstants.FONT_BASE_17);
-		ImageIcon calImg = new ImageIcon("C:\\Work\\03.Workspace\\Test\\SwingLibrary\\src\\net\\mbiz\\library\\ui\\img\\sch_icon.png");
-		Image img = calImg.getImage();
-		Image changeImg = img.getScaledInstance(17,17, Image.SCALE_SMOOTH);
-		ImageIcon chImg = new ImageIcon(changeImg);
-		JLabel lbl = new JLabel(chImg);
+		
 		// EAST - 검색 버튼
 		this.schBtn = new JButton();
-		schBtn.setPreferredSize(new Dimension(50, 30));
-		schBtn.add(lbl);
+		schBtn.setPreferredSize(new Dimension(70, 30));
+		schBtn.setFont(CommonConstants.FONT_BASE_12);
 
 		// CENTER
 		this.pnPadding = new JPanel();
@@ -211,85 +207,12 @@ public class MyPageTablePanel extends JPanel{
 		
 		
 		
-		
-		/*검색 이벤트*/
-		schBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				searchBorrow();
-			}
-		});
-		
-		/*대출 기록 전체보기*/
-		pvsBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CommonConstants.repaintBorrowTable();
-			}
-		});
-		
-		/*도서 반납하기*/
-		returnBtn.addActionListener(new ActionListener() {
-			
-			public void actionPerformed(ActionEvent e) {
-
-				int row = borrowTbl.getSelectedRow();
-				BorrowVO seletedVO = CommonConstants.bwModel.getData(row);
-				
-				System.err.println(seletedVO.toString());
-					
-				int result = JOptionPane.showConfirmDialog(null, seletedVO.getBookNm()+" 을(를) 반납 하시겠습니까??"
-						, seletedVO.getBookNm(),JOptionPane.YES_NO_OPTION);
-				
-				if (result==JOptionPane.YES_OPTION) { 		 
-		
-					long gap = new Date().getTime() - seletedVO.getEndDate().getTime();
-					int overDay = (int) (gap / (1000*60*60*24));
-					
-					// 대출상태, 반납일 update
-					seletedVO.setIsBorrowed(0);				
-					seletedVO.setReturnDate(new Date());	
-					if (overDay < 0) {
-						seletedVO.setOverdue(0);
-					} else {
-						seletedVO.setOverdue(overDay);
-					}
-
-					
-					// 북리스트에서 해당 도서 상태 set 1. (대출가능)
-					int idx = seletedVO.getBookNo()-1; 
-					AddBookList.bookList.get(idx).setIsBorrowed(0);
-					
-					CommonConstants.bkModel.fireTableDataChanged();  // 바뀐 정보 테이블에 반영 후,
-					CommonConstants.repaintBorrowTable();			 // 양쪽 테이블 다시 그림.
-					CommonConstants.repaintBookTable();
-					
-				} else {										
-					System.out.println("반납을 취소합니다.");
-				}
-				
-			}
-			
-		});
-		
-
-		/*대출 기록 삭제 Event*/
-		deleteBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
-				System.err.println("삭제 버튼 클릭." );
-
-				int rslt = JOptionPane.showConfirmDialog(null, " '" + seletedVO.getBookNm()+ "' " + " 대출 기록을 삭제 하시겠습니까?", seletedVO.getBookNm(), JOptionPane.YES_NO_OPTION);
-				if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
-					deleteBorrowVO(seletedVO);
-					JOptionPane.showMessageDialog(null,"대출 기록이 삭제 되었습니다.");
-				} else { 
-					System.out.println(seletedVO.getBookNm() + " 대출 기록 삭제를 취소합니다.");
-					JOptionPane.showMessageDialog(null, "삭제가 취소 되었습니다.", seletedVO.getBookNm(), JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-
-		});
-
+		schBtn.addActionListener(this);        /*검색 이벤트*/
+		pvsBtn.addActionListener(this);        /*대출 기록 전체보기*/ 
+		returnBtn.addActionListener(this);     /*도서 반납하기*/
+		deleteBtn.addActionListener(this);     /*대출 기록 삭제 Event*/ 
 	}
+	
 	
 	/**
 	 * 대출 기록 테이블을 출력하는 메서드.
@@ -335,48 +258,136 @@ public class MyPageTablePanel extends JPanel{
 		
 		CommonConstants.bwModel.setNumbering(true);
 		this.borrowTbl.setModel(CommonConstants.bwModel);
-		
-		
-		
-		
-		borrowTbl.addMouseListener(new MouseListener() {
-			
-			public void mouseReleased(MouseEvent e) {
-			}
-			public void mousePressed(MouseEvent e) {
-			}
-			public void mouseExited(MouseEvent e) {
-			}
-			public void mouseEntered(MouseEvent e) {
-			}
-			
-			/* 반납/삭제 버튼 활성화/비활성화 설정.
-			   - 대출중인 도서일 경우에만 반납 버튼이 활성화.
-			   - 반납하지 않은 도서의 경우 삭제 버튼 비활성화.
-			*/
-			public void mouseClicked(MouseEvent e) {
-				
-				BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
-				System.out.println("선택한 도서기록은?? -----> " + seletedVO);
-				
-				if (seletedVO.getIsBorrowed() == 0) {
-					System.err.println("seletedVO.getIsBorrowed()? ----> " + seletedVO.getIsBorrowed());
-					returnBtn.setEnabled(false);
-				} else if (seletedVO.getIsBorrowed() == 1) {
-					returnBtn.setEnabled(true);
-				}
-				
-				if (seletedVO.getReturnDate() == null) {
-					deleteBtn.setEnabled(false);
-					System.err.println("반납일이 null임. seletedVO.getReturnDate()? ----> " + seletedVO.getReturnDate());
-				} else if (seletedVO.getReturnDate() != null){
-					deleteBtn.setEnabled(true);
-					System.err.println("반납일이 null이 아님!! seletedVO.getReturnDate()? ----> " + seletedVO.getReturnDate());
-				}
-				
-			}
-		});
+
+		borrowTbl.addMouseListener(this);
+	
 	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(pvsBtn)) {
+			CommonConstants.repaintBorrowTable();
+		} else if (e.getSource().equals(schBtn)) {
+			searchBorrow();
+		} else if (e.getSource().equals(returnBtn)) {
+			returnBook();
+		} else if (e.getSource().equals(deleteBtn)) {
+			getDeleteMessege();
+		}
+		
+	}
+	
+
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		
+		if (arg0.getSource().equals(borrowTbl)) {
+			BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
+			System.out.println("선택한 도서기록은?? -----> " + seletedVO);
+			
+			if (seletedVO.getIsBorrowed() == 0) {
+				System.err.println("seletedVO.getIsBorrowed()? ----> " + seletedVO.getIsBorrowed());
+				returnBtn.setEnabled(false);
+			} else if (seletedVO.getIsBorrowed() == 1) {
+				returnBtn.setEnabled(true);
+			}
+			
+			if (seletedVO.getReturnDate() == null) {
+				deleteBtn.setEnabled(false);
+				System.err.println("반납일이 null임. seletedVO.getReturnDate()? ----> " + seletedVO.getReturnDate());
+			} else if (seletedVO.getReturnDate() != null){
+				deleteBtn.setEnabled(true);
+				System.err.println("반납일이 null이 아님!! seletedVO.getReturnDate()? ----> " + seletedVO.getReturnDate());
+			}
+		}
+		
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	
+	/**
+	 * 대출 기록 삭제 시, 확인 메세지를 띄워주는 메서드.
+	 */
+	private void getDeleteMessege() {
+		BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
+
+		int rslt = JOptionPane.showConfirmDialog(null, " '" + seletedVO.getBookNm()+ "' " + " 대출 기록을 삭제 하시겠습니까?", seletedVO.getBookNm(), JOptionPane.YES_NO_OPTION);
+		if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
+			deleteBorrowVO(seletedVO);
+			JOptionPane.showMessageDialog(null,"대출 기록이 삭제 되었습니다.");
+		} else { 
+			System.out.println(seletedVO.getBookNm() + " 대출 기록 삭제를 취소합니다.");
+			JOptionPane.showMessageDialog(null, "삭제가 취소 되었습니다.", seletedVO.getBookNm(), JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+	/**
+	 * 대출한 도서를 반납하는 메서드. 
+	 * 반납일, 연체일을 update 한다.
+	 */
+	private void returnBook() {
+		int row = borrowTbl.getSelectedRow();
+		BorrowVO seletedVO = CommonConstants.bwModel.getData(row);
+		
+		System.err.println(seletedVO.toString());
+			
+		int result = JOptionPane.showConfirmDialog(null, seletedVO.getBookNm()+" 을(를) 반납 하시겠습니까??"
+				, seletedVO.getBookNm(),JOptionPane.YES_NO_OPTION);
+		
+		if (result==JOptionPane.YES_OPTION) { 		 
+
+			long gap = new Date().getTime() - seletedVO.getEndDate().getTime();
+			int overDay = (int) (gap / (1000*60*60*24));
+			
+			// 대출상태, 반납일 update
+			seletedVO.setIsBorrowed(0);				
+			seletedVO.setReturnDate(new Date());	
+			if (overDay < 0) {
+				seletedVO.setOverdue(0);
+			} else {
+				seletedVO.setOverdue(overDay);
+			}
+
+			
+			// 북리스트에서 해당 도서 상태 set 1. (대출가능)
+			int idx = seletedVO.getBookNo()-1; 
+			AddBookList.bookList.get(idx).setIsBorrowed(0);
+			
+			CommonConstants.bkModel.fireTableDataChanged();  // 바뀐 정보 테이블에 반영 후,
+			CommonConstants.repaintBorrowTable();			 // 양쪽 테이블 다시 그림.
+			CommonConstants.repaintBookTable();
+			
+		} else {										
+			System.out.println("반납을 취소합니다.");
+		}
+	}
+	
 	
 	/**
 	 * 대출 기록을 검색하는 메서드
@@ -406,7 +417,7 @@ public class MyPageTablePanel extends JPanel{
 		AddBorrowList.borrowList.remove(vo);
 		
 		CommonConstants.repaintBorrowTable();
-		
+			
 	}
 
 }

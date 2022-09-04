@@ -370,7 +370,11 @@ public class MyCalenderDialog extends JDialog implements ActionListener, MouseLi
 		return rsltDate;
 	}
 	
-
+	public String getDay(JLabel lbl) {
+		selectDay = lbl.getText();
+		return selectDay;
+	}
+	
 //---------------------MouseListener Override------------------------
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() instanceof JButton) {
@@ -405,8 +409,5 @@ public class MyCalenderDialog extends JDialog implements ActionListener, MouseLi
 	}
 
 	
-	public String getDay(JLabel lbl) {
-		selectDay = lbl.getText();
-		return selectDay;
-	}
+
 }

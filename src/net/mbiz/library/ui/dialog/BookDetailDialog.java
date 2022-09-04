@@ -13,14 +13,12 @@ import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.AddBorrowList;
@@ -28,7 +26,7 @@ import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
 
-public class BookDetailDialog extends JDialog implements ActionListener{
+public class BookDetailDialog extends JDialog {
 
 	private JPanel pnMain;        
 	// in pnMain
@@ -107,6 +105,10 @@ public class BookDetailDialog extends JDialog implements ActionListener{
 		this.pnBottom = new JPanel();
 		pnBottom.setLayout(new BorderLayout());
 		pnBottom.setPreferredSize(new Dimension(0,80));
+		JButton updateBtn = new JButton("수정");
+		updateBtn.setPreferredSize(new Dimension(70,0));
+		updateBtn.setFont(CommonConstants.FONT_BASE_12);
+		
 		
 		this.pnBorrow = new JPanel();
 		pnBorrow.setLayout(new BorderLayout());
@@ -122,8 +124,9 @@ public class BookDetailDialog extends JDialog implements ActionListener{
 			this.borrowBtn = new JButton("대출중");
 			borrowBtn.setEnabled(false); 	// 버튼 비활성화
 		}
-		pnBorrow.add(borrowBtn, BorderLayout.CENTER);
+		pnBorrow.add(borrowBtn, BorderLayout.WEST);
 		pnBottom.add(pnBorrow, BorderLayout.CENTER);
+		pnBottom.add(updateBtn,BorderLayout.EAST);
 		
 		
 //---------- pnTop - pnWest(WEST), pnEast(EAST)---------------------------------
@@ -236,9 +239,6 @@ public class BookDetailDialog extends JDialog implements ActionListener{
 		
 		
 		/*pnCenter - pnIntro(CENTER)*/
-		
-		
-		
 		pnEast.add(pnLeft, BorderLayout.WEST);
 		pnEast.add(pnRight, BorderLayout.EAST);
 		pnEast.add(pnTitle, BorderLayout.NORTH);
@@ -253,7 +253,27 @@ public class BookDetailDialog extends JDialog implements ActionListener{
 		this.add(pnMain, BorderLayout.CENTER);
 		
 		
-		borrowBtn.addActionListener(this);
+		borrowBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 		if (e.getSource().equals(borrowBtn)) {
+				
+				int rslt = JOptionPane.showConfirmDialog(null, bv.getBookNm()+ " 을(를) 대출 신청 하시겠습니까?", bv.getBookNm(), JOptionPane.YES_NO_OPTION);
+				if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
+					insertBorrow(bv);
+					JOptionPane.showMessageDialog(null, "대출 신청이 완료되었습니다.");
+					dispose();
+				} else { 
+					System.out.println(bv.getBookNm() + " 대출 신청을 취소합니다.");
+				}
+				
+				System.out.println("대출 상태 ----> " + bv.getIsBorrowed());
+			}
+				
+			
+		});
+		
 		/*EVENT - 대출 신청하기*/
 		borrowBtn.addActionListener(new ActionListener() {
 			
@@ -274,12 +294,7 @@ public class BookDetailDialog extends JDialog implements ActionListener{
 		});
 		
 	}
-	
-	public void setLocationCenter() {
-		Dimension d = this.getToolkit().getScreenSize(); 
-		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
-		this.setVisible(true);
-	}
+
 	
 	/**
 	 * 대출 기록을 insert하는 메서드. 
@@ -313,22 +328,12 @@ public class BookDetailDialog extends JDialog implements ActionListener{
 		AddBookList.bookList.get(idx).setIsBorrowed(1);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-//		if (e.getSource().equals(borrowBtn)) {
-//			
-//			int rslt = JOptionPane.showConfirmDialog(null, bv.getBookNm()+ " 을(를) 대출 신청 하시겠습니까?", bv.getBookNm(), JOptionPane.YES_NO_OPTION);
-//			if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
-//				insertBorrow(bv);
-//				JOptionPane.showMessageDialog(null, "대출 신청이 완료되었습니다.");
-//				dispose();
-//			} else { 
-//				System.out.println(bv.getBookNm() + " 대출 신청을 취소합니다.");
-//			}
-//			
-//			System.out.println("대출 상태 ----> " + bv.getIsBorrowed());
-//		}
-	}	
-
-
+	
+	public void setLocationCenter() {
+		Dimension d = this.getToolkit().getScreenSize(); 
+		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
+		this.setVisible(true);
+	}
+	
+	
 }

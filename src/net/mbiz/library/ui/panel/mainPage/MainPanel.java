@@ -63,14 +63,9 @@ public class MainPanel extends JPanel implements ActionListener{
 		btnSet.add(tblBtn, BorderLayout.WEST);
 		btnSet.add(cardBtn, BorderLayout.CENTER);
 		pnTap.add(btnSet, BorderLayout.WEST);
-
-		cardBtn.addActionListener(this);
-		tblBtn.addActionListener(this);
-
-
 		this.add(pnTap, BorderLayout.SOUTH);
 
-		
+
 		this.pnCard = new JPanel();
 		pnCard.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
 		pnCard.setLayout(cards);
@@ -81,6 +76,11 @@ public class MainPanel extends JPanel implements ActionListener{
 		pnCard.add("card", new BookListCardPanel(this));
 		pnCard.add("table", new BookListTablePanel(this));
 		this.add(pnCard, BorderLayout.CENTER);
+		
+		
+		
+		cardBtn.addActionListener(this);
+		tblBtn.addActionListener(this);
 		
 	}
 
