@@ -1,4 +1,4 @@
-package net.mbiz.library.ui.dialog;
+package net.mbiz.library.ui.panel.bookDetail;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,18 +26,17 @@ import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
 
-public class BookDetailDialog extends JDialog {
+public class BookDetailPanel extends JPanel implements ActionListener{
 
 	private JPanel pnMain;        
 	// in pnMain
 	private JPanel pnTop;		  
 	private JPanel pnCenter;      
-	private JPanel pnBottom;      
 	// in pnTop
 	private JPanel pnWest;        
 	private JPanel pnEast;        
 	// in pnWest
-	private JPanel pnImg;         
+	private JPanel pnImg; 
 	private JPanel pnBorrow;      
 	// in pnEast
 	private JPanel pnTitle;       
@@ -65,25 +64,16 @@ public class BookDetailDialog extends JDialog {
 	private JButton borrowBtn;	
 	
 	
-	public BookDetailDialog(BookVO bv) {
-		this.setTitle(bv.getBookNm());
-		jbInit(bv);
+	public BookDetailPanel(BookDetailDialog dl) {
+		jbInit();
 	}
 
+	
 	/**
 	 * 기본 UI Init
 	 */
-	private void jbInit(BookVO bv) {
-		setLocationRelativeTo(this); // 화면 중앙 설정
+	private void jbInit() {
 		setLayout(new BorderLayout());
-		setSize((new Dimension(600,700)));
-		setModal(true);
-		// 여백
-		this.add(Box.createHorizontalStrut(20), BorderLayout.WEST);
-		this.add(Box.createHorizontalStrut(20), BorderLayout.EAST);
-		this.add(Box.createVerticalStrut(20), BorderLayout.NORTH);
-		this.add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
-		
 		
 		/*pnMain - pnTop(NORTH), pnCenter(CENTER), pnBottom(SOUTH)*/
 		this.pnMain = new JPanel();
@@ -93,43 +83,17 @@ public class BookDetailDialog extends JDialog {
 		//NORTH
 		this.pnTop = new JPanel();
 		pnTop.setLayout(new BorderLayout());
-		pnTop.setPreferredSize(new Dimension(0,290));
+		pnTop.setPreferredSize(new Dimension(0,320));
 		pnTop.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
 		//CENTER
 		this.pnCenter = new JPanel();
 		pnCenter.setLayout(new BorderLayout());
-		pnCenter.setPreferredSize(new Dimension(0,250));
+		pnCenter.setPreferredSize(new Dimension(0,230));
 		pnCenter.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
 		pnCenter.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
-		//SOUTH
-		this.pnBottom = new JPanel();
-		pnBottom.setLayout(new BorderLayout());
-		pnBottom.setPreferredSize(new Dimension(0,80));
-		JButton updateBtn = new JButton("수정");
-		updateBtn.setPreferredSize(new Dimension(70,0));
-		updateBtn.setFont(CommonConstants.FONT_BASE_12);
+
 		
-		
-		this.pnBorrow = new JPanel();
-		pnBorrow.setLayout(new BorderLayout());
-		pnBorrow.setPreferredSize(new Dimension(205,80));
-		pnBorrow.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-		pnBorrow.add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
-		pnBorrow.add(Box.createHorizontalStrut(200), BorderLayout.WEST);
-		pnBorrow.add(Box.createHorizontalStrut(200), BorderLayout.EAST);
-		
-		if (bv.getIsBorrowed() == 0) {
-			this.borrowBtn = new JButton("대출 신청");
-		} else {
-			this.borrowBtn = new JButton("대출중");
-			borrowBtn.setEnabled(false); 	// 버튼 비활성화
-		}
-		pnBorrow.add(borrowBtn, BorderLayout.WEST);
-		pnBottom.add(pnBorrow, BorderLayout.CENTER);
-		pnBottom.add(updateBtn,BorderLayout.EAST);
-		
-		
-//---------- pnTop - pnWest(WEST), pnEast(EAST)---------------------------------
+		/*pnTop - pnWest(WEST), pnEast(EAST)*/
 		//WEST
 		this.pnWest = new JPanel();
 		pnWest.setLayout(new BorderLayout());
@@ -143,11 +107,24 @@ public class BookDetailDialog extends JDialog {
 		
 		/*pnWest - pnImg(CENTER), pnBorrow(SOUTH)*/
 		this.pnImg = new JPanel();
-//		pnImg.setPreferredSize(new Dimension(0,170));
+		pnImg.setPreferredSize(new Dimension(0,0));
 		pnImg.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		pnWest.add(pnImg, BorderLayout.CENTER);
+		this.pnBorrow = new JPanel();
+		pnBorrow.setLayout(new BorderLayout());
+		pnBorrow.setPreferredSize(new Dimension(0,70));
+		pnBorrow.setBorder(BorderFactory.createEmptyBorder(10,0,5,0));
+		pnBorrow.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
+		pnWest.add(pnBorrow, BorderLayout.SOUTH);
 		
+		if (BookDetailDialog.bkDatilVO.getIsBorrowed() == 0) {
+			this.borrowBtn = new JButton("대출 신청");
+		} else {
+			this.borrowBtn = new JButton("대출중");
+			borrowBtn.setEnabled(false); 	// 버튼 비활성화
+		}
 		
+		pnBorrow.add(borrowBtn, BorderLayout.CENTER);
 		
 		
 		
@@ -158,7 +135,7 @@ public class BookDetailDialog extends JDialog {
 		pnTitle.setPreferredSize(new Dimension(0, 80));
 		pnTitle.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
 		
-		this.tfBookNm = new JTextArea(bv.getBookNm());
+		this.tfBookNm = new JTextArea(BookDetailDialog.bkDatilVO.getBookNm());
 		tfBookNm.setFont(CommonConstants.FONT_TITLE_22);
 		tfBookNm.setEditable(false);
 		tfBookNm.setLineWrap(true); // 줄바꿈 되도록.
@@ -203,11 +180,11 @@ public class BookDetailDialog extends JDialog {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일");
 		
-		this.bookWtr = new JLabel(bv.getBookWtr());
-		this.category = new JLabel(bv.getCategory());
-		this.publisher = new JLabel(bv.getPublisher());
-		this.releaseDate = new JLabel(sdf.format(bv.getReleaseDate()));
-		this.isbn = new JLabel(Long.toString(bv.getBookIsbn()));
+		this.bookWtr = new JLabel(BookDetailDialog.bkDatilVO.getBookWtr());
+		this.category = new JLabel(BookDetailDialog.bkDatilVO.getCategory());
+		this.publisher = new JLabel(BookDetailDialog.bkDatilVO.getPublisher());
+		this.releaseDate = new JLabel(sdf.format(BookDetailDialog.bkDatilVO.getReleaseDate()));
+		this.isbn = new JLabel(Long.toString(BookDetailDialog.bkDatilVO.getBookIsbn()));
 		bookWtr.setFont(CommonConstants.FONT_BASE_17); 
 		category.setFont(CommonConstants.FONT_BASE_17);
 		publisher.setFont(CommonConstants.FONT_BASE_17);
@@ -229,7 +206,7 @@ public class BookDetailDialog extends JDialog {
 		pnIntro.setLayout(new BorderLayout());
 		pnIntro.setBackground(Color.GREEN);
 		
-		this.txtArea = new JTextArea(bv.getBooksub());
+		this.txtArea = new JTextArea(BookDetailDialog.bkDatilVO.getBooksub());
 		txtArea.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
 		txtArea.setEditable(false);
 		txtArea.setLineWrap(true); 
@@ -249,64 +226,42 @@ public class BookDetailDialog extends JDialog {
 		
 		pnMain.add(pnTop, BorderLayout.NORTH);
 		pnMain.add(pnCenter, BorderLayout.CENTER);
-		pnMain.add(pnBottom, BorderLayout.SOUTH);
 		this.add(pnMain, BorderLayout.CENTER);
 		
 		
-		borrowBtn.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// 		if (e.getSource().equals(borrowBtn)) {
-				
-				int rslt = JOptionPane.showConfirmDialog(null, bv.getBookNm()+ " 을(를) 대출 신청 하시겠습니까?", bv.getBookNm(), JOptionPane.YES_NO_OPTION);
-				if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
-					insertBorrow(bv);
-					JOptionPane.showMessageDialog(null, "대출 신청이 완료되었습니다.");
-					dispose();
-				} else { 
-					System.out.println(bv.getBookNm() + " 대출 신청을 취소합니다.");
-				}
-				
-				System.out.println("대출 상태 ----> " + bv.getIsBorrowed());
-			}
-				
-			
-		});
-		
 		/*EVENT - 대출 신청하기*/
-		borrowBtn.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				BookVO updateVO = null;
-				int rslt = JOptionPane.showConfirmDialog(null, bv.getBookNm()+ " 을(를) 대출 신청 하시겠습니까?", bv.getBookNm(), JOptionPane.YES_NO_OPTION);
-				if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
-					insertBorrow(bv);
-					JOptionPane.showMessageDialog(null, "대출 신청이 완료되었습니다.");
-					dispose();
-				} else { 
-					System.out.println(bv.getBookNm() + " 대출 신청을 취소합니다.");
-				}
-				
-				System.out.println("대출 상태 ----> " + bv.getIsBorrowed());
-			}
-		});
+		borrowBtn.addActionListener(this);
 		
 	}
 
 	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(borrowBtn)) {
+			
+			int rslt = JOptionPane.showConfirmDialog(null, BookDetailDialog.bkDatilVO.getBookNm()+ " 을(를) 대출 신청 하시겠습니까?", BookDetailDialog.bkDatilVO.getBookNm(), JOptionPane.YES_NO_OPTION);
+			if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
+				insertBorrowInfo();
+				updateBookState();
+				JOptionPane.showMessageDialog(null, "대출 신청이 완료되었습니다.");
+			} else { 
+				System.out.println(BookDetailDialog.bkDatilVO.getBookNm() + " 대출 신청을 취소합니다.");
+			}
+			
+		} 
+	}
+	
+	
 	/**
 	 * 대출 기록을 insert하는 메서드. 
-	 * @param BookVO
 	 */
-	private void insertBorrow(BookVO p_bv) {
+	private void insertBorrowInfo() {
 		// borrowList에 대출 기록 추가
 		
 		BorrowVO borrowVO = new BorrowVO();
 		borrowVO.setBorrowNo(AddBorrowList.borrowList.size()+1);
-		borrowVO.setBookNm(p_bv.getBookNm());
-		borrowVO.setBookNo(p_bv.getBookNo());
+		borrowVO.setBookNm(BookDetailDialog.bkDatilVO.getBookNm());
+		borrowVO.setBookNo(BookDetailDialog.bkDatilVO.getBookNo());
 		borrowVO.setUserId("a001");
 		
 		Calendar cal = Calendar.getInstance(); 
@@ -320,20 +275,19 @@ public class BookDetailDialog extends JDialog {
 		
 		AddBorrowList.borrowList.add(borrowVO);
 		
-		
-		// bookList update
-		int idx = p_bv.getBookNo()-1; //도서번호 - 1 = 인덱스
-		System.out.println("도서리스트의 인덱스" + idx);
-		System.out.println("도서리스트의 사이즈" + AddBookList.bookList.size());
-		AddBookList.bookList.get(idx).setIsBorrowed(1);
 	}
 
 	
-	public void setLocationCenter() {
-		Dimension d = this.getToolkit().getScreenSize(); 
-		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
-		this.setVisible(true);
+	/**
+	 * 도서의 대출 상태를 update하는 메서드.
+	 */
+	private void updateBookState() {
+		// bookList update
+		int idx = BookDetailDialog.bkDatilVO.getBookNo()-1; //도서번호 - 1 = 인덱스
+		System.out.println("도서리스트의 인덱스" + idx);
+		System.out.println("도서리스트의 사이즈" + AddBookList.bookList.size());
+		AddBookList.bookList.get(idx).setIsBorrowed(1);
+		
 	}
-	
-	
+
 }

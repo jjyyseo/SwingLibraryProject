@@ -5,6 +5,14 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.AddBorrowList;
@@ -29,12 +37,12 @@ public class CommonConstants {
 	public static final Color COLOR_MENU_FONT2 = new Color(60,60,130);
 	
 	/*폰트*/
-	public static final Font FONT_BASE_18 = new Font("나눔스퀘어", Font.PLAIN, 18);
-	public static final Font FONT_BASE_17 = new Font("나눔스퀘어", Font.PLAIN, 17);
-	public static final Font FONT_BASE_15 = new Font("나눔스퀘어", Font.PLAIN, 15);
-	public static final Font FONT_BASE_12 = new Font("나눔스퀘어", Font.PLAIN, 12);
-	public static final Font FONT_TITLE_25 = new Font("예스 고딕 레귤러", Font.BOLD, 25);
-	public static final Font FONT_TITLE_22 = new Font("예스 고딕 레귤러", Font.BOLD, 22);
+	public static final Font FONT_BASE_18 = new Font("나눔고딕", Font.PLAIN, 18);
+	public static final Font FONT_BASE_17 = new Font("나눔고딕", Font.PLAIN, 17);
+	public static final Font FONT_BASE_15 = new Font("나눔고딕", Font.PLAIN, 15);
+	public static final Font FONT_BASE_12 = new Font("나눔고딕", Font.PLAIN, 12);
+	public static final Font FONT_TITLE_25 = new Font("나눔고딕", Font.BOLD, 25);
+	public static final Font FONT_TITLE_22 = new Font("나눔고딕", Font.BOLD, 22);
 	
 	/*테이블*/
 	public static BeanTableModel<BookVO> bkModel;
@@ -43,10 +51,8 @@ public class CommonConstants {
 	/*대출 테이블 다시 그리는 메서드*/
 	public static void repaintBorrowTable() {
 		CommonConstants.bwModel.removeAll();
-		
-		// 데이터 역순 정렬
 		Collections.sort(AddBorrowList.borrowList, Collections.reverseOrder());
-		
+		System.err.println("여기는 repaintBorrowTable");
 		CommonConstants.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
 		CommonConstants.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 		
@@ -54,8 +60,64 @@ public class CommonConstants {
 	/*전체 도서 테이블 다시 그리는 메서드*/
 	public static void repaintBookTable() {
 		CommonConstants.bkModel.removeAll();
+		Collections.sort(AddBookList.bookList, Collections.reverseOrder());
 		CommonConstants.bkModel.addDataList((ArrayList) AddBookList.bookList);
 		CommonConstants.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
+	
+	
+	/**
+	 * <테이블에 모델을 적용하고 랜더러 설정 및 테이블의 열을 설정한다.>
+	 * JTable과 BeanTableModel을 파라미터로 받아 
+	 * 테이블에 모델을 셋팅,
+	 * 각 컬럼의 열 너비, 랜더러 셋팅.
+	 * @param <T>
+	 * @param table
+	 * @param model
+	 */
+	public static <T> void setTableModelColumnWithCommonTableRenderer(JTable table, BeanTableModel<T> model) {
+		model.setSorting(false);
+//		int[] col = { 80, 500, 150, 150, 150, 150, 150 };	
+		setDefaultTable(table);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		for (int k = 0; k < model.getColumnCount(); k++) {
+			
+		    CommonTableRenderer renderer = new CommonTableRenderer();
+		    TableColumn column = new TableColumn(k, model.getColumnWidth(k), renderer, null);
+		    table.addColumn(column);
+		    
+		}
+		
+		table.setModel(model);
+	}
 
+	
+	public static void setDefaultTable(JTable table) {
+	      table.setAutoCreateColumnsFromModel(false);
+	      table.setBackground(Color.white);
+	      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	      table.getTableHeader().setReorderingAllowed(false);
+	      table.setRowHeight(31);
+	      table.setFillsViewportHeight(true);
+	      table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	      
+	      setDefaultTableHeader(table.getTableHeader());
+	}
+	   
+	   
+	/**
+	 * 테이블의 기본 헤더 모양을 설정한다.
+	 * @param header
+	 */
+	public static void setDefaultTableHeader(JTableHeader header) {
+	   header.setReorderingAllowed(false);
+	   header.setUpdateTableInRealTime(true);
+	   header.setBackground(new Color(175, 175, 175));
+	   header.setForeground(Color.BLACK);
+	   header.setFont(CommonConstants.FONT_BASE_17);
+	   header.setBorder(BorderFactory.createEmptyBorder());
+	   header.setForeground(CommonConstants.COLOR_WHITE_BACKGROUND);
+
+	}
+	   
 }

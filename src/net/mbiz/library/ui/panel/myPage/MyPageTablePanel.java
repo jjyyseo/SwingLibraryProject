@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -62,6 +63,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	}
 
 	private void initialize() {
+		Collections.sort(AddBorrowList.borrowList, Collections.reverseOrder());
 		CommonConstants.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
 		CommonConstants.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
@@ -232,19 +234,22 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 				BorrowVO bv = getRowAt(row);
 				switch (col) {
 				case 0:
-					return bv.getBookNm();
+					return bv.getBorrowNo();
 				case 1:
-					return sdf.format(bv.getStartDate());
+					return bv.getBookNm();
 				case 2:
-					return sdf.format(bv.getEndDate());
+					return sdf.format(bv.getStartDate());
 				case 3:
+					return sdf.format(bv.getEndDate());
+				case 4:
 					if (bv.getReturnDate()!=null) {
 						return sdf.format(bv.getReturnDate());
 					} else {
 						return "-";
 					}
-				case 4:
+				case 5:
 					return bv.getOverdue() + "(일)";
+				
 				}
 				return null;
 			}
@@ -256,7 +261,6 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			}
 		};
 		
-		CommonConstants.bwModel.setNumbering(true);
 		this.borrowTbl.setModel(CommonConstants.bwModel);
 
 		borrowTbl.addMouseListener(this);

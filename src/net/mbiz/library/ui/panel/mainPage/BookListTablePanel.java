@@ -3,18 +3,19 @@ package net.mbiz.library.ui.panel.mainPage;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.ImageIcon;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -26,8 +27,9 @@ import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.ui.common.CommonConstants;
-import net.mbiz.library.ui.dialog.BookDetailDialog;
+import net.mbiz.library.ui.common.CommonTableRenderer;
 import net.mbiz.library.ui.dialog.BookRegistDialog;
+import net.mbiz.library.ui.dialog.BookUpdateDialog;
 
 public class BookListTablePanel extends JPanel implements ActionListener, MouseListener{
 
@@ -35,13 +37,12 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	private JPanel pnHeader;
 	private JPanel pnTbl;
 	private JPanel pnFooter;
-	private JPanel pnSch;
-	private JPanel pnPadding;
+	private JPanel pnWest;
 	private JPanel pnTitle;
-	private JPanel pnPvs;
+	private JPanel pnEast;
 	private JPanel pnEastBtn;
 	private JPanel pnWestBtn;
-
+	private JPanel pnCbb;
 	private JTable bookTbl;
 
 	private JLabel title;
@@ -52,6 +53,9 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	private JButton pvsBtn;
 	private JButton registBtn;
 	private JButton deleteBtn;
+	
+	private JComboBox<String> cbbSearch;
+//	private DefaultComboBoxModel<String> schModel;
 
 	public BookListTablePanel(MainPanel pn) {
 		jbInit();
@@ -60,6 +64,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	}
 
 	private void initialize() {
+		Collections.sort(AddBookList.bookList, Collections.reverseOrder());
 		CommonConstants.bkModel.addDataList((ArrayList) AddBookList.bookList); // 리스트로 한꺼번에 집어넣기 가능
 		CommonConstants.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
@@ -80,24 +85,21 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		pnHeader.setLayout(new BorderLayout());
 		pnHeader.setPreferredSize(new Dimension(0, 150));
 		pnHeader.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-		pnHeader.add(Box.createHorizontalStrut(920), BorderLayout.WEST);
 		pnHeader.add(Box.createVerticalStrut(15), BorderLayout.SOUTH);
 
 		// CENTER - 테이블.
 		this.pnTbl = new JPanel();
 		pnTbl.setLayout(new BorderLayout());
 		pnTbl.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-		this.bookTbl = new JTable(CommonConstants.bkModel); // 데이터가 들어가는 테이블
+		
+		this.bookTbl = new JTable(); // 데이터가 들어가는 테이블
 		bookTbl.setRowHeight(32);
 		bookTbl.setFont(CommonConstants.FONT_BASE_17);
 
 		// 테이블 스크롤
 		JScrollPane sclpn = new JScrollPane(bookTbl);
-		sclpn.setCorner(JScrollPane.UPPER_LEFT_CORNER, bookTbl.getTableHeader());
-
 		pnTbl.add(sclpn, BorderLayout.CENTER);
 		pnBody.add(pnTbl, BorderLayout.CENTER);
-
 
 		// SOUTH
 		this.pnFooter = new JPanel();
@@ -105,6 +107,10 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		pnFooter.setPreferredSize(new Dimension(0, 50));
 		pnFooter.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 
+		
+		
+		
+		
 		
 		
 		/* pnHeander - pnTitle(NORTH), pnSch(EAST), pnPvs(WEST) */
@@ -117,47 +123,55 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		title.setFont(CommonConstants.FONT_TITLE_25);
 		title.setHorizontalAlignment(JLabel.CENTER);
 		title.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-
+		
 		// EAST
-		this.pnSch = new JPanel();
-		pnSch.setLayout(new BorderLayout());
-		pnSch.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-		pnSch.setBorder(BorderFactory.createEmptyBorder(33, 0, 0, 0));
-
+		this.pnEast = new JPanel();
+		pnEast.setLayout(new BorderLayout());
+		pnEast.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		pnEast.setBorder(BorderFactory.createEmptyBorder(33, 0, 0, 0));
+		
+		
+		
+		/* pnEast - schFd(WEST), pnPadding(CENTER), schBtn(EAST) */
+		this.schFd = new JTextField();
+		schFd.setPreferredSize(new Dimension(550, 30));
+		schFd.setFont(CommonConstants.FONT_BASE_17);
+		this.schBtn = new JButton("검색");
+		schBtn.setPreferredSize(new Dimension(70, 30));
+		schBtn.setFont(CommonConstants.FONT_BASE_12);
+		
+		this.cbbSearch = new JComboBox<>();
+		cbbSearch.setModel(new DefaultComboBoxModel<>(new String[] {"도서명","저자","출판사","카테고리"}));
+		cbbSearch.setFont(CommonConstants.FONT_BASE_15);
+		cbbSearch.setPreferredSize(new Dimension(90,50));
+		
+		this.pnCbb = new JPanel();
+		pnCbb.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		pnCbb.add(cbbSearch);
+		
+	
 		// WEST
-		this.pnPvs = new JPanel();
-		pnPvs.setLayout(new BorderLayout());
-		pnPvs.setBorder(BorderFactory.createEmptyBorder(33, 0, 0, 0));
-		pnPvs.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-		/* 전체 리스트로. */
+		this.pnWest = new JPanel();
+		pnWest.setLayout(new BorderLayout());
+		pnWest.setBorder(BorderFactory.createEmptyBorder(33, 0, 0, 0));
+		pnWest.setBackground(Color.green);
+	
 		this.pvsBtn = new JButton();
 		pvsBtn.setPreferredSize(new Dimension(200, 30));
 		pvsBtn.setBorderPainted(false);
 		pvsBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-
 		this.pvsLbl = new JLabel("전체보기");
 		pvsLbl.setFont(CommonConstants.FONT_BASE_17);
 		pvsLbl.setHorizontalAlignment(JLabel.CENTER);
 		pvsBtn.add(pvsLbl);
 
-		
-		
-		/* pnSch - schFd(WEST), pnPadding(CENTER), schBtn(EAST) */
-		// WEST - 검색어 입력란
-		this.schFd = new JTextField();
-		schFd.setPreferredSize(new Dimension(550, 30));
-		schFd.setFont(CommonConstants.FONT_BASE_17);
 
-		// EAST - 검색 버튼
-		this.schBtn = new JButton("검색");
-		schBtn.setPreferredSize(new Dimension(70, 30));
-		schBtn.setFont(CommonConstants.FONT_BASE_12);
 		
-		// CENTER
-		this.pnPadding = new JPanel();
-		pnPadding.setPreferredSize(new Dimension(10, 10));
-		pnPadding.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		
+		
 
+	
+		
 		
 		
 		
@@ -193,16 +207,16 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		pnFooter.add(pnWestBtn, BorderLayout.WEST);
 		
 		//header
-		pnSch.add(pnPadding, BorderLayout.CENTER);
-		pnSch.add(schFd, BorderLayout.WEST);
-		pnSch.add(schBtn, BorderLayout.EAST);
+		pnEast.add(schFd, BorderLayout.CENTER);
+		pnEast.add(pnCbb, BorderLayout.WEST);
+		pnEast.add(schBtn, BorderLayout.EAST);
 
-		pnPvs.add(pvsBtn, BorderLayout.WEST);
+		pnWest.add(pvsBtn, BorderLayout.WEST);
 		pnTitle.add(title, BorderLayout.WEST);
 
 		pnHeader.add(pnTitle, BorderLayout.NORTH);
-		pnHeader.add(pnSch, BorderLayout.EAST);
-		pnHeader.add(pnPvs, BorderLayout.WEST);
+		pnHeader.add(pnEast, BorderLayout.EAST);
+		pnHeader.add(pnWest, BorderLayout.WEST);
 		
 		//center
 		pnBody.add(pnFooter, BorderLayout.SOUTH);
@@ -269,8 +283,8 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	 */
 	private void initTable() {
 		/* 테이블을 위한 setting */
-		String topHeader[] = { "도서명", "저자", "출판사", "출간일", "카테고리", "대출상태" };	// 헤더 setting
-		int[] col = { 100, 100, 100, 100, 100, 100 };								// 열 넓이
+		String topHeader[] = { "No","도서명", "저자", "출판사", "출간일", "카테고리", "대출상태" };	// 헤더 setting
+		int[] col = {  80, 500, 150, 150, 150, 150, 150  };								// 열 넓이
 		
 		CommonConstants.bkModel = new BeanTableModel<BookVO>(topHeader, col) {
 			// 객체의 컬럼 별 데이터를 한꺼번에 테이블에 뿌려준다.
@@ -280,16 +294,19 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 				
 				switch (col) {
 				case 0:
-					return vo.getBookNm();
+					return vo.getBookNo();
 				case 1:
-					return vo.getBookWtr();
+					return vo.getBookNm();
 				case 2:
-					return vo.getPublisher();
+					return vo.getBookWtr();
 				case 3:
-					return vo.getReleaseDate();
+					return vo.getPublisher();
 				case 4:
-					return vo.getCategory();
+					return vo.getReleaseDate();
 				case 5:
+					return vo.getCategory();
+					
+				case 6:
 					if (vo.getIsBorrowed() == 0) {
 						return "대출가능";
 					} else if(vo.getIsBorrowed() == 1) {
@@ -298,6 +315,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 						return "알수없음";
 					}
 				}
+				
 				return null;
 			}
 
@@ -305,11 +323,12 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			public void setValueByColumIndex(int row, int col, Object obj) {
 				// 체크박스 처럼 체크한 위치의 값을 받고 싶을 때 사용.
 			}
+	
 		};
-		CommonConstants.bkModel.setNumbering(true); // 넘버링 여부 O
 		
-		this.bookTbl.setModel(CommonConstants.bkModel);
-		CommonConstants.bkModel.addTableModelListener(bookTbl);
+		
+		
+		CommonConstants.setTableModelColumnWithCommonTableRenderer(this.bookTbl, CommonConstants.bkModel);
 	}
 	
 	
@@ -320,10 +339,28 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
 			CommonConstants.bkModel.removeAll();
+			
+			
 			for (BookVO bv : AddBookList.bookList) {
-				if (bv.getBookNm().contains(schFd.getText())) {
-					CommonConstants.bkModel.addData(bv);
-				}
+				String cbb = (String) cbbSearch.getSelectedItem();
+				
+				if (cbb.equals("도서명")) {
+					if (bv.getBookNm().contains(schFd.getText())) {
+						CommonConstants.bkModel.addData(bv);				
+					} 
+				} else if(cbb.equals("저자")) {
+					if (bv.getBookWtr().contains(schFd.getText())) {
+						CommonConstants.bkModel.addData(bv);				
+					} 
+				} else if(cbb.equals("출판사")) {
+					if (bv.getPublisher().contains(schFd.getText())) {
+						CommonConstants.bkModel.addData(bv);				
+					} 
+				} else if(cbb.equals("카테고리")) {
+					if (bv.getCategory().contains(schFd.getText())) {
+						CommonConstants.bkModel.addData(bv);				
+					} 
+				} 
 			}
 			this.bookTbl.setModel(CommonConstants.bkModel);
 			
@@ -394,15 +431,24 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		int idx = bookTbl.getSelectedRow();
 		BookVO seletedVO = AddBookList.bookList.get(bookTbl.getSelectedRow());
 		System.out.println("선택한 도서기록은?? -----> " + seletedVO);
-		// 도서 상세청보 창 생성
-		BookDetailDialog detailDialog = new BookDetailDialog(AddBookList.bookList.get(idx));
-		detailDialog.setLocationCenter();
-		CommonConstants.bkModel.fireTableDataChanged();
+
+		BookUpdateDialog uptDialog = new BookUpdateDialog();
+		uptDialog.initializeBookOne(seletedVO);
+		uptDialog.setLocationCenter();
 		
+		CommonConstants.bkModel.fireTableDataChanged();
 		bookTbl.repaint();
 		
 		//마이페이지 테이블 repaint()
 		CommonConstants.repaintBorrowTable();
+		
+		
+		
+//		// 도서 상세청보 창 생성
+//		BookDetailDialog.bkDatilVO = AddBookList.bookList.get(idx);
+//		System.out.println("이번 bkDatilVO?? -----> " + BookDetailDialog.bkDatilVO);
+//		BookDetailDialog detailDialog = new BookDetailDialog();
+//		detailDialog.setLocationCenter();
 	}
 
 

@@ -140,7 +140,7 @@ public class LibraryMain extends JFrame implements ActionListener{
 	}
 	
 	public static void main(String[] args) {
-		new LibraryMain().setLocationCenter();;
+		new LibraryMain().setLocationCenter();
 	}
 
 
