@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import net.mbiz.library.ui.main.LibraryMain;
+import net.mbiz.library.main.LibraryMain;
 
 public class LoginFrame extends JFrame{
 	

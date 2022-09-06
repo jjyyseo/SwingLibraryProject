@@ -1,5 +1,6 @@
 package net.mbiz.library.ui.common.renderer;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.text.SimpleDateFormat;
 
@@ -27,30 +28,49 @@ public class BorrowTableRenderer extends JLabel implements TableCellRenderer{
 		BorrowVO vo = (BorrowVO) value;
 		String str = "";
 		
+		/*데이터  쪼개기*/
 		switch (col) {
 
 		case 1:
 			str = String.valueOf(vo.getBorrowNo());
+			break;
 		case 2:
 			str = vo.getBookNm();
+			break;
 		case 3:
 			str = vo.getBookWtr();
+			break;
 		case 4:
 			str = sdf.format(vo.getStartDate());
+			break;
 		case 5:
 			str = sdf.format(vo.getEndDate());
+			break;
 		case 6:
 			if (vo.getReturnDate()!=null) {
 				str = sdf.format(vo.getReturnDate());
 			} else {
 				str = "-";
 			}
+			break;
 		case 7:
 			str = vo.getOverdue() + "(일)";
+			break;
 
 		}
+
+		if (row % 2 == 1) {
+			this.setBackground(fgColor);
+		} else {
+			this.setBackground(bgColor);
+		}
 		
-		return null;
+		this.setText(str); // 문자열로 데이터 뿌리기.
+		
+		return this;
 	}
+	
+	private Color fgColor = new Color(243, 243, 243);
+	private Color bgColor = new Color(225, 227, 252);
 	
 }

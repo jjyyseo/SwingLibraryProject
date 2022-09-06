@@ -1,4 +1,4 @@
-package net.mbiz.library.ui.library.book;
+package net.mbiz.library.ui.library.book.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -25,6 +25,7 @@ import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.ui.common.CommonConstants;
+import net.mbiz.library.ui.library.book.dialog.BookDetailDialog;
 
 public class BookDetailPanel extends JPanel implements ActionListener{
 

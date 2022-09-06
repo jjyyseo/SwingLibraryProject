@@ -1,4 +1,4 @@
-package net.mbiz.library.ui.library.book.list;
+package net.mbiz.library.ui.library.mainPage;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -32,34 +32,42 @@ import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.ui.common.CommonConstants;
-import net.mbiz.library.ui.library.book.BookRegistDialog;
-import net.mbiz.library.ui.library.book.BookUpdateDialog;
+import net.mbiz.library.ui.library.book.dialog.BookRegistDialog;
+import net.mbiz.library.ui.library.book.dialog.BookUpdateDialog;
 
 public class BookListTablePanel extends JPanel implements ActionListener, MouseListener{
 
 	private JPanel pnBody;
+	//body
 	private JPanel pnHeader;
 	private JPanel pnTbl;
 	private JPanel pnFooter;
-	private JPanel pnWest;
+
+	// pnHeader
 	private JPanel pnTitle;
+	private JPanel pnWest;
 	private JPanel pnEast;
+	
+	private JPanel pnCbb;
+	
 	private JPanel pnEastBtn;
 	private JPanel pnWestBtn;
-	private JPanel pnCbb;
+	
 	private JTable bookTbl;
 
 	private JLabel title;
 	private JLabel pvsLbl;
 
-	private JTextField schFd;
 	private JButton schBtn;
 	private JButton pvsBtn;
 	private JButton registBtn;
 	private JButton deleteBtn;
 	
+	private JTextField schFd;
+
 	private JComboBox<String> cbbSearch;
 	private List<BookVO> checkedList = new ArrayList<>(); 
+	
 	public BookListTablePanel(MainPanel pn) {
 		jbInit();
 		initTable();	// 테이블 생성
@@ -135,21 +143,22 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		
 		
 		
-		/* pnEast - schFd(WEST), pnPadding(CENTER), schBtn(EAST) */
+		/* pnEast - pnCbb(WEST), schFd(CENTER), schBtn(EAST) */
 		this.schFd = new JTextField();
 		schFd.setPreferredSize(new Dimension(550, 30));
 		schFd.setFont(CommonConstants.FONT_BASE_17);
+		
 		this.schBtn = new JButton("검색");
 		schBtn.setPreferredSize(new Dimension(70, 30));
 		schBtn.setFont(CommonConstants.FONT_BASE_12);
-		
+
+		this.pnCbb = new JPanel();
+		pnCbb.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		this.cbbSearch = new JComboBox<>();
 		cbbSearch.setModel(new DefaultComboBoxModel<>(new String[] {"도서명","저자","출판사","카테고리"}));
 		cbbSearch.setFont(CommonConstants.FONT_BASE_15);
 		cbbSearch.setPreferredSize(new Dimension(90,50));
 		
-		this.pnCbb = new JPanel();
-		pnCbb.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		pnCbb.add(cbbSearch);
 		
 	
@@ -424,12 +433,12 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	private void getDeleteMessege() {
 		
 		if (checkedList.size()> 0) {
-			int rslt = JOptionPane.showConfirmDialog(null, " 선택한 도서를 삭제 하시겠습니까?", "도서 삭제", JOptionPane.YES_NO_OPTION);
+			int rslt = JOptionPane.showConfirmDialog(null, "선택한 도서를 삭제 하시겠습니까?", "도서 정보를 삭제합니다.", JOptionPane.YES_NO_OPTION);
 			if (rslt == JOptionPane.YES_OPTION) {
 				deleteCheckedList(checkedList);
-				JOptionPane.showMessageDialog(null, "삭제가 완료 되었습니다.");
+				JOptionPane.showMessageDialog(null, "삭제 완료 되었습니다.");
 			} else {
-				JOptionPane.showMessageDialog(null, "삭제가 취소 되었습니다.");
+				JOptionPane.showMessageDialog(null, "삭제 취소 되었습니다.");
 			}
 			
 		} else {
@@ -449,7 +458,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 				}
 				
 			} else {
-				JOptionPane.showMessageDialog(null, "삭제할 도서를 선택하세요.","선택된 도서 없음", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "삭제할 도서를 선택하세요.","선택된 행 없음", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 		

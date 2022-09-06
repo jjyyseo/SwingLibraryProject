@@ -1,4 +1,4 @@
-package net.mbiz.library.ui.library.book.list;
+package net.mbiz.library.ui.library.mainPage;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,7 +18,7 @@ import javax.swing.ScrollPaneConstants;
 import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.ui.common.CommonConstants;
-import net.mbiz.library.ui.library.book.BookPanel;
+import net.mbiz.library.ui.library.book.panel.BookPanel;
 
 // MainPanel의 pnBody. - card 형식으로 리스트를 출력하는 패널(첫번쨰 카드)
 public class BookListCardPanel extends JPanel implements ActionListener{

@@ -54,7 +54,6 @@ public class CommonConstants {
 	public static BeanTableModel<BorrowVO> bwModel;
 	
 	
-
 	/*대출 테이블 다시 그리는 메서드*/
 	public static void repaintBorrowTable() {
 		CommonConstants.bwModel.removeAll();
@@ -101,10 +100,6 @@ public class CommonConstants {
 			    table.addColumn(column);
 			}
 		}
-		
-		
-		
-		
 		
 		setTableCheckBox(table, model);
 		table.setModel(model);

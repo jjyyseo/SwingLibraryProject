@@ -1,4 +1,4 @@
-package net.mbiz.library.ui.library.book;
+package net.mbiz.library.ui.library.book.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.ui.common.CommonConstants;
+import net.mbiz.library.ui.library.book.panel.BookDetailPanel;
+import net.mbiz.library.ui.library.book.panel.BookUpdatePanel;
 
 public class BookDetailDialog extends JDialog implements ActionListener{
 	private JPanel pnCard;

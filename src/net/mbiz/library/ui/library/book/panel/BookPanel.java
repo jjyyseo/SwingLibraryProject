@@ -1,4 +1,4 @@
-package net.mbiz.library.ui.library.book;
+package net.mbiz.library.ui.library.book.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

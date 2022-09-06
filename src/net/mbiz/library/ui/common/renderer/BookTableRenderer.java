@@ -33,6 +33,7 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 		BookVO vo = (BookVO) value;
 		String str = "";
 
+		/*데이터  쪼개기*/
 		switch (col) {
 		case 1:
 			str = String.valueOf(vo.getBookNo());

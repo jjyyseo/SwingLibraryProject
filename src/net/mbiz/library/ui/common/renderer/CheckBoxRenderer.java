@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 
 import net.mbiz.library.data.BookVO;
+import net.mbiz.library.data.BorrowVO;
 
 /**
  * 체크박스를 테이블에 그려주는 Renderer. 
@@ -31,8 +32,6 @@ public class CheckBoxRenderer extends JCheckBox implements TableCellRenderer{
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 			boolean hasFocus, int row, int column) {
-
-		//value = bookVO
 		
 		if (row % 2 == 1) {
         	this.setBackground(fgColor);
@@ -41,19 +40,33 @@ public class CheckBoxRenderer extends JCheckBox implements TableCellRenderer{
         	this.setBackground(bgColor);
         }
 		
-		if (this.isSelected()) {
-			this.setForeground(Color.MAGENTA);
-		} else {
-			this.setForeground(Color.BLACK);
-		}
+//		if (this.isSelected()) {
+//			this.setForeground(Color.MAGENTA);
+//		} else {
+//			this.setForeground(Color.BLACK);
+//		}
 		
-		boolean isChecked =  ((BookVO) value).isSelect();
 		
-		if (isChecked) {
-			this.setSelected(true);
-		}
-		else {
-			this.setSelected(false);
+		
+		boolean isChecked = false;
+		if (value instanceof BookVO) {
+			
+			isChecked =  ((BookVO) value).isSelect();
+			if (isChecked) {
+				this.setSelected(true);
+			} else {
+				this.setSelected(false);
+			}
+			
+		} else if (value instanceof BorrowVO) {
+			
+			isChecked =  ((BorrowVO) value).isSelect();
+			if (isChecked) {
+				this.setSelected(true);
+			} else {
+				this.setSelected(false);
+			}
+			
 		}
 		
 		return this;
