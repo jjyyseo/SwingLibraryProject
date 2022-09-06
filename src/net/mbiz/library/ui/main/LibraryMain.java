@@ -14,8 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import net.mbiz.library.ui.common.CommonConstants;
-import net.mbiz.library.ui.panel.mainPage.MainPanel;
-import net.mbiz.library.ui.panel.myPage.MyPageTablePanel;
+import net.mbiz.library.ui.library.book.list.MainPanel;
+import net.mbiz.library.ui.library.myPage.MyPageTablePanel;
 
 public class LibraryMain extends JFrame implements ActionListener{
 
