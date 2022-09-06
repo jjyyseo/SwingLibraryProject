@@ -221,10 +221,8 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	 * */
 	private void initTable() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
-		String topHeader[] = {"도서명", "대출일", "반납예정일", "반납일", "연체일"};	
-		int col[] = {100 ,100 ,100 ,100 ,100};
-		
-
+		String topHeader[] = {"no", "도서명", "저자","대출일", "반납예정일", "반납일", "연체일", "반납", "삭제"};	
+		int col[] = {60 ,630 ,290 ,173 ,173 ,173, 90, 80, 80};
 		
 		CommonConstants.bwModel = new BeanTableModel<BorrowVO>(topHeader, col) {
 			
@@ -232,37 +230,20 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			@Override
 			public Object getValueByColumIndex(int row, int col) {
 				BorrowVO bv = getRowAt(row);
-				switch (col) {
-				case 0:
-					return bv.getBorrowNo();
-				case 1:
-					return bv.getBookNm();
-				case 2:
-					return sdf.format(bv.getStartDate());
-				case 3:
-					return sdf.format(bv.getEndDate());
-				case 4:
-					if (bv.getReturnDate()!=null) {
-						return sdf.format(bv.getReturnDate());
-					} else {
-						return "-";
-					}
-				case 5:
-					return bv.getOverdue() + "(일)";
-				
-				}
-				return null;
+				return bv;
 			}
 
-			
 			@Override
 			public void setValueByColumIndex(int row, int col, Object obj) {
 				
 			}
 		};
 		
-		this.borrowTbl.setModel(CommonConstants.bwModel);
+		CommonConstants.setTableModelColumnWithCommonTableRenderer(borrowTbl, CommonConstants.bwModel);
 
+		
+		
+		
 		borrowTbl.addMouseListener(this);
 	
 	}

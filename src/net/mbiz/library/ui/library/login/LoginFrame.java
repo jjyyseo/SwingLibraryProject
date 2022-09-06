@@ -1,4 +1,4 @@
-package net.mbiz.library.ui.login;
+package net.mbiz.library.ui.library.login;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

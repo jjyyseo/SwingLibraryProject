@@ -24,7 +24,8 @@ public class BookVO implements Comparable<BookVO>{
 	private Date registDate;		/* 등록일자*/
 	private Date updayeDate;		/* 수정일자*/
 	
-	private boolean isSelect;
+	private boolean isSelect;		/* 체크박스 선택 여부!*/
+	
 	@Override
 	public int compareTo(BookVO o) {
 		return this.bookNo - o.bookNo;

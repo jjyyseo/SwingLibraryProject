@@ -41,6 +41,7 @@ public class AddBorrowList {
 			bwVO.setReturnDate(returnDate);
 			bwVO.setOverdue(2);
 			bwVO.setBookNm(getBookNm(i));
+			bwVO.setBookWtr(getBookWtr(i));
 			
 			bwList.add(bwVO);
 		}
@@ -53,6 +54,15 @@ public class AddBorrowList {
 		for (BookVO bkVO : AddBookList.bookList) {
 			if (bookNo == bkVO.getBookNo()) {
 				return bkVO.getBookNm();
+			}
+		}
+		return null;
+	}
+
+	private static String getBookWtr(int bookNo) {
+		for (BookVO bkVO : AddBookList.bookList) {
+			if (bookNo == bkVO.getBookNo()) {
+				return bkVO.getBookWtr();
 			}
 		}
 		return null;

@@ -10,8 +10,11 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 
+import net.mbiz.library.data.BookVO;
+
 /**
- * 체크박스만 뽑아내는 Renderer. 
+ * 체크박스를 테이블에 그려주는 Renderer. 
+ * 체크된 상태에 따라서 그림을 그려줌.
  * @author metabiz
  *
  */
@@ -26,42 +29,39 @@ public class CheckBoxRenderer extends JCheckBox implements TableCellRenderer{
 	}
 
 	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+			boolean hasFocus, int row, int column) {
+
+		//value = bookVO
 		
-		if (isSelected) {
-			this.setForeground(Color.MAGENTA);
-			this.setBackground(Color.LIGHT_GRAY);
-		} else {
-			this.setForeground(Color.BLACK);
-			this.setBackground(Color.WHITE);
-			this.setOpaque(true);
-		}
-		
-        if (row % 2 == 1) {
-            this.setBackground(fgColor);
+		if (row % 2 == 1) {
+        	this.setBackground(fgColor);
         }
         else {
-            this.setBackground(bgColor);
+        	this.setBackground(bgColor);
         }
-		System.out.println(row); 
-		System.out.println(value); // null 이네요..?
-
 		
-		setSelected(value != null && ((Boolean) value).booleanValue()); // 선택 값이 비었을 때 선택 해제?
+		if (this.isSelected()) {
+			this.setForeground(Color.MAGENTA);
+		} else {
+			this.setForeground(Color.BLACK);
+		}
+		
+		boolean isChecked =  ((BookVO) value).isSelect();
+		
+		if (isChecked) {
+			this.setSelected(true);
+		}
+		else {
+			this.setSelected(false);
+		}
 		
 		return this;
 	}
 	
-    private Color fgColor = new Color(243, 243, 243);
-    private Color bgColor = new Color(225, 227, 252);
-	
-	
-
-
+	Color fgColor = new Color(243, 243, 243);
+    Color bgColor = new Color(225, 227, 252);
 }
-
-
 
 
 /**

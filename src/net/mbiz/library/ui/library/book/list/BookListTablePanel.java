@@ -246,7 +246,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	 */
 	private void initTable() {
 		/* 테이블을 위한 setting */
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+		
 		String topHeader[] = {"check","No","도서명", "저자", "출판사", "출간일", "카테고리", "대출상태" };	// 헤더 setting
 		int[] col = {60, 60, 600, 296, 200, 180, 180, 180 };								// 열 넓이
 		
@@ -255,33 +255,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			@Override 
 			public Object getValueByColumIndex(int row, int col) {
 				BookVO vo = getRowAt(row);
-				
-				switch (col) {
-				case 0:
-					return vo.isSelect();
-				case 1:
-					return vo.getBookNo();
-				case 2:
-					return vo.getBookNm();
-				case 3:
-					return vo.getBookWtr();
-				case 4:
-					return vo.getPublisher();
-				case 5:
-					return sdf.format(vo.getReleaseDate());
-				case 6:
-					return vo.getCategory();
-				case 7:
-					if (vo.getIsBorrowed() == 0) {
-						return "대출가능";
-					} else if(vo.getIsBorrowed() == 1) {
-						return "대출중";
-					} else {
-						return "알수없음";
-					}
-				}
-				
-				return null;
+				return vo;
 			}
 			
 			@Override
@@ -308,7 +282,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 					vo.setSelect(false);
 				}
 				
-//				deleteCheckedList(checkedList);
 			}
 	
 		};
@@ -343,22 +316,15 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 				getBookDetailDialog();
 			}
 		}
-		
 	}
+
 	// 마우스가 컴포넌트 위에 올라갈 때
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		if (e.getSource().equals("bookTbl")) {
-			System.out.println(bookTbl.getSelectedRow());
-		}
 	}
 	// 마우스가 컴포넌트 위에서 내려갈 때
 	@Override
 	public void mouseExited(MouseEvent e) {
-		if (e.getSource().equals("bookTbl")) {
-			
-		}
-		
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {

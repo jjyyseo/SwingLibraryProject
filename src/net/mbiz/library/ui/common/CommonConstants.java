@@ -1,7 +1,6 @@
 package net.mbiz.library.ui.common;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,20 +8,20 @@ import java.util.Collections;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
+import net.mbiz.edt.barcode.ag.ui.common.table.CommonTableRenderer;
 import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.ui.common.renderer.BookTableRenderer;
+import net.mbiz.library.ui.common.renderer.BorrowTableRenderer;
 import net.mbiz.library.ui.common.renderer.CheckBoxRenderer;
-import net.mbiz.library.ui.common.renderer.CommonTableRenderer;
 
 /*
  * 공통 상수를 정의하는 클래스
@@ -50,7 +49,7 @@ public class CommonConstants {
 	public static final Font FONT_TITLE_25 = new Font("나눔고딕", Font.BOLD, 25);
 	public static final Font FONT_TITLE_22 = new Font("나눔고딕", Font.BOLD, 22);
 	
-	/*테이블*/
+	/*테이블*/ //뺄거임
 	public static BeanTableModel<BookVO> bkModel;
 	public static BeanTableModel<BorrowVO> bwModel;
 	
@@ -84,99 +83,84 @@ public class CommonConstants {
 	 * @param model
 	 */
 	public static <T> void setTableModelColumnWithCommonTableRenderer(JTable table, BeanTableModel<T> model) {
+		
 		model.setSorting(false);
-		String[] topHeader = {"check","No","도서명", "저자", "출판사", "출간일", "카테고리", "대출상태" };
 		setDefaultTable(table);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		for (int k = 0; k < model.getColumnCount(); k++) {
-			
-		    CommonTableRenderer renderer = new CommonTableRenderer();
-		    TableColumn column = new TableColumn(k, model.getColumnWidth(k), renderer, null);
-		    table.addColumn(column);
-		    
+		
+		if (model.equals(bkModel)) {
+			BookTableRenderer renderer = new BookTableRenderer();
+			for (int k = 0; k < model.getColumnCount(); k++) {
+			    TableColumn column = new TableColumn(k, model.getColumnWidth(k), renderer, null);
+			    table.addColumn(column);
+			}	
+		} else if(model.equals(bwModel)) {
+			BorrowTableRenderer renderer = new BorrowTableRenderer();
+			for (int k = 0; k < model.getColumnCount(); k++) {
+			    TableColumn column = new TableColumn(k, model.getColumnWidth(k), renderer, null);
+			    table.addColumn(column);
+			}
 		}
+		
+		
+		
+		
 		
 		setTableCheckBox(table, model);
 		table.setModel(model);
 	}
 
 	
+	/**
+	 * 기본 테이블 설정.
+	 * @param table
+	 */
 	public static void setDefaultTable(JTable table) {
-	      table.setAutoCreateColumnsFromModel(false);
-	      table.setBackground(Color.white);
-	      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	      table.getTableHeader().setReorderingAllowed(false);
-	      table.setRowHeight(31);
-	      table.setFillsViewportHeight(true);
-	      table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-	      setDefaultTableHeader(table.getTableHeader());
+	    table.setAutoCreateColumnsFromModel(false);
+	    table.setBackground(Color.white);
+	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    table.getTableHeader().setReorderingAllowed(false);
+	    table.setRowHeight(31);
+	    table.setFillsViewportHeight(true);
+	    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	    setDefaultTableHeader(table.getTableHeader());
 	      
 	}
 	   
 	   
 	/**
-	 * 테이블의 기본 헤더 설정.
+	 * 기본 테이블의 헤더 설정.
 	 * @param header
 	 */
 	public static void setDefaultTableHeader(JTableHeader header) {
-	   header.setReorderingAllowed(false);
-	   header.setUpdateTableInRealTime(true);
-	   header.setBackground(new Color(175, 175, 175));
-	   header.setForeground(Color.BLACK);
-	   header.setFont(CommonConstants.FONT_BASE_17);
-	   header.setBorder(BorderFactory.createEmptyBorder());
-	   header.setForeground(CommonConstants.COLOR_WHITE_BACKGROUND);
+	    header.setReorderingAllowed(false);
+	    header.setUpdateTableInRealTime(true);
+	    header.setBackground(new Color(175, 175, 175));
+	    header.setForeground(Color.BLACK);
+	    header.setFont(CommonConstants.FONT_BASE_17);
+	    header.setBorder(BorderFactory.createEmptyBorder());
+	    header.setForeground(CommonConstants.COLOR_WHITE_BACKGROUND);
 
 	}
 	
+	/**
+	 * 테이블의 체크박스 설정.
+	 * @param <T>
+	 * @param table
+	 * @param model
+	 */
 	public static <T> void setTableCheckBox(JTable table, BeanTableModel<T> model) {
 		model.setEditColumn(0); 
 		JCheckBox ckBox = new JCheckBox();
 		ckBox.setOpaque(true);
 		ckBox.setHorizontalAlignment(0);
 		
+		CheckBoxRenderer checkRdr = new CheckBoxRenderer();
+		table.getColumnModel().getColumn(0).setCellRenderer(checkRdr);
+		table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(ckBox));
 		
-		CommonTableRenderer rdr = new CommonTableRenderer();
-//		table.getColumnModel().getColumn(0).setCellRenderer(rdr);
-		
-		table.getColumnModel().getColumn(0).setCellRenderer(new CommonTableRenderer() {
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-					boolean hasFocus, int row, int column) {
-		        
-				Color fgColor = new Color(243, 243, 243);
-			    Color bgColor = new Color(225, 227, 252);
-				
-				
-				if (row % 2 == 1) {
-		        	ckBox.setBackground(fgColor);
-		        }
-		        else {
-		        	ckBox.setBackground(bgColor);
-		        }
-				
-				if (ckBox.isSelected()) {
-					ckBox.setForeground(Color.MAGENTA);
-				} else {
-					ckBox.setForeground(Color.BLACK);
-				}
-				
-				System.out.println("renderer value : " + value);
-				boolean isChecked =  (boolean) value;
-				
-				if (isChecked) {
-					
-					ckBox.setSelected(true);
-				}
-				else {
-					ckBox.setSelected(false);
-				}
-				
-				return ckBox;
-			}
-		});
 	}
-
+	
 }
 
 
