@@ -75,6 +75,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 	private int bkNo;
 	private String bkNm;
+//	private String bkWtr;
 	
 	public BookUpdateDialog(){
 		setTitle(bkNm);
@@ -85,6 +86,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	public void initializeBookOne(BookVO vo) {
 		bkNo = vo.getBookNo();
 		bkNm = vo.getBookNm();
+//		bkWtr = vo.getBookWtr();
 		tfBookNm.setText(vo.getBookNm());
 		tfBookWtr.setText(vo.getBookWtr());
 		tfPublisher.setText(vo.getPublisher());
@@ -299,7 +301,6 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 			openCalenderDialog();
 		} else if (e.getSource().equals(attachBtn)) {
 			openAttachMsgDialog();
-			
 		} else if (e.getSource().equals(borrowBtn)) {
 			openBorrowDialog();
 			
@@ -416,6 +417,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		borrowVO.setBorrowNo(AddBorrowList.borrowList.size()+1);
 		borrowVO.setBookNm(bkNm);
 		borrowVO.setBookNo(bkNo);
+		borrowVO.setBookWtr(tfBookWtr.getText());
 		borrowVO.setUserId("a001");
 		
 		Calendar cal = Calendar.getInstance(); 

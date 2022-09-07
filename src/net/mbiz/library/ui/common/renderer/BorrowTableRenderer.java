@@ -54,7 +54,11 @@ public class BorrowTableRenderer extends JLabel implements TableCellRenderer{
 			}
 			break;
 		case 7:
-			str = vo.getOverdue() + "(일)";
+			if (vo.getOverdue()== 0) {
+				str = "-";
+			} else {
+				str = vo.getOverdue() + "(일)";
+			}
 			break;
 
 		}
@@ -64,6 +68,21 @@ public class BorrowTableRenderer extends JLabel implements TableCellRenderer{
 		} else {
 			this.setBackground(bgColor);
 		}
+		
+		
+		/*연체된 도서를 빨간 글씨로 표시.*/
+		if (col == 7 || col == 6) {
+			if (vo.getReturnDate() != null) {
+				this.setForeground(Color.red);
+			}
+		} else {
+			this.setForeground(Color.black);
+		}
+		
+		
+		
+		
+		
 		
 		this.setText(str); // 문자열로 데이터 뿌리기.
 		

@@ -13,6 +13,7 @@ import java.awt.print.Book;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -27,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.AddBookList;
@@ -108,7 +110,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		bookTbl.setFont(CommonConstants.FONT_BASE_17);
 
 		// 테이블 스크롤
-		JScrollPane sclpn = new JScrollPane(bookTbl);
+		JScrollPane sclpn = new JScrollPane(bookTbl); 
 		pnTbl.add(sclpn, BorderLayout.CENTER);
 		pnBody.add(pnTbl, BorderLayout.CENTER);
 
@@ -133,7 +135,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		this.title = new JLabel("전체 도서");
 		title.setFont(CommonConstants.FONT_TITLE_25);
 		title.setHorizontalAlignment(JLabel.CENTER);
-		title.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+		title.setBorder(BorderFactory.createEmptyBorder(30, 3, 30, 30));
 		
 		// EAST
 		this.pnEast = new JPanel();
@@ -166,16 +168,12 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		this.pnWest = new JPanel();
 		pnWest.setLayout(new BorderLayout());
 		pnWest.setBorder(BorderFactory.createEmptyBorder(33, 0, 0, 0));
-		pnWest.setBackground(Color.green);
+		pnWest.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 	
-		this.pvsBtn = new JButton();
-		pvsBtn.setPreferredSize(new Dimension(200, 30));
-		pvsBtn.setBorderPainted(false);
+		this.pvsBtn = new JButton("전체보기");
+		pvsBtn.setPreferredSize(new Dimension(100, 30));
 		pvsBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-		this.pvsLbl = new JLabel("전체보기");
-		pvsLbl.setFont(CommonConstants.FONT_BASE_17);
-		pvsLbl.setHorizontalAlignment(JLabel.CENTER);
-		pvsBtn.add(pvsLbl);
+		pvsBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
 
 
 		
@@ -294,7 +292,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			}
 	
 		};
-		
 		CommonConstants.setTableModelColumnWithCommonTableRenderer(this.bookTbl, CommonConstants.bkModel);
 	}
 	
@@ -402,14 +399,20 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	 * 도서 데이터를 삭제하는 메서드.
 	 * @param vo BookVO
 	 */
-	private void deleteBookVO(BookVO vo) {
-		CommonConstants.bkModel.remove(vo);
-		AddBookList.bookList.remove(vo);
-		
-		CommonConstants.repaintBookTable();
-		bookTbl.removeAll();
-		bookTbl.setModel(CommonConstants.bkModel);
-		
+	private int deleteBookVO(BookVO vo) {
+		/*대출 상태 체크 후 삭제 작업*/
+		if (vo.getIsBorrowed() == 1) {
+			return 0;
+		} else {
+			CommonConstants.bkModel.remove(vo);
+			AddBookList.bookList.remove(vo);
+			
+			CommonConstants.repaintBookTable();
+			bookTbl.removeAll();
+			bookTbl.setModel(CommonConstants.bkModel);
+			
+			return 1;
+		}
 	}
 
 	
@@ -417,15 +420,41 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	 * 체크박스로 선택된 도서 데이터를 삭제하는 메서드.
 	 * @param vo BookVO
 	 */
-	private void deleteCheckedList(List<BookVO> checkedList) {
+	private int deleteCheckedList(List<BookVO> checkedList) {
+		
+		List<BookVO> delList = new ArrayList<>();
+		
+		int cnt = 0;
+		// 대출중이지 않은 것만 거르기.
 		for (BookVO vo : checkedList) {
-			deleteBookVO(vo);
+			if (vo.getIsBorrowed() == 1) {
+				cnt++;
+				break;
+			} else if(vo.getIsBorrowed() == 0) {
+				delList.add(vo);
+			}
 		}
+		
+		if (cnt == 0) {
+			for (BookVO vo : delList) {
+				deleteBookVO(vo);
+			}	
+		} else {
+			return 0;	
+		}
+		
 		CommonConstants.repaintBookTable();
 		bookTbl.removeAll();
 		bookTbl.setModel(CommonConstants.bkModel);
-		
+	
+		return 1;
 	}
+	
+	
+	
+	
+	
+	
 
 	/**
 	 * 도서 데이터 삭제를 체크하는 messege를 띄우는 메서드.
@@ -435,8 +464,12 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		if (checkedList.size()> 0) {
 			int rslt = JOptionPane.showConfirmDialog(null, "선택한 도서를 삭제 하시겠습니까?", "도서 정보를 삭제합니다.", JOptionPane.YES_NO_OPTION);
 			if (rslt == JOptionPane.YES_OPTION) {
-				deleteCheckedList(checkedList);
-				JOptionPane.showMessageDialog(null, "삭제 완료 되었습니다.");
+				if (deleteCheckedList(checkedList) == 1) {
+					JOptionPane.showMessageDialog(null, "삭제 완료 되었습니다.");
+				} else {
+					JOptionPane.showMessageDialog(null, "대출 중인 도서가 있습니다. 삭제가 취소 되었습니다.");
+				}
+				
 			} else {
 				JOptionPane.showMessageDialog(null, "삭제 취소 되었습니다.");
 			}
@@ -486,11 +519,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		//마이페이지 테이블 repaint()
 		CommonConstants.repaintBorrowTable();
 		
-//		// 도서 상세청보 창 생성
-//		BookDetailDialog.bkDatilVO = AddBookList.bookList.get(idx);
-//		System.out.println("이번 bkDatilVO?? -----> " + BookDetailDialog.bkDatilVO);
-//		BookDetailDialog detailDialog = new BookDetailDialog();
-//		detailDialog.setLocationCenter();
+
 	}
 	
 	

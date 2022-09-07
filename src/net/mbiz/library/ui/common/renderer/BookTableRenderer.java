@@ -63,6 +63,7 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 			}
 			break;
 		}
+		
 
 //		str = (str == null) ? "" : value.toString();
 
@@ -73,6 +74,16 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 			this.setBackground(bgColor);
 		}
 		this.setText(str);
+		
+		
+		if (this.getText().equals("대출중")) {
+			if (col==7) {
+				this.setForeground(Color.red);
+			}
+		} else {
+			this.setForeground(Color.black);
+		}
+		
 
 		return this;
 	}

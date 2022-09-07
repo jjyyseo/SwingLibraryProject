@@ -49,7 +49,6 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	
 	private JPanel pnBtnSet;
 	private JLabel title;
-	private JLabel pvsLbl;
 
 	private JButton schBtn;
 	private JButton pvsBtn;
@@ -125,7 +124,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		this.title = new JLabel("나의 대출리스트");
 		title.setFont(CommonConstants.FONT_TITLE_25);
 		title.setHorizontalAlignment(JLabel.LEFT);
-		title.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+		title.setBorder(BorderFactory.createEmptyBorder(30, 3, 30, 30));
 		
 		pnTitle.add(title, BorderLayout.WEST);
 
@@ -135,21 +134,17 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		pnEast.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		pnEast.setBorder(BorderFactory.createEmptyBorder(33, 0, 0, 0));
 		
-		//WEST
+		// WEST
 		this.pnWest = new JPanel();
 		pnWest.setLayout(new BorderLayout());
 		pnWest.setBorder(BorderFactory.createEmptyBorder(33, 0, 0, 0));
 		pnWest.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-
-		this.pvsBtn = new JButton();
-		pvsBtn.setPreferredSize(new Dimension(200, 30));
-		pvsBtn.setBorderPainted(false);
-		pvsBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-		this.pvsLbl = new JLabel("전체보기");
-		pvsLbl.setFont(CommonConstants.FONT_BASE_17);
-		pvsLbl.setHorizontalAlignment(JLabel.CENTER);
 	
-		pvsBtn.add(pvsLbl);	
+		this.pvsBtn = new JButton("전체보기");
+		pvsBtn.setPreferredSize(new Dimension(100, 30));
+		pvsBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		pvsBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
+	
 		pnWest.add(pvsBtn, BorderLayout.WEST);
 		
 		
@@ -223,7 +218,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	 * 대출 기록 테이블을 출력하는 메서드.
 	 * */
 	private void initTable() {
-		String topHeader[] = {"no", "도서명", "저자", "대출일", "반납예정일", "반납일", "연체일", "check"};	
+		String topHeader[] = {"check", "no", "도서명", "저자", "대출일", "반납예정일", "반납일", "연체일"};	
 		int[] col = {60, 60, 600, 296, 200, 180, 180, 180 };
 		
 		CommonConstants.bwModel = new BeanTableModel<BorrowVO>(topHeader, col) {
@@ -235,7 +230,27 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 
 			@Override
 			public void setValueByColumIndex(int row, int col, Object obj) {
+				// 체크박스 선택 시 --> row, 0, true(선택 여부)
 				
+				
+				
+				if ((Boolean)obj == true) {
+					System.out.println("선택한 열은?? ===> " + row);
+					BorrowVO vo = getRowAt(row);
+					
+					if (vo.isSelect()) {
+						vo.setSelect(false);
+					}
+					else {
+						vo.setSelect(true);
+					}
+					
+					checkedList.add(vo);
+				}
+				else {
+					BorrowVO vo = getRowAt(row);
+					vo.setSelect(false);
+				}
 			}
 		};
 		CommonConstants.setTableModelColumnWithCommonTableRenderer(borrowTbl, CommonConstants.bwModel);
@@ -255,7 +270,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		} else if (e.getSource().equals(schBtn)) {
 			getSearchBorrowList();
 		} else if (e.getSource().equals(returnBtn)) {
-			returnBook();
+			getReturnMessege();
 		} else if (e.getSource().equals(deleteBtn)) {
 			getDeleteMessege();
 		}
@@ -358,8 +373,6 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	private void returnBook() {
 		int row = borrowTbl.getSelectedRow();
 		BorrowVO seletedVO = CommonConstants.bwModel.getData(row);
-		
-		System.err.println(seletedVO.toString());
 			
 		int result = JOptionPane.showConfirmDialog(null, seletedVO.getBookNm()+" 을(를) 반납 하시겠습니까??"
 				, seletedVO.getBookNm(),JOptionPane.YES_NO_OPTION);
@@ -393,6 +406,42 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	}
 	
 	
+	private void getReturnMessege() {
+		if (checkedList.size()> 0) {
+			
+			int rslt = JOptionPane.showConfirmDialog(null, "선택한 도서를 반납 하시겠습니까?", "도서 반납", JOptionPane.YES_NO_OPTION);
+			if (rslt == JOptionPane.YES_OPTION) {
+				if (deleteCheckedList(checkedList) == 1) {
+					JOptionPane.showMessageDialog(null, "반납 되었습니다.");
+				} else {
+					JOptionPane.showMessageDialog(null, "반납에 실패하였습니다. 다시 시도해 주세요.");
+				}
+				
+			} else {
+				JOptionPane.showMessageDialog(null, "반납 취소 되었습니다.");
+			}
+			
+		} else {
+			
+			if(borrowTbl.getSelectedRow()>-1) { 
+				BorrowVO returnVO = CommonConstants.bwModel.getData(borrowTbl.getSelectedRow());
+				int rslt = JOptionPane.showConfirmDialog(null, returnVO.getBookNm()+" 을(를) 반납 하시겠습니까??"
+						, returnVO.getBookNm(),JOptionPane.YES_NO_OPTION);
+				if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
+					deleteBorrowVO(returnVO);
+					JOptionPane.showMessageDialog(null, returnVO.getBookNm()+" 이(가) 반납 되었습니다.");
+					
+				} else { 
+					JOptionPane.showMessageDialog(null," '" + returnVO.getBookNm() + "' "+" 반납을 취소합니다.", returnVO.getBookNm(), JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+			}else {
+				JOptionPane.showMessageDialog(null, "반납할 도서를 선택하세요.","선택된 행 없음", JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+		}	
+	}
+
 	/**
 	 * 대출 기록을 검색하는 메서드
 	 */
@@ -434,18 +483,37 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	
 	
 	/**
-	 * 체크박스로 선택된 대출 데이터를 삭제하는 메서드.
-	 * @param vo BorrowVO
+	 *  체크박스로 선택된 대출 데이터를 삭제하는 메서드.
+	 * @param vo BookVO
 	 */
-	private void deleteCheckedList(List<BorrowVO> checkedList) {
-		System.err.println("여기 마이페이지 deleteCheckedList :::: "+checkedList);
+	private int deleteCheckedList(List<BorrowVO> checkedList) {
+		
+		List<BorrowVO> delList = new ArrayList<>();
+		
+		int cnt = 0;
+		// 대출중이지 않은 것만 거르기.
 		for (BorrowVO vo : checkedList) {
-			deleteBorrowVO(vo);
+			if (vo.getIsBorrowed() == 1) {
+				cnt++;
+				break;
+			} else if(vo.getIsBorrowed() == 0) {
+				delList.add(vo);
+			}
 		}
+		
+		if (cnt == 0) {
+			for (BorrowVO vo : delList) {
+				deleteBorrowVO(vo);
+			}	
+		} else {
+			return 0;	
+		}
+		
 		CommonConstants.repaintBookTable();
 		borrowTbl.removeAll();
 		borrowTbl.setModel(CommonConstants.bwModel);
-		
+	
+		return 1;
 	}
 
 }
