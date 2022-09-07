@@ -1,4 +1,4 @@
-package net.mbiz.library.ui.common;
+package net.mbiz.library.ui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -19,6 +19,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import net.mbiz.library.ui.common.CommonConstants;
 
 public class CalenderDialog extends JDialog implements ActionListener, MouseListener{
 
@@ -122,7 +124,7 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 		cbbMonth.setPreferredSize(new Dimension(70,0));
 		
 		this.prevBtn = new JButton("◀");
-		prevBtn.setPreferredSize(new Dimension(20,0));
+		prevBtn.setPreferredSize(new Dimension(100,0));
 		this.nextBtn = new JButton("▶");
 		prevBtn.setPreferredSize(new Dimension(20,0));
 		
@@ -397,5 +399,8 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 	}
 
 	
+	public static void main(String[] args) {
+		new CalenderDialog().setLocationCenter();
+	}
 
 }
