@@ -1,5 +1,9 @@
 package net.mbiz.library.data;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Date;
 
 import lombok.Getter;
@@ -9,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BorrowVO implements Comparable<BorrowVO>{
+public class BorrowVO implements Comparable<BorrowVO>, Externalizable{
 
 	private int borrowNo;          /* 대출 번호*/
 	private int bookNo;            /* 도서 번호*/
@@ -22,11 +26,21 @@ public class BorrowVO implements Comparable<BorrowVO>{
 	private Date returnDate;       /* 반납 일자*/
 	private int overdue;           /* 연체일 수*/
 	
-	private boolean isSelect;	   /* 체크박스 선택 여부!*/
+	private transient boolean isSelect;	   /* 체크박스 선택 여부!*/
 	
 	@Override
 	public int compareTo(BorrowVO o) {
 		return this.borrowNo - o.borrowNo;
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		
 	}
 
 }

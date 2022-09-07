@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,8 +27,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.BookVO;
+import net.mbiz.library.data.memory.AddBookList;
+import net.mbiz.library.file.book.BookPrintWriter;
 import net.mbiz.library.ui.common.CalenderDialog;
 import net.mbiz.library.ui.common.CommonConstants;
 
@@ -282,7 +284,11 @@ public class BookRegistDialog extends JDialog {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				insertBookVO();
+				try {
+					insertBookVO();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		/*달력 Dialog open*/
@@ -309,8 +315,9 @@ public class BookRegistDialog extends JDialog {
 	
 	/**
 	 * 입력된 정보로 BookVO를 생성하여 BookList에 add하는 데서드.
+	 * @throws IOException 
 	 */
-	private void insertBookVO(){
+	private void insertBookVO() throws IOException{
 		if (category.equals("") || category.isEmpty() ) {
 			category = "소설" ;
 		}
@@ -359,7 +366,8 @@ public class BookRegistDialog extends JDialog {
 			AddBookList.bookList.add(vo);
 			
 			
-			
+			new BookPrintWriter(vo).writeBookFile();
+			System.out.println("여기는 BookRedistDialog!! 파일로 저장해봐요. 저장한 도서 객체 ==>" + vo);
 			if (AddBookList.bookList.size() == bkNo) {
 				JOptionPane.showMessageDialog(null, bkNm + "(이)가 등록되었습니다.", bkNm, JOptionPane.INFORMATION_MESSAGE);
 				dispose();

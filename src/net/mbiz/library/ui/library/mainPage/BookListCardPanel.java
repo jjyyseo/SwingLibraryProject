@@ -15,8 +15,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
-import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.BookVO;
+import net.mbiz.library.data.memory.AddBookList;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.panel.BookPanel;
 

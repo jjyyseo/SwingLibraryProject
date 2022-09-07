@@ -1,10 +1,13 @@
-package net.mbiz.library.data;
+package net.mbiz.library.data.memory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import net.mbiz.library.data.BookVO;
+import net.mbiz.library.data.BorrowVO;
 
 
 public class AddBorrowList {

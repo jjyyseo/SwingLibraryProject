@@ -25,10 +25,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import net.mbiz.library.data.AddBookList;
-import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.data.memory.AddBookList;
+import net.mbiz.library.data.memory.AddBorrowList;
 import net.mbiz.library.ui.common.CalenderDialog;
 import net.mbiz.library.ui.common.CommonConstants;
 

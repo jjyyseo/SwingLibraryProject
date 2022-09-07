@@ -1,10 +1,12 @@
-package net.mbiz.library.data;
+package net.mbiz.library.data.memory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import net.mbiz.library.data.BookVO;
 
 /**
  * 도서 데이터를 추가하는 클래스.

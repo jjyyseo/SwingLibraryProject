@@ -15,10 +15,10 @@ import javax.swing.table.TableColumn;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.edt.barcode.ag.ui.common.table.CommonTableRenderer;
-import net.mbiz.library.data.AddBookList;
-import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.data.memory.AddBookList;
+import net.mbiz.library.data.memory.AddBorrowList;
 import net.mbiz.library.ui.common.renderer.BookTableRenderer;
 import net.mbiz.library.ui.common.renderer.BorrowTableRenderer;
 import net.mbiz.library.ui.common.renderer.CheckBoxRenderer;

@@ -20,10 +20,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import net.mbiz.library.data.AddBookList;
-import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.data.memory.AddBookList;
+import net.mbiz.library.data.memory.AddBorrowList;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.dialog.BookDetailDialog;
 

@@ -26,10 +26,10 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
-import net.mbiz.library.data.AddBookList;
-import net.mbiz.library.data.AddBorrowList;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.data.memory.AddBookList;
+import net.mbiz.library.data.memory.AddBorrowList;
 import net.mbiz.library.main.LibraryMain;
 import net.mbiz.library.ui.common.CommonConstants;
 
@@ -159,12 +159,15 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		schBtn.setFont(CommonConstants.FONT_BASE_12);
 
 		this.pnCbb = new JPanel();
+		pnCbb.setLayout(new BorderLayout());
 		pnCbb.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		pnCbb.add(Box.createVerticalStrut(1),BorderLayout.SOUTH);
+		pnCbb.add(Box.createHorizontalStrut(10),BorderLayout.EAST);
 
 		this.cbbSearch = new JComboBox<>();
 		cbbSearch.setModel(new DefaultComboBoxModel<>(new String[] {"도서명","저자"}));
 		cbbSearch.setFont(CommonConstants.FONT_BASE_15);
-		cbbSearch.setPreferredSize(new Dimension(90,50));
+		cbbSearch.setPreferredSize(new Dimension(100,50));
 
 		pnCbb.add(cbbSearch);
 		pnEast.add(schFd, BorderLayout.CENTER);
@@ -255,6 +258,8 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		};
 		CommonConstants.setTableModelColumnWithCommonTableRenderer(borrowTbl, CommonConstants.bwModel);
 		
+		
+		
 		//EVENT
 		borrowTbl.addMouseListener(this);
 	
@@ -282,10 +287,10 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		
+		// 테이블 row 선택 시 해당 도서의 상태에 따라, 반납/삭제 버튼 -> 활성화/비활성화
 		if (arg0.getSource().equals(borrowTbl)) {
-			BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
-			System.out.println("선택한 도서기록은?? -----> " + seletedVO);
 			
+			BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
 			if (seletedVO.getIsBorrowed() == 0) {
 				System.err.println("seletedVO.getIsBorrowed()? ----> " + seletedVO.getIsBorrowed());
 				returnBtn.setEnabled(false);

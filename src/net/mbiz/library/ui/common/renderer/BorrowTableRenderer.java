@@ -63,6 +63,9 @@ public class BorrowTableRenderer extends JLabel implements TableCellRenderer{
 
 		}
 
+		
+		
+		
 		if (row % 2 == 1) {
 			this.setBackground(fgColor);
 		} else {
@@ -79,7 +82,7 @@ public class BorrowTableRenderer extends JLabel implements TableCellRenderer{
 			this.setForeground(Color.black);
 		}
 		
-		
+//		table.getSelectedRow() > -1
 		
 		
 		

@@ -31,8 +31,8 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
-import net.mbiz.library.data.AddBookList;
 import net.mbiz.library.data.BookVO;
+import net.mbiz.library.data.memory.AddBookList;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.dialog.BookRegistDialog;
 import net.mbiz.library.ui.library.book.dialog.BookUpdateDialog;
@@ -58,7 +58,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	private JTable bookTbl;
 
 	private JLabel title;
-	private JLabel pvsLbl;
 
 	private JButton schBtn;
 	private JButton pvsBtn;
@@ -144,22 +143,25 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		pnEast.setBorder(BorderFactory.createEmptyBorder(33, 0, 0, 0));
 		
 		
-		
 		/* pnEast - pnCbb(WEST), schFd(CENTER), schBtn(EAST) */
 		this.schFd = new JTextField();
 		schFd.setPreferredSize(new Dimension(550, 30));
 		schFd.setFont(CommonConstants.FONT_BASE_17);
+		schFd.add(Box.createHorizontalStrut(10),BorderLayout.EAST);
 		
 		this.schBtn = new JButton("검색");
 		schBtn.setPreferredSize(new Dimension(70, 30));
 		schBtn.setFont(CommonConstants.FONT_BASE_12);
 
 		this.pnCbb = new JPanel();
+		pnCbb.setLayout(new BorderLayout());
 		pnCbb.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		pnCbb.add(Box.createVerticalStrut(1),BorderLayout.SOUTH);
+		pnCbb.add(Box.createHorizontalStrut(10),BorderLayout.EAST);
 		this.cbbSearch = new JComboBox<>();
 		cbbSearch.setModel(new DefaultComboBoxModel<>(new String[] {"도서명","저자","출판사","카테고리"}));
 		cbbSearch.setFont(CommonConstants.FONT_BASE_15);
-		cbbSearch.setPreferredSize(new Dimension(90,50));
+		cbbSearch.setPreferredSize(new Dimension(100,60));
 		
 		pnCbb.add(cbbSearch);
 		
