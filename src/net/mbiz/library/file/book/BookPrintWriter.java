@@ -26,7 +26,6 @@ public class BookPrintWriter {
 	}
 	
 	public void writeBookFile() throws IOException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 		String location = LocationConstants.BOOK_DATA_lOCATION + "\\bookData.txt"; 
 		
 		PrintWriter pw = null;
@@ -38,18 +37,18 @@ public class BookPrintWriter {
 		try {
 			pw = new PrintWriter(fileWriter);
 			
-			insertVO +=vo.getBookNo()
-					  + ", " + vo.getBookNm() 
-					  + ", " + vo.getBookWtr()
-					  + ", " + vo.getPublisher()
-					  + ", " + vo.getReleaseDate()
-					  + ", " + vo.getIsBorrowed()
-					  + ", " + vo.getBookIsbn()
-					  + ", " + vo.getCategory()
-					  + ", " + vo.getRegistDate()
-					  + ", " + vo.getUpdateDate()
-					  + ", " + vo.getBooksub();
-			
+			insertVO +=
+					    "#" + vo.getBookNo()
+					  + "#" + vo.getBookNm() 
+					  + "#" + vo.getBookWtr()
+					  + "#" + vo.getPublisher()
+					  + "#" + vo.getReleaseDate()
+					  + "#" + vo.getIsBorrowed()
+					  + "#" + vo.getBookIsbn()
+					  + "#" + vo.getCategory()
+					  + "#" + vo.getRegistDate()
+					  + "#" + vo.getUpdateDate()
+					  + "#" + vo.getBooksub();
 			
 			pw.println(insertVO);
 			pw.flush(); 
