@@ -360,7 +360,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 			if (updateBookVO() == 1) {
 			JOptionPane.showMessageDialog(null, bkNm + "(이)가 수정되었습니다.", bkNm, JOptionPane.INFORMATION_MESSAGE);
 			dispose();
-			System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 정보가 수정되었습니다. /n 등록된 도서 정보 ----> " + AddBookList.bookList.get(bkNo));
+			System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 정보가 수정되었습니다. /n 등록된 도서 정보 ----> " + CommonConstants.readBookFileList().get(bkNo));
 			} else if (updateBookVO() == 0) {
 				JOptionPane.showMessageDialog(null, "도서 수정 실패. 오류가 발생 하였습니다.", "도서 수정 실패", JOptionPane.INFORMATION_MESSAGE);
 			
@@ -373,7 +373,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	
 	private int updateBookVO() {
 		
-		for (BookVO vo : AddBookList.bookList) {
+		for (BookVO vo : CommonConstants.readBookFileList()) {
 			if (vo.getBookNo()==bkNo) {
 				String bkNm = tfBookNm.getText();
 				String bkWtr = tfBookWtr.getText();
@@ -414,7 +414,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		// borrowList에 대출 기록 추가
 		
 		BorrowVO borrowVO = new BorrowVO();
-		borrowVO.setBorrowNo(AddBorrowList.borrowList.size()+1);
+		borrowVO.setBorrowNo(CommonConstants.readBorrowFileList().size()+1);
 		borrowVO.setBookNm(bkNm);
 		borrowVO.setBookNo(bkNo);
 		borrowVO.setBookWtr(tfBookWtr.getText());
@@ -428,7 +428,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		borrowVO.setEndDate(endDate);
 		borrowVO.setIsBorrowed(1); //대출중
 		
-		AddBorrowList.borrowList.add(borrowVO);
+		CommonConstants.readBorrowFileList().add(borrowVO);
 		
 	}
 	
@@ -438,8 +438,8 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	 */
 	private void updateIsBorrowed() {
 		// bookList update
-		System.out.println("도서리스트의 사이즈" + AddBookList.bookList.size());
-		for (BookVO vo : AddBookList.bookList) {
+		System.out.println("도서리스트의 사이즈" +CommonConstants.readBookFileList().size());
+		for (BookVO vo : CommonConstants.readBookFileList()) {
 			if (vo.getBookNo()== bkNo) {
 				vo.setIsBorrowed(1);
 				System.out.println("대출 신텅된 도서: " + vo);

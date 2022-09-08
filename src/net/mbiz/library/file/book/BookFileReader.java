@@ -24,7 +24,7 @@ public class BookFileReader {
 	public BookFileReader() {
 	}
 
-	public void readBookFile() throws IOException {
+	public List<BookVO> readBookFile() throws IOException {
 		String location = LocationConstants.BOOK_DATA_lOCATION ;
 		File file = new File(location);
 		
@@ -53,6 +53,7 @@ public class BookFileReader {
 		}
 		
 		System.out.println(bookFileList);
+		return bookFileList;
 	}
 	
 	private BookVO parseBookVO(String str) {
@@ -62,8 +63,12 @@ public class BookFileReader {
 		String[] arr = str.split("#"); 
 		for (int i = 0; i < arr.length; i++) {
 			arr[i] = arr[i].trim();
-			System.out.println(arr[i]);
+			System.out.println("arr["+i+"]" + arr[i]);
 		}
+		int idx = 0;
+//		arr[idx++];
+
+		
 		
 		vo.setBookNo(Integer.parseInt(arr[1]));         /* 도서번호*/
 		vo.setBookNm(arr[2]);                           /* 도서명*/
@@ -72,7 +77,7 @@ public class BookFileReader {
 		vo.setCategory(arr[8]);                         /* 카테고리*/
 		vo.setIsBorrowed(Integer.parseInt(arr[6]));     /* 대출상태*/
 		vo.setBookIsbn(Long.parseLong(arr[7]));         /* isbn*/
-		vo.setBooksub(arr[11]);                         /* 소개글*/
+		vo.setBooksub(arr[0]);                          /* 소개글*/
 		
 		try {
 			vo.setReleaseDate(sdf.parse(arr[5]));       /* 출간일*/
@@ -96,6 +101,5 @@ public class BookFileReader {
 	public static void main(String[] args) throws IOException {
 		new BookFileReader().readBookFile();
 	}
-	
 	
 }

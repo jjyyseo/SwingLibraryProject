@@ -260,7 +260,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 		// borrowList에 대출 기록 추가
 		
 		BorrowVO borrowVO = new BorrowVO();
-		borrowVO.setBorrowNo(AddBorrowList.borrowList.size()+1);
+		borrowVO.setBorrowNo(CommonConstants.readBorrowFileList().size()+1);
 		borrowVO.setBookNm(BookDetailDialog.bkDatilVO.getBookNm());
 		borrowVO.setBookNo(BookDetailDialog.bkDatilVO.getBookNo());
 		
@@ -273,7 +273,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 		borrowVO.setEndDate(endDate);
 		borrowVO.setIsBorrowed(1); //대출중
 		
-		AddBorrowList.borrowList.add(borrowVO);
+		CommonConstants.readBorrowFileList().add(borrowVO);
 		
 	}
 
@@ -285,8 +285,8 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 		// bookList update
 		int idx = BookDetailDialog.bkDatilVO.getBookNo()-1; //도서번호 - 1 = 인덱스
 		System.out.println("도서리스트의 인덱스" + idx);
-		System.out.println("도서리스트의 사이즈" + AddBookList.bookList.size());
-		AddBookList.bookList.get(idx).setIsBorrowed(1);
+		System.out.println("도서리스트의 사이즈" +CommonConstants.readBookFileList().size());
+		CommonConstants.readBookFileList().get(idx).setIsBorrowed(1);
 		
 	}
 

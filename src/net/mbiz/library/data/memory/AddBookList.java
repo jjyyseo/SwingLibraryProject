@@ -14,7 +14,7 @@ import net.mbiz.library.data.BookVO;
  */
 public class AddBookList {
 	
-	public static List<BookVO> bookList = AddBookList.addData();
+//	public static List<BookVO> bookList = AddBookList.addData();
 
 	private static List<BookVO> addData() {
 		List<BookVO> bkList = new ArrayList<>();

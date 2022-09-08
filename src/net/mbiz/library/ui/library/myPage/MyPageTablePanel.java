@@ -69,8 +69,8 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	}
 
 	private void initialize() {
-		Collections.sort(AddBorrowList.borrowList, Collections.reverseOrder());
-		CommonConstants.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
+		Collections.sort(CommonConstants.readBorrowFileList(), Collections.reverseOrder());
+		CommonConstants.bwModel.addDataList((ArrayList) CommonConstants.readBorrowFileList());
 		CommonConstants.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
@@ -290,7 +290,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		// 테이블 row 선택 시 해당 도서의 상태에 따라, 반납/삭제 버튼 -> 활성화/비활성화
 		if (arg0.getSource().equals(borrowTbl)) {
 			
-			BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
+			BorrowVO seletedVO = CommonConstants.readBorrowFileList().get(borrowTbl.getSelectedRow());
 			if (seletedVO.getIsBorrowed() == 0) {
 				System.err.println("seletedVO.getIsBorrowed()? ----> " + seletedVO.getIsBorrowed());
 				returnBtn.setEnabled(false);
@@ -352,7 +352,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			
 		} else  {
 			if (borrowTbl.getSelectedRow()> -1) { // row가 선택되어 있을 때
-				BorrowVO seletedVO = AddBorrowList.borrowList.get(borrowTbl.getSelectedRow());
+				BorrowVO seletedVO = CommonConstants.readBorrowFileList().get(borrowTbl.getSelectedRow());
 				
 				int rslt = JOptionPane.showConfirmDialog(null, " '" + seletedVO.getBookNm()+ "' " + " 대출 기록을 삭제 하시겠습니까?", seletedVO.getBookNm(), JOptionPane.YES_NO_OPTION);
 				if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
@@ -399,7 +399,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			
 			// 북리스트에서 해당 도서 상태 set 1. (대출가능)
 			int idx = seletedVO.getBookNo()-1; 
-			AddBookList.bookList.get(idx).setIsBorrowed(0);
+			CommonConstants.readBookFileList().get(idx).setIsBorrowed(0);
 			
 			CommonConstants.bkModel.fireTableDataChanged();  // 바뀐 정보 테이블에 반영 후,
 			CommonConstants.repaintBorrowTable();			 // 양쪽 테이블 다시 그림.
@@ -455,7 +455,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
 			CommonConstants.bwModel.removeAll();
 			
-			for (BorrowVO bv : AddBorrowList.borrowList) {
+			for (BorrowVO bv : CommonConstants.readBorrowFileList()) {
 				String cbb = (String) cbbSearch.getSelectedItem();
 				
 				if (cbb.equals("도사명")) {
@@ -480,7 +480,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	 */
 	private void deleteBorrowVO(BorrowVO vo) {
 		CommonConstants.bwModel.remove(vo);
-		AddBorrowList.borrowList.remove(vo);
+		CommonConstants.readBorrowFileList().remove(vo);
 		
 		CommonConstants.repaintBorrowTable();
 			

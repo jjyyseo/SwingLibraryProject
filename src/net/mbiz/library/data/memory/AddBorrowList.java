@@ -12,7 +12,7 @@ import net.mbiz.library.data.BorrowVO;
 
 public class AddBorrowList {
 
-	public static List<BorrowVO> borrowList = AddBorrowList.addData();
+//	public static List<BorrowVO> borrowList = AddBorrowList.addData();
 	
 	private static List<BorrowVO> addData() {
 		List<BorrowVO> bwList = new ArrayList<>();
@@ -53,20 +53,20 @@ public class AddBorrowList {
 	}
 	
 	private static String getBookNm(int bookNo) {
-		for (BookVO bkVO : AddBookList.bookList) {
-			if (bookNo == bkVO.getBookNo()) {
-				return bkVO.getBookNm();
-			}
-		}
+//		for (BookVO bkVO : AddBookList.bookList) {
+//			if (bookNo == bkVO.getBookNo()) {
+//				return bkVO.getBookNm();
+//			}
+//		}
 		return null;
 	}
 
 	private static String getBookWtr(int bookNo) {
-		for (BookVO bkVO : AddBookList.bookList) {
-			if (bookNo == bkVO.getBookNo()) {
-				return bkVO.getBookWtr();
-			}
-		}
+//		for (BookVO bkVO : AddBookList.bookList) {
+//			if (bookNo == bkVO.getBookNo()) {
+//				return bkVO.getBookWtr();
+//			}
+//		}
 		return null;
 	}
 

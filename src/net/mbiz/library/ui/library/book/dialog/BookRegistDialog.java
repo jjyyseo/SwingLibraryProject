@@ -340,7 +340,7 @@ public class BookRegistDialog extends JDialog {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 			BookVO vo = new BookVO();
 			
-			int bkNo = AddBookList.bookList.size() + 1;
+			int bkNo = CommonConstants.readBookFileList().size() + 1;
 			String bkNm = tfBookNm.getText();
 			String bkWtr = tfBookWtr.getText();
 			String publisher = tfPublisher.getText();
@@ -363,15 +363,15 @@ public class BookRegistDialog extends JDialog {
 			vo.setBooksub(booksub);
 			vo.setRegistDate(new Date());
 			
-			AddBookList.bookList.add(vo);
+			CommonConstants.readBookFileList().add(vo);
 			
 			
 			new BookPrintWriter(vo).writeBookFile();
 			System.out.println("여기는 BookRedistDialog!! 파일로 저장해봐요. 저장한 도서 객체 ==>" + vo);
-			if (AddBookList.bookList.size() == bkNo) {
+			if (CommonConstants.readBookFileList().size() == bkNo) {
 				JOptionPane.showMessageDialog(null, bkNm + "(이)가 등록되었습니다.", bkNm, JOptionPane.INFORMATION_MESSAGE);
 				dispose();
-				System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 정보가 등록되었습니다. /n 등록된 도서 정보 ----> " + AddBookList.bookList.get(AddBookList.bookList.size()-1));
+				System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 정보가 등록되었습니다. /n 등록된 도서 정보 ----> " + CommonConstants.readBookFileList().get(CommonConstants.readBookFileList().size()-1));
 			} else {
 				JOptionPane.showMessageDialog(null, "도서 추가 실패", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
 			}

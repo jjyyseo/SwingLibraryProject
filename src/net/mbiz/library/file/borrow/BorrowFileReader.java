@@ -24,7 +24,7 @@ public class BorrowFileReader {
 	public BorrowFileReader() {
 	}
 
-	public void readBorrowFile() throws IOException {
+	public List<BorrowVO> readBorrowFile() throws IOException {
 		String location = LocationConstants.BORROW_DATA_lOCATION;
 		File file = new File(location);
 		
@@ -53,6 +53,8 @@ public class BorrowFileReader {
 		}
 		
 		System.out.println(borrowFileList);
+		
+		return borrowFileList;
 	}
 	
 	private BorrowVO parseBorrowVO(String str) {

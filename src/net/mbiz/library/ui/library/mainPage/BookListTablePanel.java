@@ -76,8 +76,8 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	}
 
 	private void initialize() {
-		Collections.sort(AddBookList.bookList, Collections.reverseOrder());
-		CommonConstants.bkModel.addDataList((ArrayList) AddBookList.bookList); // 리스트로 한꺼번에 집어넣기 가능
+		Collections.sort(CommonConstants.readBookFileList(), Collections.reverseOrder());
+		CommonConstants.bkModel.addDataList((ArrayList) CommonConstants.readBookFileList()); // 리스트로 한꺼번에 집어넣기 가능
 		CommonConstants.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
@@ -353,7 +353,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			CommonConstants.bkModel.removeAll();
 			
 			
-			for (BookVO bv : AddBookList.bookList) {
+			for (BookVO bv : CommonConstants.readBookFileList()) {
 				String cbb = (String) cbbSearch.getSelectedItem();
 				
 				if (cbb.equals("도서명")) {
@@ -407,8 +407,8 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			return 0;
 		} else {
 			CommonConstants.bkModel.remove(vo);
-			AddBookList.bookList.remove(vo);
-			
+			CommonConstants.readBookFileList().remove(vo);
+			//TODO 삭제처리
 			CommonConstants.repaintBookTable();
 			bookTbl.removeAll();
 			bookTbl.setModel(CommonConstants.bkModel);
@@ -479,7 +479,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		} else {
 			
 			if(bookTbl.getSelectedRow()>-1) { 
-				BookVO delVO = AddBookList.bookList.get(bookTbl.getSelectedRow());
+				BookVO delVO = CommonConstants.readBookFileList().get(bookTbl.getSelectedRow());
 				System.err.println("삭제할" + delVO );
 
 				int rslt = JOptionPane.showConfirmDialog(null, " '" + delVO.getBookNm()+ "' " +" 을(를) 삭제 하시겠습니까?", delVO.getBookNm(), JOptionPane.YES_NO_OPTION);
@@ -508,7 +508,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	 */
 	private void getBookDetailDialog() {
 		int idx = bookTbl.getSelectedRow();
-		BookVO seletedVO = AddBookList.bookList.get(bookTbl.getSelectedRow());
+		BookVO seletedVO = CommonConstants.readBookFileList().get(bookTbl.getSelectedRow());
 		System.out.println("선택한 도서기록은?? -----> " + seletedVO);
 		
 		BookUpdateDialog uptDialog = new BookUpdateDialog();

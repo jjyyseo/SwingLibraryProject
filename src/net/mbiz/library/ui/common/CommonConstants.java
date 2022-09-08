@@ -2,8 +2,10 @@ package net.mbiz.library.ui.common;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
@@ -14,11 +16,11 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
-import net.mbiz.edt.barcode.ag.ui.common.table.CommonTableRenderer;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.data.memory.AddBookList;
 import net.mbiz.library.data.memory.AddBorrowList;
+import net.mbiz.library.file.book.BookFileReader;
+import net.mbiz.library.file.borrow.BorrowFileReader;
 import net.mbiz.library.ui.common.renderer.BookTableRenderer;
 import net.mbiz.library.ui.common.renderer.BorrowTableRenderer;
 import net.mbiz.library.ui.common.renderer.CheckBoxRenderer;
@@ -56,9 +58,9 @@ public class CommonConstants {
 	/* 대출 테이블 다시 그리는 메서드 */
 	public static void repaintBorrowTable() {
 		CommonConstants.bwModel.removeAll();
-		Collections.sort(AddBorrowList.borrowList, Collections.reverseOrder());
+		Collections.sort(readBorrowFileList(), Collections.reverseOrder());
 		System.err.println("여기는 repaintBorrowTable");
-		CommonConstants.bwModel.addDataList((ArrayList) AddBorrowList.borrowList);
+		CommonConstants.bwModel.addDataList((ArrayList) readBorrowFileList());
 		CommonConstants.bwModel.fireTableDataChanged(); // 테이블에 변경된 데이터 반영
 
 	}
@@ -66,11 +68,31 @@ public class CommonConstants {
 	/* 전체 도서 테이블 다시 그리는 메서드 */
 	public static void repaintBookTable() {
 		CommonConstants.bkModel.removeAll();
-		Collections.sort(AddBookList.bookList, Collections.reverseOrder());
-		CommonConstants.bkModel.addDataList((ArrayList) AddBookList.bookList);
+		Collections.sort( readBookFileList(), Collections.reverseOrder());
+		CommonConstants.bkModel.addDataList((ArrayList) readBookFileList());
 		CommonConstants.bkModel.fireTableDataChanged(); // 테이블에 변경된 데이터 반영
 	}
 
+	public static List<BookVO> readBookFileList() {
+		List<BookVO> list = null;
+		try {
+			list = new BookFileReader().readBookFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public static List<BorrowVO> readBorrowFileList() {
+		List<BorrowVO> list = null;
+		try {
+			list = new BorrowFileReader().readBorrowFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
 	/**
 	 * <테이블에 모델을 적용하고 랜더러 설정 및 테이블의 열을 설정한다.> JTable과 BeanTableModel을 파라미터로 받아 테이블에
 	 * 모델을 셋팅, 각 컬럼의 열 너비, 랜더러 셋팅.
