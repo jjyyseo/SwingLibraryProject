@@ -38,7 +38,6 @@ public class AddBorrowList {
 			BorrowVO bwVO = new BorrowVO();
 			bwVO.setBorrowNo(i);
 			bwVO.setBookNo(i);
-			bwVO.setUserId("a001");
 			bwVO.setStartDate(startDate);
 			bwVO.setEndDate(endDate);
 			bwVO.setReturnDate(returnDate);

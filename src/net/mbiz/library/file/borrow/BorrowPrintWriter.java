@@ -1,12 +1,15 @@
-package net.mbiz.library.file.book;
+package net.mbiz.library.file.borrow;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.mbiz.library.data.BookVO;
+import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.file.LocationConstants;
 
 /**
@@ -15,16 +18,16 @@ import net.mbiz.library.file.LocationConstants;
  * @author metabiz
  *
  */
-public class BookPrintWriter {
+public class BorrowPrintWriter {
 
-	private BookVO vo;
+	private BorrowVO vo;
 	
-	public BookPrintWriter(BookVO bookVO) {
-		this.vo = bookVO;
+	public BorrowPrintWriter(BorrowVO borrowVO) {
+		this.vo = borrowVO;
 	}
 	
-	public void writeBookFile() throws IOException {
-		String location = LocationConstants.BOOK_DATA_lOCATION; 
+	public void writeBorrowFile() throws IOException {
+		String location = LocationConstants.BORROW_DATA_lOCATION; 
 		
 		PrintWriter pw = null;
 		File file = new File(location);
@@ -35,22 +38,17 @@ public class BookPrintWriter {
 		try {
 			pw = new PrintWriter(fileWriter);
 			
-			if (vo.getUpdateDate() == null) {
-				vo.setUpdateDate(new Date());
-			}
-			
 			insertVO +=
-					    "#" + vo.getBookNo()
+					    "#" + vo.getBorrowNo()
+					  + "#" + vo.getBookNo()
 					  + "#" + vo.getBookNm() 
 					  + "#" + vo.getBookWtr()
-					  + "#" + vo.getPublisher()
-					  + "#" + vo.getReleaseDate()
 					  + "#" + vo.getIsBorrowed()
-					  + "#" + vo.getBookIsbn()
-					  + "#" + vo.getCategory()
-					  + "#" + vo.getRegistDate()
-					  + "#" + vo.getUpdateDate()
-					  + "#" + vo.getBooksub();
+					  + "#" + vo.getStartDate()
+					  + "#" + vo.getEndDate()
+					  + "#" + vo.getReturnDate()
+					  + "#" + vo.getOverdue();
+					  
 			
 			pw.println(insertVO);
 			pw.flush(); 

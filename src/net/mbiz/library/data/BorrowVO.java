@@ -19,7 +19,6 @@ public class BorrowVO implements Comparable<BorrowVO>, Externalizable{
 	private int bookNo;            /* 도서 번호*/
 	private String bookNm;         /* 도서 명*/                          
 	private String bookWtr;        /* 저자*/                          
-	private String userId;         /* 유저 아이디*/
 	private int isBorrowed;        /* 대출가능=0 대출중=1*/
 	private Date startDate;        /* 대출 시작 일자*/
 	private Date endDate;          /* 대출 마감 일자*/

@@ -418,7 +418,6 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		borrowVO.setBookNm(bkNm);
 		borrowVO.setBookNo(bkNo);
 		borrowVO.setBookWtr(tfBookWtr.getText());
-		borrowVO.setUserId("a001");
 		
 		Calendar cal = Calendar.getInstance(); 
 		cal.setTime(new Date()); 	

@@ -263,7 +263,6 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 		borrowVO.setBorrowNo(AddBorrowList.borrowList.size()+1);
 		borrowVO.setBookNm(BookDetailDialog.bkDatilVO.getBookNm());
 		borrowVO.setBookNo(BookDetailDialog.bkDatilVO.getBookNo());
-		borrowVO.setUserId("a001");
 		
 		Calendar cal = Calendar.getInstance(); 
 		cal.setTime(new Date()); 	

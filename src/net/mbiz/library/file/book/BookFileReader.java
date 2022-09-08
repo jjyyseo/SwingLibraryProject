@@ -7,11 +7,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-
-import org.apache.commons.io.FileUtils;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.file.LocationConstants;
@@ -28,7 +25,7 @@ public class BookFileReader {
 	}
 
 	public void readBookFile() throws IOException {
-		String location = LocationConstants.BOOK_DATA_lOCATION + "\\bookData.txt";
+		String location = LocationConstants.BOOK_DATA_lOCATION ;
 		File file = new File(location);
 		
 		BufferedReader br = null;
