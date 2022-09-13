@@ -40,7 +40,7 @@ public class BorrowPrintWriter {
 			
 			insertVO +=
 					    "#" + vo.getBorrowNo()
-					  + "#" + vo.getBookNo()
+//					  + "#" + vo.getBookNo()
 					  + "#" + vo.getBookNm() 
 					  + "#" + vo.getBookWtr()
 					  + "#" + vo.getIsBorrowed()

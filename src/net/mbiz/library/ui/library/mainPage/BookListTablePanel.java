@@ -68,6 +68,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 
 	private JComboBox<String> cbbSearch;
 	private List<BookVO> checkedList = new ArrayList<>(); 
+	private BeanTableModel<BookVO> bkModel;
 	
 	public BookListTablePanel(MainPanel pn) {
 		jbInit();
@@ -76,9 +77,8 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	}
 
 	private void initialize() {
-		Collections.sort(CommonConstants.readBookFileList(), Collections.reverseOrder());
-		CommonConstants.bkModel.addDataList((ArrayList) CommonConstants.readBookFileList()); // 리스트로 한꺼번에 집어넣기 가능
-		CommonConstants.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
+		this.bkModel.addDataList((ArrayList) CommonConstants.readBookFileList()); // 리스트로 한꺼번에 집어넣기 가능
+		this.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
 
@@ -259,7 +259,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		String topHeader[] = {"check","No","도서명", "저자", "출판사", "출간일", "카테고리", "대출상태" };	// 헤더 setting
 		int[] col = {60, 60, 600, 296, 200, 180, 180, 180 };								// 열 넓이
 		
-		CommonConstants.bkModel = new BeanTableModel<BookVO>(topHeader, col) {
+		this.bkModel = new BeanTableModel<BookVO>(topHeader, col) {
 			// 객체의 컬럼 별 데이터를 한꺼번에 테이블에 뿌려준다.
 			@Override 
 			public Object getValueByColumIndex(int row, int col) {
@@ -294,7 +294,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			}
 	
 		};
-		CommonConstants.setTableModelColumnWithCommonTableRenderer(this.bookTbl, CommonConstants.bkModel);
+		CommonConstants.setTableModelColumnWithCommonTableRenderer(this.bookTbl, this.bkModel, "book");
 	}
 	
 	
@@ -306,7 +306,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		if (e.getSource().equals(schBtn)) {
 			getSearchBookList();
 		} else if(e.getSource().equals(pvsBtn)) { // 전체보기 : 테이블 리셋.
-			CommonConstants.repaintBookTable();
+			repaintBookTable();
 		} else if(e.getSource().equals(registBtn)) {
 			getRedistBookDialog();
 		} else if(e.getSource().equals(deleteBtn)) {
@@ -316,6 +316,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	}
 	
 	
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		
@@ -350,7 +351,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	private void getSearchBookList() {
 		
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
-			CommonConstants.bkModel.removeAll();
+			this.bkModel.removeAll();
 			
 			
 			for (BookVO bv : CommonConstants.readBookFileList()) {
@@ -358,26 +359,26 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 				
 				if (cbb.equals("도서명")) {
 					if (bv.getBookNm().contains(schFd.getText())) {
-						CommonConstants.bkModel.addData(bv);				
+						this.bkModel.addData(bv);				
 					} 
 				} else if(cbb.equals("저자")) {
 					if (bv.getBookWtr().contains(schFd.getText())) {
-						CommonConstants.bkModel.addData(bv);				
+						this.bkModel.addData(bv);				
 					} 
 				} else if(cbb.equals("출판사")) {
 					if (bv.getPublisher().contains(schFd.getText())) {
-						CommonConstants.bkModel.addData(bv);				
+						this.bkModel.addData(bv);				
 					} 
 				} else if(cbb.equals("카테고리")) {
 					if (bv.getCategory().contains(schFd.getText())) {
-						CommonConstants.bkModel.addData(bv);				
+						this.bkModel.addData(bv);				
 					} 
 				} 
 			}
-			this.bookTbl.setModel(CommonConstants.bkModel);
+			this.bookTbl.setModel(this.bkModel);
 			
 		} else {
-			CommonConstants.repaintBookTable();
+			repaintBookTable();
 		}
 	}
 	
@@ -390,9 +391,9 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		registDialog.setLocationCenter();
 		
 		// Dialog 종료 후 repaint
-		CommonConstants.repaintBookTable();
+		repaintBookTable();
 		bookTbl.removeAll();
-		bookTbl.setModel(CommonConstants.bkModel);
+		bookTbl.setModel(this.bkModel);
 		
 	}
 	
@@ -406,12 +407,12 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		if (vo.getIsBorrowed() == 1) {
 			return 0;
 		} else {
-			CommonConstants.bkModel.remove(vo);
+			this.bkModel.remove(vo);
 			CommonConstants.readBookFileList().remove(vo);
 			//TODO 삭제처리
-			CommonConstants.repaintBookTable();
+			repaintBookTable();
 			bookTbl.removeAll();
-			bookTbl.setModel(CommonConstants.bkModel);
+			bookTbl.setModel(this.bkModel);
 			
 			return 1;
 		}
@@ -445,9 +446,9 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			return 0;	
 		}
 		
-		CommonConstants.repaintBookTable();
+		repaintBookTable();
 		bookTbl.removeAll();
-		bookTbl.setModel(CommonConstants.bkModel);
+		bookTbl.setModel(this.bkModel);
 	
 		return 1;
 	}
@@ -515,15 +516,20 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		uptDialog.initializeBookOne(seletedVO);
 		uptDialog.setLocationCenter();
 		
-		CommonConstants.bkModel.fireTableDataChanged();
+		this.bkModel.fireTableDataChanged();
 		bookTbl.repaint();
 		
 		//마이페이지 테이블 repaint()
-		CommonConstants.repaintBorrowTable();
+//		CommonConstants.repaintBorrowTable();
 		
 
 	}
 	
+	
+	private void repaintBookTable() {
+		bkModel.removeAll();
+		initialize();
+	}
 	
 	
 

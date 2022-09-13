@@ -10,6 +10,7 @@ import javax.swing.table.TableCellRenderer;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.ui.common.CommonConstants;
+import net.mbiz.library.util.DateFomatUtil;
 
 /**
  * 테이블 데이터를 그려주는 렌더러.
@@ -29,14 +30,13 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 		setOpaque(true); // 불투명
 		setFont(CommonConstants.FONT_BASE_17);
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 		BookVO vo = (BookVO) value;
 		String str = "";
 
 		/*데이터  쪼개기*/
 		switch (col) {
 		case 1:
-			str = String.valueOf(vo.getBookNo());
+			str = null;
 			break;
 		case 2:
 			str = vo.getBookNm();
@@ -48,7 +48,7 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 			str = vo.getPublisher();
 			break;
 		case 5:
-			str = sdf.format(vo.getReleaseDate());
+			str = DateFomatUtil.formatToString("releaseDate", vo.getReleaseDate());
 			break;
 		case 6:
 			str = vo.getCategory();
@@ -66,7 +66,6 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 		
 
 //		str = (str == null) ? "" : value.toString();
-
 		
 		if (row % 2 == 1) {
 			this.setBackground(fgColor);
@@ -75,14 +74,13 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 		}
 		this.setText(str);
 		
-		
-		if (this.getText().equals("대출중")) {
-			if (col==7) {
-				this.setForeground(Color.red);
-			}
-		} else {
-			this.setForeground(Color.black);
-		}
+//			if (this.getText().equals("대출중")) {
+//				if (col==7) {
+//					this.setForeground(Color.red);
+//				}
+//			} else {
+//				this.setForeground(Color.black);
+//			}
 		
 
 		return this;

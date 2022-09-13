@@ -40,8 +40,8 @@ public class BookPrintWriter {
 			}
 			
 			insertVO +=
-					    "#" + vo.getBookNo()
-					  + "#" + vo.getBookNm() 
+//					    "#" + vo.getBookNo()
+					    "#" + vo.getBookNm() 
 					  + "#" + vo.getBookWtr()
 					  + "#" + vo.getPublisher()
 					  + "#" + vo.getReleaseDate()

@@ -1,15 +1,13 @@
 package net.mbiz.library.data;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import net.mbiz.library.ui.common.CommonConstants;
 
 @Getter
 @Setter
@@ -17,7 +15,7 @@ import lombok.ToString;
 public class BorrowVO implements Comparable<BorrowVO>, Serializable{
 
 	private int borrowNo;          /* 대출 번호*/
-	private int bookNo;            /* 도서 번호*/
+	private String bookIsbn;         /* 도서 isbn*/
 	private String bookNm;         /* 도서 명*/                          
 	private String bookWtr;        /* 저자*/                          
 	private int isBorrowed;        /* 대출가능=0 대출중=1*/
@@ -28,9 +26,25 @@ public class BorrowVO implements Comparable<BorrowVO>, Serializable{
 	
 	private boolean isSelect;	   /* 체크박스 선택 여부!*/
 	
+	
+
+	
 	@Override
 	public int compareTo(BorrowVO o) {
 		return this.borrowNo - o.borrowNo;
+	}
+	
+	
+	public int settingBorrowNo() {
+		List<BorrowVO> list = CommonConstants.readBorrowFileList();
+		for (int i = 0; i < list.size(); i++) {
+			for (int j = 1; j < 500; j++) {
+				if (list.get(i).getBorrowNo() != j) {
+					return j;
+				}
+			}
+		}
+		return 0;
 	}
 
 }

@@ -9,8 +9,6 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -28,12 +26,12 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import net.mbiz.library.data.BookVO;
-import net.mbiz.library.data.memory.AddBookList;
-import net.mbiz.library.file.book.BookPrintWriter;
+import net.mbiz.library.handler.FileHandler;
 import net.mbiz.library.ui.common.CalenderDialog;
 import net.mbiz.library.ui.common.CommonConstants;
+import net.mbiz.library.util.DateFomatUtil;
 
-public class BookRegistDialog extends JDialog {
+public class BookRegistDialog extends JDialog implements ActionListener{
 
 	
 	private JPanel pnMain;        
@@ -268,61 +266,40 @@ public class BookRegistDialog extends JDialog {
 		
 		
 		
+		category = cbbCategory.getSelectedItem().toString();
 		
-		/*도서 카테고리 콤보 박스*/		
-		cbbCategory.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				category = cbbCategory.getSelectedItem().toString();
-				System.out.println("콤보박스 선택!!! " + category);
-			}
-		});
 		
-		/*도서 정보 추가하기*/
-		registBtn.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					insertBookVO();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		/*달력 Dialog open*/
-		calenderBtn.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new CalenderDialog().setLocationCenter();
-				
-				// 다이어로그 종료 후 
-				tfDate.setText(CalenderDialog.rsltDate);
-			}
-		});
-		/*사진 첨부(준비중)*/
-		attachBtn.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "서비스 준비 중입니다.", "도서 사진 첨부하기", JOptionPane.INFORMATION_MESSAGE);
-			}
-		});
+		registBtn.addActionListener(this);			/*도서 정보 추가하기*/
+		calenderBtn.addActionListener(this);		/*달력 Dialog open*/
+		attachBtn.addActionListener(this);			/*사진 첨부(준비중)*/
 		
 	}
 	
-	/**
-	 * 입력된 정보로 BookVO를 생성하여 BookList에 add하는 데서드.
-	 * @throws IOException 
-	 */
-	private void insertBookVO() throws IOException{
+	
+	
+//	@Override-------------------------------------------------------------
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(registBtn)) {
+			checkTextIsEmpty();
+		} else if (e.getSource().equals(calenderBtn)) {
+			openCalenderDialog();
+		} else if (e.getSource().equals(attachBtn)) {
+			JOptionPane.showMessageDialog(null, "서비스 준비 중입니다.", "도서 사진 첨부하기", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+	
+	
+	private void openCalenderDialog() {
+		new CalenderDialog().setLocationCenter();
+		// 다이어로그 종료 후 
+		tfDate.setText(CalenderDialog.rsltDate);
+	}
+
+	private void checkTextIsEmpty() {
 		if (category.equals("") || category.isEmpty() ) {
 			category = "소설" ;
 		}
 		System.out.println("여기는 등록 " + category);
-		
 		
 		// 어느 하나 빈칸이 있는 경우
 		if ( tfBookNm.getText().isEmpty() || tfBookWtr.getText().isEmpty()
@@ -332,15 +309,26 @@ public class BookRegistDialog extends JDialog {
 			
 			JOptionPane.showMessageDialog(null, "정보가 모두 입력되지 않았습니다. 모두 입력해 주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
 			
-		} else if (tfIsbn.getText().length() != 14) {	// isbn이 14자리가 아닌 경우  
+		} else if (tfIsbn.getText().length() != 13) {	// isbn이 13자리가 아닌 경우  
 			JOptionPane.showMessageDialog(null, "도서 isbn은 14자리 숫자로 입력해 주세요.", "isbn이 유효하지 않습니다. ", JOptionPane.INFORMATION_MESSAGE);
 			
 		} else {
+			try {
+				insertBookVO();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+	/**
+	 * 입력된 정보로 BookVO를 생성하여 BookList에 add하는 데서드.
+	 * @throws IOException 
+	 */
+	private void insertBookVO() throws IOException{
+
 			BookVO vo = new BookVO();
 			
-			int bkNo = CommonConstants.readBookFileList().size() + 1;
 			String bkNm = tfBookNm.getText();
 			String bkWtr = tfBookWtr.getText();
 			String publisher = tfPublisher.getText();
@@ -348,27 +336,18 @@ public class BookRegistDialog extends JDialog {
 			String releaseDate = tfDate.getText();
 			String booksub = txtArea.getText();
 			
-			vo.setBookNo(bkNo);
 			vo.setBookNm(bkNm);
 			vo.setBookWtr(bkWtr);
 			vo.setPublisher(publisher);
-			vo.setBookIsbn(Long.parseLong(bookIsbn));
-			try {
-				vo.setReleaseDate(sdf.parse(releaseDate));
-			} catch (ParseException e1) {
-				e1.printStackTrace();
-				System.err.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 등록 중 출간일 파싱에러 발생!");
-			}
+			vo.setBookIsbn(bookIsbn);
+			vo.setReleaseDate( DateFomatUtil.formatToDate(releaseDate));
 			vo.setCategory(category);
 			vo.setBooksub(booksub);
 			vo.setRegistDate(new Date());
 			
-			CommonConstants.readBookFileList().add(vo);
+			int rslt = FileHandler.getInstance().writeBookFile(vo);			
 			
-			
-			new BookPrintWriter(vo).writeBookFile();
-			System.out.println("여기는 BookRedistDialog!! 파일로 저장해봐요. 저장한 도서 객체 ==>" + vo);
-			if (CommonConstants.readBookFileList().size() == bkNo) {
+			if (rslt == 1) {
 				JOptionPane.showMessageDialog(null, bkNm + "(이)가 등록되었습니다.", bkNm, JOptionPane.INFORMATION_MESSAGE);
 				dispose();
 				System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 정보가 등록되었습니다. /n 등록된 도서 정보 ----> " + CommonConstants.readBookFileList().get(CommonConstants.readBookFileList().size()-1));
@@ -376,7 +355,7 @@ public class BookRegistDialog extends JDialog {
 				JOptionPane.showMessageDialog(null, "도서 추가 실패", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
 			}
 			
-		}
+		
 	};
 	
 	
@@ -385,5 +364,7 @@ public class BookRegistDialog extends JDialog {
 		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
 		this.setVisible(true);
 	}
+
+
 
 }

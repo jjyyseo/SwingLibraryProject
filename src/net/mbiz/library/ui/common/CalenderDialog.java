@@ -122,7 +122,7 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 		cbbMonth.setPreferredSize(new Dimension(70,0));
 		
 		this.prevBtn = new JButton("◀");
-		prevBtn.setPreferredSize(new Dimension(20,0));
+		prevBtn.setPreferredSize(new Dimension(100,0));
 		this.nextBtn = new JButton("▶");
 		prevBtn.setPreferredSize(new Dimension(20,0));
 		
@@ -176,22 +176,13 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 		dayPrint(year, month);
 		
 		
-		prevBtn.addActionListener(this);
-		nextBtn.addActionListener(this);
-		
-		
 		selectMonth = cbbMonth.getSelectedItem().toString();
 		selectYear = cbbYear.getSelectedItem().toString();
 
+		prevBtn.addActionListener(this);
+		nextBtn.addActionListener(this);
+		pickBtn.addActionListener(this);
 		
-		pickBtn.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				
-			}
-		});
 	}
 
 	/**
@@ -397,5 +388,8 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 	}
 
 	
+	public static void main(String[] args) {
+		new CalenderDialog().setLocationCenter();
+	}
 
 }

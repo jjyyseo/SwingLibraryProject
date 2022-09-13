@@ -14,13 +14,12 @@ import net.mbiz.library.data.BookVO;
  */
 public class AddBookList {
 	
-//	public static List<BookVO> bookList = AddBookList.addData();
+	public static List<BookVO> bookList = AddBookList.addData();
 
 	private static List<BookVO> addData() {
 		List<BookVO> bkList = new ArrayList<>();
 		
 		BookVO bv1 = new BookVO();
-		bv1.setBookNo(1);
 		bv1.setBookNm("흔해 빠진 이야기는 싫어!");      
 		bv1.setBookWtr("칼리 다비드");                      
 		bv1.setBooksub("이 이야기는 기사의 이야기란다.\r\n"
@@ -36,7 +35,6 @@ public class AddBookList {
 		bv1.setPublisher("봄볕");                        
 		
 		BookVO bv2 = new BookVO();
-		bv2.setBookNo(2);
 		bv2.setBookNm("황금열광 : 하은경 장편소설");
 		bv2.setBookWtr("하은경");
 		bv2.setBooksub("『황금열광』은 금광 재벌인 김 노인이 살해된 수요일 밤의 행적을 좇으며 시작되는 추리소설로"
@@ -48,7 +46,6 @@ public class AddBookList {
 		bv2.setPublisher("비룡소");
 
 		BookVO bv3 = new BookVO();
-		bv3.setBookNo(3);
 		bv3.setBookNm("화장실 냄새를 말끔히 없애려면?");
 		bv3.setBookWtr("윤효식");
 		bv3.setBooksub("《용선생의 시끌벅적 과학교실 - 32 혼합물의 분리》 편에서는 우리 주변에 존재하는 "
@@ -62,7 +59,6 @@ public class AddBookList {
 		bv3.setPublisher("사회평론");
 		
 		BookVO bv4 = new BookVO();
-		bv4.setBookNo(4);
 		bv4.setBookNm("홀리데이");
 		bv4.setBookWtr("T. M. 로건");
 		bv4.setBooksub("T. M. 로건의 심리 스릴러 『홀리데이』가 아르테에서 출간되었다. "
@@ -77,7 +73,6 @@ public class AddBookList {
 		bv4.setPublisher("아르테");
 		
 		BookVO bv5 = new BookVO();
-		bv5.setBookNo(5);
 		bv5.setBookNm("디디의 우산");
 		bv5.setBookWtr("황정은");
 		bv5.setBooksub("이제 행복해지자, 너의 행복과 더불어\r\n"
@@ -94,7 +89,6 @@ public class AddBookList {
 		bv5.setPublisher("창비");
 		
 		BookVO bv6 = new BookVO();
-		bv6.setBookNo(6);
 		bv6.setBookNm("우리가 빛의 속도로 갈 수 없다면");
 		bv6.setBookWtr("김초엽");
 		bv6.setBooksub("지난겨울까지 바이오센서를 만드는 과학도였던 김초엽 작가는, 이제 소설을 쓴다. "
@@ -107,7 +101,6 @@ public class AddBookList {
 		bv6.setPublisher("허블");
 		
 		BookVO bv7 = new BookVO();
-		bv7.setBookNo(7);
 		bv7.setBookNm("밝은 밤");
 		bv7.setBookWtr("최은영");
 		bv7.setBooksub("증조할머니에게서 나로 이어지는 여성 4대의 삶을 담은 소설. "
@@ -120,7 +113,6 @@ public class AddBookList {
 		bv7.setPublisher("문학동네");
 		
 		BookVO bv8 = new BookVO();
-		bv8.setBookNo(8);
 		bv8.setBookNm("이기적 유전자 The Selfish Gene");
 		bv8.setBookWtr("리처드 도킨스");
 		bv8.setBooksub("현대 생물학의 새로운 지평을 연 세계적인 석학 리처드 도킨스의 대표작 "
@@ -136,7 +128,6 @@ public class AddBookList {
 		bv8.setPublisher("을유문화사");
 		
 		BookVO bv9 = new BookVO();
-		bv9.setBookNo(9);
 		bv9.setBookNm("기브 앤 테이크. 주는 사람이 성공한다");
 		bv9.setBookWtr("애덤 그랜트");
 		bv9.setBooksub("양보하고, 배려하고, 베풀고, 희생하고, 조건 없이 주는 사람이\r\n"
@@ -151,7 +142,6 @@ public class AddBookList {
 		bv9.setPublisher("생각연구소 ");
 		
 		BookVO bv10 = new BookVO();
-		bv10.setBookNo(10);
 		bv10.setBookNm("넛지: 파이널 에디션");
 		bv10.setBookWtr("리처드 탈러");
 		bv10.setBooksub("기후변화 · 코로나19 극복에서 슬러지 · 연금플랜 설계까지,\r\n"
@@ -169,7 +159,6 @@ public class AddBookList {
 		bv10.setPublisher("리더스북");
 
 		BookVO bv11 = new BookVO();
-		bv11.setBookNo(11);
 		bv11.setBookNm("알고 있다는 착각");
 		bv11.setBookWtr("질리언 테트");
 		bv11.setBooksub("곤경에 빠지는 건 뭔가를 몰라서가 아니다.\r\n"
@@ -181,7 +170,6 @@ public class AddBookList {
 		bv11.setPublisher("어크로스");
 
 		BookVO bv12 = new BookVO();
-		bv12.setBookNo(12);
 		bv12.setBookNm("NFT 레볼루션");
 		bv12.setBookWtr("성소라, 롤프 회퍼, 스콧 맥러플린");
 		bv12.setBooksub("넥스트 빅 씽 Next Big Thing : NFT 시대가 온다!\r\n"
@@ -200,7 +188,6 @@ public class AddBookList {
 		bv12.setPublisher(" 더퀘스트");
 		
 		BookVO bv13 = new BookVO();
-		bv13.setBookNo(13);
 		bv13.setBookNm("밥 프록터 부의 확신 ");
 		bv13.setBookWtr("밥 프록터");
 		bv13.setBooksub("“기억하라! 당신은 부자로 태어났다!” 전설적인 자기계발의 구루 ‘밥 프록터’!\r\n"
@@ -210,7 +197,6 @@ public class AddBookList {
 		bv13.setPublisher("비즈니스북스");
 		
 		BookVO bv14 = new BookVO();
-		bv14.setBookNo(14);
 		bv14.setBookNm("역행자");
 		bv14.setBookWtr("자청");
 		bv14.setBooksub("\r\n"
@@ -232,7 +218,6 @@ public class AddBookList {
 		bv14.setPublisher("웅진지식하우스");
 		
 		BookVO bv15 = new BookVO();
-		bv15.setBookNo(15);
 		bv15.setBookNm("오은영의 화해");
 		bv15.setBookWtr("오은영");
 		bv15.setBooksub("외면하고 싶었던 마음속 고통과 직면해야 하는 당신에게\r\n"
@@ -247,7 +232,6 @@ public class AddBookList {
 		bv15.setPublisher("코리아닷컴");
 		
 		BookVO bv16 = new BookVO();
-		bv16.setBookNo(16);
 		bv16.setBookNm("흔해 빠진 이야기는 싫어!2");      
 		bv16.setBookWtr("칼리 다비드");                      
 		bv16.setBooksub("이 이야기는 기사의 이야기란다.\r\n"
@@ -263,7 +247,6 @@ public class AddBookList {
 		bv16.setPublisher("봄볕");                        
 		
 		BookVO bv17 = new BookVO();
-		bv17.setBookNo(17);
 		bv17.setBookNm("황금열광 : 하은경 장편소설2");
 		bv17.setBookWtr("하은경");
 		bv17.setBooksub("『황금열광』은 금광 재벌인 김 노인이 살해된 수요일 밤의 행적을 좇으며 시작되는 추리소설로"
@@ -275,7 +258,6 @@ public class AddBookList {
 		bv17.setPublisher("비룡소");
 
 		BookVO bv18 = new BookVO();
-		bv18.setBookNo(18);
 		bv18.setBookNm("화장실 냄새를 말끔히 없애려면?2");
 		bv18.setBookWtr("윤효식");
 		bv18.setBooksub("《용선생의 시끌벅적 과학교실 - 32 혼합물의 분리》 편에서는 우리 주변에 존재하는 "
@@ -289,7 +271,6 @@ public class AddBookList {
 		bv18.setPublisher("사회평론");
 		
 		BookVO bv19 = new BookVO();
-		bv19.setBookNo(19);
 		bv19.setBookNm("홀리데이2");
 		bv19.setBookWtr("T. M. 로건");
 		bv19.setBooksub("T. M. 로건의 심리 스릴러 『홀리데이』가 아르테에서 출간되었다. "
@@ -304,7 +285,6 @@ public class AddBookList {
 		bv19.setPublisher("아르테");
 		
 		BookVO bv20 = new BookVO();
-		bv20.setBookNo(20);
 		bv20.setBookNm("디디의 우산2");
 		bv20.setBookWtr("황정은");
 		bv20.setBooksub("이제 행복해지자, 너의 행복과 더불어\r\n"
@@ -321,7 +301,6 @@ public class AddBookList {
 		bv20.setPublisher("창비");
 		
 		BookVO bv21 = new BookVO();
-		bv21.setBookNo(21);
 		bv21.setBookNm("우리가 빛의 속도로 갈 수 없다면2");
 		bv21.setBookWtr("김초엽");
 		bv21.setBooksub("지난겨울까지 바이오센서를 만드는 과학도였던 김초엽 작가는, 이제 소설을 쓴다. "
@@ -334,7 +313,6 @@ public class AddBookList {
 		bv21.setPublisher("허블");
 		
 		BookVO bv22 = new BookVO();
-		bv22.setBookNo(22);
 		bv22.setBookNm("밝은 밤2");
 		bv22.setBookWtr("최은영");
 		bv22.setBooksub("증조할머니에게서 나로 이어지는 여성 4대의 삶을 담은 소설. "
@@ -347,7 +325,6 @@ public class AddBookList {
 		bv22.setPublisher("문학동네");
 		
 		BookVO bv23 = new BookVO();
-		bv23.setBookNo(23);
 		bv23.setBookNm("이기적 유전자 The Selfish Gene2");
 		bv23.setBookWtr("리처드 도킨스");
 		bv23.setBooksub("현대 생물학의 새로운 지평을 연 세계적인 석학 리처드 도킨스의 대표작 "
@@ -363,7 +340,6 @@ public class AddBookList {
 		bv23.setPublisher("을유문화사");
 		
 		BookVO bv24 = new BookVO();
-		bv24.setBookNo(24);
 		bv24.setBookNm("기브 앤 테이크. 주는 사람이 성공한다2");
 		bv24.setBookWtr("애덤 그랜트");
 		bv24.setBooksub("양보하고, 배려하고, 베풀고, 희생하고, 조건 없이 주는 사람이\r\n"
@@ -378,7 +354,6 @@ public class AddBookList {
 		bv24.setPublisher("생각연구소 ");
 		
 		BookVO bv25 = new BookVO();
-		bv25.setBookNo(25);
 		bv25.setBookNm("넛지: 파이널 에디션2");
 		bv25.setBookWtr("리처드 탈러");
 		bv25.setBooksub("기후변화 · 코로나19 극복에서 슬러지 · 연금플랜 설계까지,\r\n"
@@ -396,7 +371,6 @@ public class AddBookList {
 		bv25.setPublisher("리더스북");
 
 		BookVO bv26 = new BookVO();
-		bv26.setBookNo(26);
 		bv26.setBookNm("알고 있다는 착각2");
 		bv26.setBookWtr("질리언 테트");
 		bv26.setBooksub("곤경에 빠지는 건 뭔가를 몰라서가 아니다.\r\n"
@@ -408,7 +382,6 @@ public class AddBookList {
 		bv26.setPublisher("어크로스");
 
 		BookVO bv27 = new BookVO();
-		bv27.setBookNo(27);
 		bv27.setBookNm("NFT 레볼루션2");
 		bv27.setBookWtr("성소라, 롤프 회퍼, 스콧 맥러플린");
 		bv27.setBooksub("넥스트 빅 씽 Next Big Thing : NFT 시대가 온다!\r\n"
@@ -427,7 +400,6 @@ public class AddBookList {
 		bv27.setPublisher(" 더퀘스트");
 		
 		BookVO bv28 = new BookVO();
-		bv28.setBookNo(28);
 		bv28.setBookNm("밥 프록터 부의 확신2");
 		bv28.setBookWtr("밥 프록터");
 		bv28.setBooksub("“기억하라! 당신은 부자로 태어났다!” 전설적인 자기계발의 구루 ‘밥 프록터’!\r\n"
@@ -437,7 +409,6 @@ public class AddBookList {
 		bv28.setPublisher("비즈니스북스");
 		
 		BookVO bv29 = new BookVO();
-		bv29.setBookNo(29);
 		bv29.setBookNm("역행자2");
 		bv29.setBookWtr("자청");
 		bv29.setBooksub("\r\n"
@@ -459,7 +430,6 @@ public class AddBookList {
 		bv29.setPublisher("웅진지식하우스");
 		
 		BookVO bv30 = new BookVO();
-		bv30.setBookNo(30);
 		bv30.setBookNm("오은영의 화해2");
 		bv30.setBookWtr("오은영");
 		bv30.setBooksub("외면하고 싶었던 마음속 고통과 직면해야 하는 당신에게\r\n"

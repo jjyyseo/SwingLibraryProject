@@ -3,8 +3,6 @@ package net.mbiz.library.ui.common;
 import java.awt.Color;
 import java.awt.Font;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -18,9 +16,8 @@ import javax.swing.table.TableColumn;
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.data.memory.AddBorrowList;
-import net.mbiz.library.file.book.BookFileReader;
 import net.mbiz.library.file.borrow.BorrowFileReader;
+import net.mbiz.library.handler.FileHandler;
 import net.mbiz.library.ui.common.renderer.BookTableRenderer;
 import net.mbiz.library.ui.common.renderer.BorrowTableRenderer;
 import net.mbiz.library.ui.common.renderer.CheckBoxRenderer;
@@ -52,31 +49,32 @@ public class CommonConstants {
 	public static final Font FONT_TITLE_22 = new Font("나눔고딕", Font.BOLD, 22);
 
 	/* 테이블 */ // 뺄거임
-	public static BeanTableModel<BookVO> bkModel;
-	public static BeanTableModel<BorrowVO> bwModel;
+	
+
 
 	/* 대출 테이블 다시 그리는 메서드 */
-	public static void repaintBorrowTable() {
-		CommonConstants.bwModel.removeAll();
-		Collections.sort(readBorrowFileList(), Collections.reverseOrder());
-		System.err.println("여기는 repaintBorrowTable");
-		CommonConstants.bwModel.addDataList((ArrayList) readBorrowFileList());
-		CommonConstants.bwModel.fireTableDataChanged(); // 테이블에 변경된 데이터 반영
-
-	}
+//	public static void repaintBorrowTable() {
+//		CommonConstants.bwModel.removeAll();
+//		Collections.sort(readBorrowFileList(), Collections.reverseOrder());
+//		System.err.println("여기는 repaintBorrowTable");
+//		CommonConstants.bwModel.addDataList((ArrayList) readBorrowFileList());
+//		CommonConstants.bwModel.fireTableDataChanged(); // 테이블에 변경된 데이터 반영
+//
+//	}
 
 	/* 전체 도서 테이블 다시 그리는 메서드 */
-	public static void repaintBookTable() {
-		CommonConstants.bkModel.removeAll();
-		Collections.sort( readBookFileList(), Collections.reverseOrder());
-		CommonConstants.bkModel.addDataList((ArrayList) readBookFileList());
-		CommonConstants.bkModel.fireTableDataChanged(); // 테이블에 변경된 데이터 반영
-	}
+//	public static void repaintBookTable() {
+//		CommonConstants.bkModel.removeAll();
+//		Collections.sort( readBookFileList(), Collections.reverseOrder());
+//		CommonConstants.bkModel.addDataList((ArrayList) readBookFileList());
+//		CommonConstants.bkModel.fireTableDataChanged(); // 테이블에 변경된 데이터 반영
+//	}
 
 	public static List<BookVO> readBookFileList() {
+		
 		List<BookVO> list = null;
 		try {
-			list = new BookFileReader().readBookFile();
+			list = FileHandler.getInstance().readBookFile(); 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -86,7 +84,7 @@ public class CommonConstants {
 	public static List<BorrowVO> readBorrowFileList() {
 		List<BorrowVO> list = null;
 		try {
-			list = new BorrowFileReader().readBorrowFile();
+			list = FileHandler.getInstance().readBorrowList();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -101,20 +99,21 @@ public class CommonConstants {
 	 * @param table
 	 * @param model
 	 */
-	public static <T> void setTableModelColumnWithCommonTableRenderer(JTable table, BeanTableModel<T> model) {
+	public static <T> void setTableModelColumnWithCommonTableRenderer(JTable table, BeanTableModel<T> model, String type) {
 
 		model.setSorting(false);
 		setDefaultTable(table);		// default 테이블 설정.
 		table.setModel(model);		// 모델 정보 setting
 		
 		/*테이블에 따라 렌더러로 컬럼을 그려준다.*/
-		if (model.equals(bkModel)) {
+		if (type.equals("book")) {
 			BookTableRenderer renderer = new BookTableRenderer();
 			for (int k = 0; k < model.getColumnCount(); k++) {
 				TableColumn column = new TableColumn(k, model.getColumnWidth(k), renderer, null);
 				table.addColumn(column);
+				model.setNumbering(true);
 			}
-		} else if (model.equals(bwModel)) {
+		} else if (type.equals("borrow")) {
 			BorrowTableRenderer renderer = new BorrowTableRenderer();
 			for (int k = 0; k < model.getColumnCount(); k++) {
 				TableColumn column = new TableColumn(k, model.getColumnWidth(k), renderer, null);
@@ -124,6 +123,7 @@ public class CommonConstants {
 
 		setTableCheckBox(table, model); //체크박스 그리기.
 	}
+
 
 	/**
 	 * 기본 테이블 설정.

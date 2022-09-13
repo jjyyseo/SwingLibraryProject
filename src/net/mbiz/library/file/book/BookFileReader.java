@@ -70,13 +70,13 @@ public class BookFileReader {
 
 		
 		
-		vo.setBookNo(Integer.parseInt(arr[1]));         /* 도서번호*/
+//		vo.setBookNo(Integer.parseInt(arr[1]));         /* 도서번호*/
 		vo.setBookNm(arr[2]);                           /* 도서명*/
 		vo.setBookWtr(arr[3]);                          /* 저자*/
 		vo.setPublisher(arr[4]);                        /* 출판사*/
 		vo.setCategory(arr[8]);                         /* 카테고리*/
 		vo.setIsBorrowed(Integer.parseInt(arr[6]));     /* 대출상태*/
-		vo.setBookIsbn(Long.parseLong(arr[7]));         /* isbn*/
+//		vo.setBookIsbn(Long.parseLong(arr[7]));         /* isbn*/
 		vo.setBooksub(arr[0]);                          /* 소개글*/
 		
 		try {

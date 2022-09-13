@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +25,7 @@ import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.data.memory.AddBookList;
 import net.mbiz.library.data.memory.AddBorrowList;
+import net.mbiz.library.handler.FileHandler;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.dialog.BookDetailDialog;
 
@@ -185,7 +187,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 		this.category = new JLabel(BookDetailDialog.bkDatilVO.getCategory());
 		this.publisher = new JLabel(BookDetailDialog.bkDatilVO.getPublisher());
 		this.releaseDate = new JLabel(sdf.format(BookDetailDialog.bkDatilVO.getReleaseDate()));
-		this.isbn = new JLabel(Long.toString(BookDetailDialog.bkDatilVO.getBookIsbn()));
+		this.isbn = new JLabel(BookDetailDialog.bkDatilVO.getBookIsbn());
 		bookWtr.setFont(CommonConstants.FONT_BASE_17); 
 		category.setFont(CommonConstants.FONT_BASE_17);
 		publisher.setFont(CommonConstants.FONT_BASE_17);
@@ -257,12 +259,11 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 	 * 대출 기록을 insert하는 메서드. 
 	 */
 	private void insertBorrowInfo() {
-		// borrowList에 대출 기록 추가
 		
 		BorrowVO borrowVO = new BorrowVO();
-		borrowVO.setBorrowNo(CommonConstants.readBorrowFileList().size()+1);
+//		borrowVO.setBorrowNo();
 		borrowVO.setBookNm(BookDetailDialog.bkDatilVO.getBookNm());
-		borrowVO.setBookNo(BookDetailDialog.bkDatilVO.getBookNo());
+		borrowVO.setBookIsbn(BookDetailDialog.bkDatilVO.getBookIsbn());
 		
 		Calendar cal = Calendar.getInstance(); 
 		cal.setTime(new Date()); 	
@@ -273,7 +274,11 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 		borrowVO.setEndDate(endDate);
 		borrowVO.setIsBorrowed(1); //대출중
 		
-		CommonConstants.readBorrowFileList().add(borrowVO);
+		try {
+			FileHandler.getInstance().writeBorrowFile(borrowVO);
+		} catch (IOException e) {
+			System.out.println("BookDetailPanel.insertBorrowInfo : 대출기록 insert 중 에러 발생");
+		}
 		
 	}
 
@@ -283,10 +288,12 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 	 */
 	private void updateBookState() {
 		// bookList update
-		int idx = BookDetailDialog.bkDatilVO.getBookNo()-1; //도서번호 - 1 = 인덱스
-		System.out.println("도서리스트의 인덱스" + idx);
-		System.out.println("도서리스트의 사이즈" +CommonConstants.readBookFileList().size());
-		CommonConstants.readBookFileList().get(idx).setIsBorrowed(1);
+		String isbn = BookDetailDialog.bkDatilVO.getBookIsbn();
+		for (BookVO vo : CommonConstants.readBookFileList()) {
+			if (vo.getBookIsbn().equals(isbn)) {
+				vo.setIsBorrowed(1);
+			}
+		}
 		
 	}
 

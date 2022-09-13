@@ -68,8 +68,8 @@ public class BorrowFileReader {
 		}
 
 		//setting
-		vo.setBorrowNo(Integer.parseInt(arr[1]));
-		vo.setBookNo(Integer.parseInt(arr[2]));
+//		vo.setBorrowNo(Integer.parseInt(arr[1]));
+//		vo.setBookNo(Integer.parseInt(arr[2]));
 		vo.setBookNm(arr[3]);
 		vo.setBookWtr(arr[4]);
 		vo.setIsBorrowed(Integer.parseInt(arr[5]));
