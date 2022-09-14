@@ -6,6 +6,8 @@ import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.manager.LibraryManager;
 
+
+// 비즈니스 로직 처리
 public class SqlHandler extends LibraryManager{
 
 	@Override
@@ -28,6 +30,15 @@ public class SqlHandler extends LibraryManager{
 		return 0;
 	}
 
+	//detail
+	public BookVO selectBookOne(String isbn) {
+		return null;
+	}
+	//대출 신청 - 대출상태 update
+	public int updateBookState(String isbn) {
+		return 0;
+	}
+	
 	
 	
 	
