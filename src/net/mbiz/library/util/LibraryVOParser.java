@@ -28,7 +28,7 @@ public class LibraryVOParser {
 		} 
 		
 		int idx = 0;
-		vo.setBookIsbn( arr[idx++]);
+		vo.setBookIsbn(arr[idx++]);
 		vo.setBookNm(arr[idx++]);
 		vo.setBookWtr(arr[idx++]);
 		vo.setPublisher(arr[idx++]);
@@ -51,7 +51,7 @@ public class LibraryVOParser {
 		
 		
 		return  vo.getBorrowNo() + "@" + vo.getBookIsbn() + "@" + vo.getBookNm() + "@" + vo.getBookWtr() 
-				+ "@" + vo.getIsBorrowed() + "@" + startDate + "@" + endDate + "@" + returnDate
+				+ "@" + startDate + "@" + endDate + "@" + returnDate
 				+ "@" + vo.getOverdue();
 	}
 
@@ -70,7 +70,6 @@ public class LibraryVOParser {
 		vo.setBookIsbn(arr[idx++]);
 		vo.setBookNm(arr[idx++]);
 		vo.setBookWtr(arr[idx++]);
-		vo.setIsBorrowed( Integer.parseInt(arr[idx++]) );
 		vo.setStartDate( DateFomatUtil.formatToDate(arr[idx++]) );
 		vo.setEndDate( DateFomatUtil.formatToDate(arr[idx++]) );
 		vo.setReturnDate( DateFomatUtil.formatToDate(arr[idx++]) );

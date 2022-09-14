@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import net.mbiz.library.handler.FileHandler;
 import net.mbiz.library.ui.common.CommonConstants;
 
 @Getter
@@ -15,18 +16,16 @@ import net.mbiz.library.ui.common.CommonConstants;
 public class BorrowVO implements Comparable<BorrowVO>, Serializable{
 
 	private int borrowNo;          /* 대출 번호*/
-	private String bookIsbn;         /* 도서 isbn*/
+	private String bookIsbn;       /* 도서 isbn*/
 	private String bookNm;         /* 도서 명*/                          
 	private String bookWtr;        /* 저자*/                          
-	private int isBorrowed;        /* 대출가능=0 대출중=1*/
 	private Date startDate;        /* 대출 시작 일자*/
 	private Date endDate;          /* 대출 마감 일자*/
 	private Date returnDate;       /* 반납 일자*/
 	private int overdue;           /* 연체일 수*/
 	
 	private boolean isSelect;	   /* 체크박스 선택 여부!*/
-	
-	
+
 
 	
 	@Override
@@ -36,7 +35,7 @@ public class BorrowVO implements Comparable<BorrowVO>, Serializable{
 	
 	
 	public int settingBorrowNo() {
-		List<BorrowVO> list = CommonConstants.readBorrowFileList();
+		List<BorrowVO> list = FileHandler.getInstance().selectBorrow();
 		for (int i = 0; i < list.size(); i++) {
 			for (int j = 1; j < 500; j++) {
 				if (list.get(i).getBorrowNo() != j) {

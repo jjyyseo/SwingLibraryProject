@@ -12,8 +12,7 @@ import lombok.ToString;
 @ToString
 public class BookVO implements Serializable{
 	
-//	private int bookNo;			    /* 도서번호*/ 
-	private String bookIsbn;			/* 도서 isbn*/   //PK
+	private String bookIsbn;		/* 도서 isbn*/   //PK
 	private String bookNm;          /* 도서명*/
 	private String bookWtr;         /* 저자*/
 	private String publisher;       /* 출판사*/

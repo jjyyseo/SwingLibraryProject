@@ -14,7 +14,6 @@ import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -23,8 +22,6 @@ import javax.swing.JTextArea;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.data.memory.AddBookList;
-import net.mbiz.library.data.memory.AddBorrowList;
 import net.mbiz.library.handler.FileHandler;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.dialog.BookDetailDialog;
@@ -261,7 +258,6 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 	private void insertBorrowInfo() {
 		
 		BorrowVO borrowVO = new BorrowVO();
-//		borrowVO.setBorrowNo();
 		borrowVO.setBookNm(BookDetailDialog.bkDatilVO.getBookNm());
 		borrowVO.setBookIsbn(BookDetailDialog.bkDatilVO.getBookIsbn());
 		
@@ -272,13 +268,9 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 		
 		borrowVO.setStartDate(new Date());
 		borrowVO.setEndDate(endDate);
-		borrowVO.setIsBorrowed(1); //대출중
 		
-		try {
-			FileHandler.getInstance().writeBorrowFile(borrowVO);
-		} catch (IOException e) {
-			System.out.println("BookDetailPanel.insertBorrowInfo : 대출기록 insert 중 에러 발생");
-		}
+		//TODO 결과 처리
+		FileHandler.getInstance().insertBorrow(borrowVO);
 		
 	}
 
@@ -289,7 +281,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 	private void updateBookState() {
 		// bookList update
 		String isbn = BookDetailDialog.bkDatilVO.getBookIsbn();
-		for (BookVO vo : CommonConstants.readBookFileList()) {
+		for (BookVO vo : FileHandler.getInstance().selectBook()) {
 			if (vo.getBookIsbn().equals(isbn)) {
 				vo.setIsBorrowed(1);
 			}

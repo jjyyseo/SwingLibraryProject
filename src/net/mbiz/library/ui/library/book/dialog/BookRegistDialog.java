@@ -334,7 +334,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 			String publisher = tfPublisher.getText();
 			String bookIsbn = tfIsbn.getText();
 			String releaseDate = tfDate.getText();
-			String booksub = txtArea.getText();
+			String booksub = txtArea.getText().replaceAll("\n","").replace("\n", "");
 			
 			vo.setBookNm(bkNm);
 			vo.setBookWtr(bkWtr);
@@ -345,12 +345,11 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 			vo.setBooksub(booksub);
 			vo.setRegistDate(new Date());
 			
-			int rslt = FileHandler.getInstance().writeBookFile(vo);			
+			int rslt = FileHandler.getInstance().insertBook(vo);
 			
 			if (rslt == 1) {
 				JOptionPane.showMessageDialog(null, bkNm + "(이)가 등록되었습니다.", bkNm, JOptionPane.INFORMATION_MESSAGE);
 				dispose();
-				System.out.println("package net.mbiz.library.ui.dialog.BookRegistDialog : 도서 정보가 등록되었습니다. /n 등록된 도서 정보 ----> " + CommonConstants.readBookFileList().get(CommonConstants.readBookFileList().size()-1));
 			} else {
 				JOptionPane.showMessageDialog(null, "도서 추가 실패", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
 			}

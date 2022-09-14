@@ -5,22 +5,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.print.Book;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -28,11 +21,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.BookVO;
-import net.mbiz.library.data.memory.AddBookList;
+import net.mbiz.library.handler.FileHandler;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.dialog.BookRegistDialog;
 import net.mbiz.library.ui.library.book.dialog.BookUpdateDialog;
@@ -68,7 +60,9 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 
 	private JComboBox<String> cbbSearch;
 	private List<BookVO> checkedList = new ArrayList<>(); 
+	
 	private BeanTableModel<BookVO> bkModel;
+	
 	
 	public BookListTablePanel(MainPanel pn) {
 		jbInit();
@@ -77,7 +71,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	}
 
 	private void initialize() {
-		this.bkModel.addDataList((ArrayList) CommonConstants.readBookFileList()); // 리스트로 한꺼번에 집어넣기 가능
+		this.bkModel.addDataList((ArrayList) FileHandler.getInstance().selectBook()); // 리스트로 한꺼번에 집어넣기 가능
 		this.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
@@ -308,7 +302,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		} else if(e.getSource().equals(pvsBtn)) { // 전체보기 : 테이블 리셋.
 			repaintBookTable();
 		} else if(e.getSource().equals(registBtn)) {
-			getRedistBookDialog();
+			getRegistBookDialog();
 		} else if(e.getSource().equals(deleteBtn)) {
 			getDeleteMessege();
 		}
@@ -354,7 +348,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			this.bkModel.removeAll();
 			
 			
-			for (BookVO bv : CommonConstants.readBookFileList()) {
+			for (BookVO bv : FileHandler.getInstance().selectBook()) {
 				String cbb = (String) cbbSearch.getSelectedItem();
 				
 				if (cbb.equals("도서명")) {
@@ -378,6 +372,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			this.bookTbl.setModel(this.bkModel);
 			
 		} else {
+			// 검색어 없을 시, 새로고침.
 			repaintBookTable();
 		}
 	}
@@ -386,14 +381,12 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	/**
 	 * 도서 정보를 등록하는 Dialog를 띄우고 테이블을 새로고침하는 메서드.
 	 */
-	private void getRedistBookDialog() {
+	private void getRegistBookDialog() {
 		BookRegistDialog registDialog = new BookRegistDialog();
 		registDialog.setLocationCenter();
 		
 		// Dialog 종료 후 repaint
 		repaintBookTable();
-		bookTbl.removeAll();
-		bookTbl.setModel(this.bkModel);
 		
 	}
 	
@@ -401,18 +394,18 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	/**
 	 * 도서 데이터를 삭제하는 메서드.
 	 * @param vo BookVO
+	 * @return 삭제 성공 시 = 1, 실패 시 = 0 
 	 */
 	private int deleteBookVO(BookVO vo) {
 		/*대출 상태 체크 후 삭제 작업*/
 		if (vo.getIsBorrowed() == 1) {
 			return 0;
+			
 		} else {
-			this.bkModel.remove(vo);
-			CommonConstants.readBookFileList().remove(vo);
-			//TODO 삭제처리
+			FileHandler.getInstance().deletebook(vo.getBookIsbn());
+
 			repaintBookTable();
 			bookTbl.removeAll();
-			bookTbl.setModel(this.bkModel);
 			
 			return 1;
 		}
@@ -422,13 +415,15 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	/**
 	 * 체크박스로 선택된 도서 데이터를 삭제하는 메서드.
 	 * @param vo BookVO
+	 * @return 삭제 성공 시 = 1, 실패 시 = 0
 	 */
 	private int deleteCheckedList(List<BookVO> checkedList) {
 		
 		List<BookVO> delList = new ArrayList<>();
 		
+		// cnt = 대출중인 도서의 갯수
 		int cnt = 0;
-		// 대출중이지 않은 것만 거르기.
+		
 		for (BookVO vo : checkedList) {
 			if (vo.getIsBorrowed() == 1) {
 				cnt++;
@@ -447,8 +442,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		}
 		
 		repaintBookTable();
-		bookTbl.removeAll();
-		bookTbl.setModel(this.bkModel);
 	
 		return 1;
 	}
@@ -463,8 +456,8 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	 * 도서 데이터 삭제를 체크하는 messege를 띄우는 메서드.
 	 */
 	private void getDeleteMessege() {
-		
-		if (checkedList.size()> 0) {
+		//체크박스를 하나라도 체크한 경우
+		if (checkedList.size()> 0) { 
 			int rslt = JOptionPane.showConfirmDialog(null, "선택한 도서를 삭제 하시겠습니까?", "도서 정보를 삭제합니다.", JOptionPane.YES_NO_OPTION);
 			if (rslt == JOptionPane.YES_OPTION) {
 				if (deleteCheckedList(checkedList) == 1) {
@@ -478,10 +471,10 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			}
 			
 		} else {
-			
+			//선택한 열이 있는 경우
 			if(bookTbl.getSelectedRow()>-1) { 
-				BookVO delVO = CommonConstants.readBookFileList().get(bookTbl.getSelectedRow());
-				System.err.println("삭제할" + delVO );
+				
+				BookVO delVO = this.bkModel.getRowAt(bookTbl.getSelectedRow());
 
 				int rslt = JOptionPane.showConfirmDialog(null, " '" + delVO.getBookNm()+ "' " +" 을(를) 삭제 하시겠습니까?", delVO.getBookNm(), JOptionPane.YES_NO_OPTION);
 				if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
@@ -508,27 +501,32 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	 * Dialog가 종료되면 테이블을 repaint한다.
 	 */
 	private void getBookDetailDialog() {
-		int idx = bookTbl.getSelectedRow();
-		BookVO seletedVO = CommonConstants.readBookFileList().get(bookTbl.getSelectedRow());
-		System.out.println("선택한 도서기록은?? -----> " + seletedVO);
+		BookVO vo = this.bkModel.getRowAt(bookTbl.getSelectedRow());
+		
+		System.out.println("선택한 도서기록은?? -----> " + vo);
 		
 		BookUpdateDialog uptDialog = new BookUpdateDialog();
-		uptDialog.initializeBookOne(seletedVO);
+		uptDialog.initializeBookOne(vo);
 		uptDialog.setLocationCenter();
 		
-		this.bkModel.fireTableDataChanged();
-		bookTbl.repaint();
+		repaintBookTable();
 		
+//		this.bkModel.fireTableDataChanged();
+//		bookTbl.repaint();
 		//마이페이지 테이블 repaint()
 //		CommonConstants.repaintBorrowTable();
 		
 
 	}
 	
-	
+	/**
+	 * 도서 테이블을 다시 그리는 메서드.
+	 * model의 데이터를 모두 지운 후 데이터를 다시 초기화 한다.
+	 */
 	private void repaintBookTable() {
 		bkModel.removeAll();
 		initialize();
+		bookTbl.setModel(this.bkModel);
 	}
 	
 	

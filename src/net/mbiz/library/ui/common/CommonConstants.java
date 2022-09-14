@@ -16,7 +16,6 @@ import javax.swing.table.TableColumn;
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.file.borrow.BorrowFileReader;
 import net.mbiz.library.handler.FileHandler;
 import net.mbiz.library.ui.common.renderer.BookTableRenderer;
 import net.mbiz.library.ui.common.renderer.BorrowTableRenderer;
@@ -48,48 +47,21 @@ public class CommonConstants {
 	public static final Font FONT_TITLE_25 = new Font("나눔고딕", Font.BOLD, 25);
 	public static final Font FONT_TITLE_22 = new Font("나눔고딕", Font.BOLD, 22);
 
-	/* 테이블 */ // 뺄거임
-	
 
-
-	/* 대출 테이블 다시 그리는 메서드 */
-//	public static void repaintBorrowTable() {
-//		CommonConstants.bwModel.removeAll();
-//		Collections.sort(readBorrowFileList(), Collections.reverseOrder());
-//		System.err.println("여기는 repaintBorrowTable");
-//		CommonConstants.bwModel.addDataList((ArrayList) readBorrowFileList());
-//		CommonConstants.bwModel.fireTableDataChanged(); // 테이블에 변경된 데이터 반영
-//
+//	public static List<BookVO> readBookFileList() {
+//		
+//		List<BookVO> list = FileHandler.getInstance().selectBook();
+//		
+//		return list;
 //	}
-
-	/* 전체 도서 테이블 다시 그리는 메서드 */
-//	public static void repaintBookTable() {
-//		CommonConstants.bkModel.removeAll();
-//		Collections.sort( readBookFileList(), Collections.reverseOrder());
-//		CommonConstants.bkModel.addDataList((ArrayList) readBookFileList());
-//		CommonConstants.bkModel.fireTableDataChanged(); // 테이블에 변경된 데이터 반영
+//	
+//	public static List<BorrowVO> readBorrowFileList() {
+//		List<BorrowVO> list = FileHandler.getInstance().selectBorrow();
+//		
+//		return list;
 //	}
-
-	public static List<BookVO> readBookFileList() {
-		
-		List<BookVO> list = null;
-		try {
-			list = FileHandler.getInstance().readBookFile(); 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
 	
-	public static List<BorrowVO> readBorrowFileList() {
-		List<BorrowVO> list = null;
-		try {
-			list = FileHandler.getInstance().readBorrowList();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
+	// table setting
 	
 	/**
 	 * <테이블에 모델을 적용하고 랜더러 설정 및 테이블의 열을 설정한다.> JTable과 BeanTableModel을 파라미터로 받아 테이블에

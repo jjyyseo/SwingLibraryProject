@@ -312,7 +312,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 			
 			if(vo.getIsBorrowed()!=1) {
 				
-				if (updateIsBorrowed()==1 && insertBorrowVO()==1) {
+				if (updateBookState() == 1 && insertBorrowVO() == 1) {
 					JOptionPane.showMessageDialog(null, "대출 신청이 완료되었습니다.");
 					dispose();
 				} else {
@@ -382,12 +382,11 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	};
 	
 	/**
-	 * 도서의 대출 상태를 대출중으로 update하는 메서드.
+	 * 도서 정보를 update하는 메서드.
 	 * @return 성공 = 1, 실패 = 0
 	 */
 	private int updateBookVO() {
-		
-		// 수정 전 대출중인지 체크하기.
+
 		String bkNm = tfBookNm.getText();
 		String bkWtr = tfBookWtr.getText();
 		String publisher = tfPublisher.getText();
@@ -401,7 +400,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		String updateStr = LibraryVOParser.addUpToString(isbn, bkNm, bkWtr, publisher, releaseDate, category, registDate, updateDate, booksub);
 		BookVO vo = LibraryVOParser.stringToBookVO(updateStr);
 		
-		if (FileHandler.updateBookFile(isbn, vo) == 1) {
+		if (FileHandler.getInstance().updateBook(vo) == 1) {
 			return 1;
 		}
 		return 0;
@@ -428,14 +427,8 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		
 		vo.setStartDate(new Date());
 		vo.setEndDate(endDate);
-		vo.setIsBorrowed(1); //대출중
 		
-		int rslt = 0;
-		try {
-			rslt = FileHandler.writeBorrowFile(vo);
-		} catch (IOException e) {
-			System.err.println("insertBorrowVO --- 대출정보 생성 중 오류 발생");
-		}
+		int rslt = FileHandler.getInstance().insertBorrow(vo);
 		if (rslt==1) {
 			return 1;
 		}
@@ -449,11 +442,11 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	 * 도서의 대출 상태를 update하는 메서드.
 	 * @return 성공 = 1, 실패 = 0
 	 */
-	private int updateIsBorrowed() {
+	private int updateBookState() {
 
 		vo.setIsBorrowed(1);
 		
-		int rslt = FileHandler.updateBookFile( vo.getBookIsbn(), vo);
+		int rslt = FileHandler.getInstance().updateBook(vo);
 		if (rslt == 1) {
 			return 1;
 		}
