@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="sqlmap.Book-Mapper">
+<mapper namespace="net.mbiz.library.mapper.BookMapper">
 	
 	<resultMap id="BookMap" type="BookVO">
 		<result property="bookIsbn" column="BK_ISBN" />
@@ -21,29 +21,81 @@
 
 	
 	<select id="selectBookList" resultMap="BookMap">
-		
+		SELECT 
+			   BK_ISBN          /* 도서 isbn*/   
+			 , BK_NM            /* 도서명*/           
+			 , BK_WTR           /* 저자*/            
+			 , BK_PBLSR         /* 출판사*/           
+			 , BK_RLS           /* 출간일*/           
+			 , CATEGORY         /* 카테고리*/          
+			 , ISBORROW         /* 대출가능=0 대출중=1*/  
+			 , BK_SUB           /* 도서 소개글*/        
+			 , BK_REG           /* 등록일자*/ 
+			 , BK_UDT           /* 수정일자*/ 
+		FROM   BOOK
 	</select>
 	
 	<insert id="insertBook" parameterType="BookVO">
-		
+		INSERT INTO BOOK 
+							(
+								BK_ISBN         /* 도서 isbn*/
+							  , BK_NM           /* 도서명*/   
+							  , BK_WTR          /* 저자*/    
+							  , BK_PBLSR        /* 출판사*/   
+							  , BK_RLS          /* 출간일*/   
+							  , CATEGORY        /* 카테고리*/  
+							  , BK_SUB          /* 도서 소개글*/
+							  
+							  ) VALUES (
+							  				 #{bookIsbn}
+							  			   , #{bookNm}
+							  			   , #{bookWtr}
+							  			   , #{publisher}
+							  			   , #{releaseDate}
+							  			   , #{category}
+							  			   , #{booksub}
+							  			)
 	</insert>
 	
 	<update id="updateBook" parameterType="BookVO">
-			
+		UPDATE BOOK 
+		SET	   BK_NM    = #{bookNm}     
+			 , BK_WTR   = #{bookWtr}    
+			 , BK_PBLSR = #{publisher}  
+			 , BK_RLS   = #{releaseDate}
+			 , CATEGORY = #{category}   
+			 , BK_SUB   = #{booksub}    
+		WHERE  BK_ISBN  = #{bookIsbn}  
 	</update>
 	
 	<delete id="deleteBook" parameterType="String">
-		
+		DELETE 
+		FROM   BOOK
+		WHERE  BK_ISBN = #{bookIsbn}  
 	</delete>
+	
+	
 	<!-- detail -->
 	<select id="selectBookOne" parameterType="String" resultType="BookVO">
-	
+		SELECT 
+			   BK_NM            /* 도서명*/           
+			 , BK_WTR           /* 저자*/            
+			 , BK_PBLSR         /* 출판사*/           
+			 , BK_RLS           /* 출간일*/           
+			 , CATEGORY         /* 카테고리*/          
+			 , ISBORROW         /* 대출가능=0 대출중=1*/  
+			 , BK_SUB           /* 도서 소개글*/        
+			 , BK_REG           /* 등록일자*/ 
+			 , BK_UDT           /* 수정일자*/ 
+		FROM   BOOK
+		WHERE BK_ISBN = #{bookIsbn} 
 	</select>
 	
 	<!-- 도서 대출하기. -->
 	<update id="updateBookState" parameterType="String">
-		
+		UPDATE BOOK 
+		SET	   ISBORROW  = (1)    
+		WHERE  BK_ISBN  = #{bookIsbn}  
 	</update>
-	
 	
 </mapper>

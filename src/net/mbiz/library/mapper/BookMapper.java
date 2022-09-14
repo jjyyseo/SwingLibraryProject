@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.mbiz.library.data.BookVO;
 
+// 데이터베이스에 접근
 public interface BookMapper {
 
 	public List<BookVO> selectBookList();
@@ -19,3 +20,4 @@ public interface BookMapper {
 	public int updateBookState(String isbn);
 
 }
+

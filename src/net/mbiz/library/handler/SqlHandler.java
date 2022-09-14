@@ -12,6 +12,7 @@ public class SqlHandler extends LibraryManager{
 
 	@Override
 	protected List<BookVO> selectBookList() {
+		
 		return null;
 	}
 
@@ -30,19 +31,6 @@ public class SqlHandler extends LibraryManager{
 		return 0;
 	}
 
-	//detail
-	public BookVO selectBookOne(String isbn) {
-		return null;
-	}
-	//대출 신청 - 대출상태 update
-	public int updateBookState(String isbn) {
-		return 0;
-	}
-	
-	
-	
-	
-	
 	
 	@Override
 	protected List<BorrowVO> selectBorrowList() {
@@ -63,5 +51,27 @@ public class SqlHandler extends LibraryManager{
 	protected int deleteBorrow(int bwNo) {
 		return 0;
 	}
+	
+	
+	
+	
+	
+	
+	
+	//detail
+	public BookVO selectBookOne(String isbn) {
+		return null;
+	}
+	//대출 신청 - 대출상태 update
+	public int updateBookState(String isbn) {
+		return 0;
+	}
+	
+	
+	
+	
+	
+	
+
 
 }

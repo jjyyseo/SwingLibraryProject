@@ -7,6 +7,11 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
  
+/**
+ * SqlSessionFactory를 생성, mybatis-config.xml과 매핑
+ * @author metabiz
+ *
+ */
 public class MyBatisConnectionFactory {
  
     private static SqlSessionFactory sqlSessionFactory;
@@ -28,6 +33,7 @@ public class MyBatisConnectionFactory {
             iOException.printStackTrace();
         }
     }
+    
     public static SqlSessionFactory getSqlSessionFactory() {
         return sqlSessionFactory;
     }

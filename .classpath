@@ -8,7 +8,7 @@
 	<classpathentry kind="lib" path="lib/mbiz-table.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.11.0.jar"/>
 	<classpathentry kind="lib" path="lib/mybatis-3.5.10.jar"/>
-	<classpathentry kind="lib" path="lib/ojdbc14.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipselabs.mybatiseditor.ui_1.1.0.201207062137.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Work/00.Tool/jar/mssql-jdbc-11.2.0.jre8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
