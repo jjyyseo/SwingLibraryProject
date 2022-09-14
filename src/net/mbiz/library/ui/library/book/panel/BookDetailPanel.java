@@ -281,7 +281,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 	private void updateBookState() {
 		// bookList update
 		String isbn = BookDetailDialog.bkDatilVO.getBookIsbn();
-		for (BookVO vo : FileHandler.getInstance().selectBook()) {
+		for (BookVO vo : FileHandler.getInstance().selectBookList()) {
 			if (vo.getBookIsbn().equals(isbn)) {
 				vo.setIsBorrowed(1);
 			}

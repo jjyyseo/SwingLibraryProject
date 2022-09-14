@@ -9,7 +9,7 @@ import net.mbiz.library.data.BorrowVO;
 public abstract class LibraryManager {
 	
 	//book
-	protected abstract List<BookVO> selectBook();
+	protected abstract List<BookVO> selectBookList();
 	
 	protected abstract int insertBook(BookVO vo);
 	
@@ -18,7 +18,7 @@ public abstract class LibraryManager {
 	protected abstract int deletebook(String isbn);
 
 	//borrow
-	protected abstract List<BorrowVO> selectBorrow();
+	protected abstract List<BorrowVO> selectBorrowList();
 	
 	protected abstract int insertBorrow(BorrowVO vo);
 	

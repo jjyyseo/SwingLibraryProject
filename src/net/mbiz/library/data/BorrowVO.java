@@ -35,7 +35,7 @@ public class BorrowVO implements Comparable<BorrowVO>, Serializable{
 	
 	
 	public int settingBorrowNo() {
-		List<BorrowVO> list = FileHandler.getInstance().selectBorrow();
+		List<BorrowVO> list = FileHandler.getInstance().selectBorrowList();
 		for (int i = 0; i < list.size(); i++) {
 			for (int j = 1; j < 500; j++) {
 				if (list.get(i).getBorrowNo() != j) {

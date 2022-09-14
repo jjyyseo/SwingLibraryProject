@@ -68,7 +68,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	}
 
 	private void initialize() {
-		this.bwModel.addDataList((ArrayList) FileHandler.getInstance().selectBorrow());
+		this.bwModel.addDataList((ArrayList) FileHandler.getInstance().selectBorrowList());
 		this.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
@@ -413,7 +413,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		BorrowVO bwvo = this.bwModel.getRowAt(borrowTbl.getSelectedRow());
 		String isbn = bwvo.getBookIsbn();
 		
-		List<BookVO> bkList = FileHandler.getInstance().selectBook();
+		List<BookVO> bkList = FileHandler.getInstance().selectBookList();
 		
 		BookVO udtVO = null;
 		
@@ -479,7 +479,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
 			this.bwModel.removeAll();
 			
-			for (BorrowVO bv : FileHandler.getInstance().selectBorrow()) {
+			for (BorrowVO bv : FileHandler.getInstance().selectBorrowList()) {
 				String cbb = (String) cbbSearch.getSelectedItem();
 				
 				if (cbb.equals("도서명")) {

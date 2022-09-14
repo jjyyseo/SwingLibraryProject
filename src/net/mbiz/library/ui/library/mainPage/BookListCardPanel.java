@@ -96,7 +96,7 @@ public class BookListCardPanel extends JPanel implements ActionListener{
 		pnPadding.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		
 		/*book data 가져와서 book Panel 만들기*/
-		for (BookVO bv : FileHandler.getInstance().selectBook()) {	
+		for (BookVO bv : FileHandler.getInstance().selectBookList()) {	
 			BookPanel bookPanel = new BookPanel(bv);
 			pnCnt.add(bookPanel);
 		}
@@ -137,7 +137,7 @@ public class BookListCardPanel extends JPanel implements ActionListener{
 	private void getSearhBookCardList() {
 		// 검색어가 비어있지 않은 경우
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
-			for (BookVO bv : FileHandler.getInstance().selectBook()) {
+			for (BookVO bv : FileHandler.getInstance().selectBookList()) {
 				System.err.println("야기는 BookListCardPanel. 전체 도서 검색 결과가 있음. ");
 
 				if (schFd.getText().contains(bv.getBookNm())) {

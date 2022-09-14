@@ -71,7 +71,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	}
 
 	private void initialize() {
-		this.bkModel.addDataList((ArrayList) FileHandler.getInstance().selectBook()); // 리스트로 한꺼번에 집어넣기 가능
+		this.bkModel.addDataList((ArrayList) FileHandler.getInstance().selectBookList()); // 리스트로 한꺼번에 집어넣기 가능
 		this.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
@@ -348,7 +348,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			this.bkModel.removeAll();
 			
 			
-			for (BookVO bv : FileHandler.getInstance().selectBook()) {
+			for (BookVO bv : FileHandler.getInstance().selectBookList()) {
 				String cbb = (String) cbbSearch.getSelectedItem();
 				
 				if (cbb.equals("도서명")) {

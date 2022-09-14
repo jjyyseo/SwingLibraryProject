@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sqlmap.Book-Mapper">
+	
+	<resultMap id="BookMap" type="BookVO">
+		<result property="bookIsbn" column="BK_ISBN" />
+		<result property="bookNm" column="BK_NM" />
+		<result property="bookWtr" column="BK_WTR" />
+		<result property="publisher" column="BK_PBLSR" />
+		<result property="releaseDate" column="BK_RLS" />
+		<result property="category" column="CATEGORY" />
+		<result property="isBorrowed" column="ISBORROW" />
+		<result property="booksub" column="BK_SUB" />
+		<result property="registDate" column="BK_REG" />
+		<result property="updateDate" column="BK_UDT" />
+		
+		<result property="isSelect" column="isSelect" />
+	</resultMap>
+	
+
+
+	
+	<select id="selectBookList" resultMap="BookMap">
+		
+	</select>
+	
+	<insert id="insertBook" parameterType="BookVO">
+		
+	</insert>
+	
+	<update id="updateBook" parameterType="BookVO">
+			
+	</update>
+	
+	<delete id="deleteBook" parameterType="String">
+		
+	</delete>
+	<!-- detail -->
+	<select id="selectBookOne" parameterType="String" resultType="BookVO">
+	
+	</select>
+	
+	<!-- 도서 대출하기. -->
+	<update id="updateBookState" parameterType="String">
+		
+	</update>
+	
+	
+</mapper>

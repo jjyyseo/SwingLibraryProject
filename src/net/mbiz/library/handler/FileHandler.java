@@ -39,7 +39,7 @@ public class FileHandler extends LibraryManager{
 	 * @throws IOException
 	 */
 	@Override
-	public List<BookVO> selectBook() {
+	public List<BookVO> selectBookList() {
 		File file = new File(FileLocationConstants.BOOK_DATA_lOCATION);
 		BufferedReader br = null;
 		String str;
@@ -206,7 +206,7 @@ public class FileHandler extends LibraryManager{
 	 * @throws IOException
 	 */
 	@Override
-	public List<BorrowVO> selectBorrow(){
+	public List<BorrowVO> selectBorrowList(){
 		File file = new File(FileLocationConstants.BORROW_DATA_lOCATION);
 		BufferedReader br = null;
 		String str;
