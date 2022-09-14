@@ -14,45 +14,36 @@ import net.mbiz.library.mybatis.MyBatisConnectionFactory;
 public class BookDAO {
 
     private BookMapper bookMapper;
-    private SqlSessionFactory sqlSessionFactory = null;
-    
-    public BookDAO(SqlSessionFactory sqlSessionFactory){
-        this.sqlSessionFactory = sqlSessionFactory;
-    }
+    private SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession();
 
 	
 	public List<BookVO> selectBookList() {
-		SqlSession session = sqlSessionFactory.openSession();
+		//매퍼 연결
 		bookMapper = session.getMapper(BookMapper.class);
 		return bookMapper.selectBookList();
 	}
 
 	public int insertBook(BookVO vo) {
-		SqlSession session = sqlSessionFactory.openSession();
 		bookMapper = session.getMapper(BookMapper.class);
 		return bookMapper.insertBook(vo);
 	}
 
 	public int updateBook(BookVO vo) {
-		SqlSession session = sqlSessionFactory.openSession();
 		bookMapper = session.getMapper(BookMapper.class);
 		return bookMapper.updateBook(vo);
 	}
 
 	public int deleteBook(String isbn) {
-		SqlSession session = sqlSessionFactory.openSession();
 		bookMapper = session.getMapper(BookMapper.class);
 		return bookMapper.deleteBook(isbn);
 	}
 
 	public BookVO selectBookOne(String isbn) {
-		SqlSession session = sqlSessionFactory.openSession();
 		bookMapper = session.getMapper(BookMapper.class);
 		return bookMapper.selectBookOne(isbn);
 	}
 
 	public int updateBookState(String isbn) {
-		SqlSession session = sqlSessionFactory.openSession();
 		bookMapper = session.getMapper(BookMapper.class);
 		return bookMapper.updateBookState(isbn);
 	}
