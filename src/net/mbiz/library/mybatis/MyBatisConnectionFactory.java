@@ -18,8 +18,8 @@ public class MyBatisConnectionFactory {
  
     static {
         try {
-            String resource = "/resources/config/mybatis-config.xml";
-            Reader reader = Resources.getResourceAsReader(resource);
+            String resource = "resources/config/mybatis-config.xml";
+            Reader reader = Resources.getResourceAsReader(resource); // 한글을 포함하고 있을 수 있으므로 reader 사용
  
             if (sqlSessionFactory == null) {
                 sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
@@ -37,5 +37,6 @@ public class MyBatisConnectionFactory {
     public static SqlSessionFactory getSqlSessionFactory() {
         return sqlSessionFactory;
     }
+    
 }
 

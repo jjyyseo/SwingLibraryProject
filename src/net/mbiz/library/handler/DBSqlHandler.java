@@ -2,17 +2,26 @@ package net.mbiz.library.handler;
 
 import java.util.List;
 
+import net.mbiz.library.dao.BookDAO;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.manager.LibraryManager;
 
 
 // 비즈니스 로직 처리
-public class SqlHandler extends LibraryManager{
+public class DBSqlHandler extends LibraryManager {
 
+	private BookDAO bookDAO = new BookDAO();
+	
+	public static void main(String[] args) {
+		List<BookVO> list  = new DBSqlHandler().selectBookList();
+		System.out.println(list);
+	}
 	
 	@Override
 	protected List<BookVO> selectBookList() {
+		bookDAO.selectBookList();
+		System.out.println("bookDAO.selectBookList() : " + bookDAO.selectBookList());
 		return null;
 	}
 

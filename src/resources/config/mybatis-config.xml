@@ -12,8 +12,8 @@
           <transactionManager type="JDBC"/>
             <!--  connecting to Local MySql -->
             <dataSource type="POOLED">
-                <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
-                <property name="url" value="jdbc:oracle:thin:@url:1521:sid"/>
+                <property name="driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+                <property name="url" value="jdbc:sqlserver://localhost:1433;databaseName=BOOKMGR"/>
                 <property name="username" value="jang"/>
                 <property name="password" value="1234"/>
             </dataSource>
@@ -22,6 +22,6 @@
     
     <mappers>
     	<!-- 생성한 매퍼 매핑 -->
-       <mapper resource="sqlmap/Book-Mapper.xml"/>
+       <mapper resource="resources/sqlmap/Book-Mapper.xml"/>
     </mappers>
 </configuration>
