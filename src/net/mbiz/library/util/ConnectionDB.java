@@ -9,9 +9,8 @@ public class ConnectionDB {
 
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-			String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=BOOKMGR;"
-					+ "integratedSecurity=true";
-			Connection conn = DriverManager.getConnection(connectionUrl, "jang", "1234");
+			String connectionUrl = "jdbc:sqlserver://192.168.1.93:1433;databaseName=BOOKMGR;encrypt=true;trustServerCertificate=true";
+			Connection conn = DriverManager.getConnection(connectionUrl, "BOOKMGR", "BOOKMGR");
 			Statement stmt = conn.createStatement();
 			System.out.println("MS-SQL 서버 접속에 성공하였습니다.");
 			
@@ -26,6 +25,9 @@ public class ConnectionDB {
 			
 		} catch (SQLException e) {
 			System.out.println("SQLException : " + e);
+			e.printStackTrace();
 		}
 	}
 }
+
+

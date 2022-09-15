@@ -3,6 +3,7 @@ package net.mbiz.library.handler;
 import java.util.List;
 
 import net.mbiz.library.dao.BookDAO;
+import net.mbiz.library.dao.BorrowDAO;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.manager.LibraryManager;
@@ -12,6 +13,7 @@ import net.mbiz.library.manager.LibraryManager;
 public class DBSqlHandler extends LibraryManager {
 
 	private BookDAO bookDAO = new BookDAO();
+	private BorrowDAO borrowDAO = new BorrowDAO();
 	
 	public static void main(String[] args) {
 		List<BookVO> list  = new DBSqlHandler().selectBookList();
@@ -20,62 +22,59 @@ public class DBSqlHandler extends LibraryManager {
 	
 	@Override
 	protected List<BookVO> selectBookList() {
-		bookDAO.selectBookList();
-		System.out.println("bookDAO.selectBookList() : " + bookDAO.selectBookList());
-		return null;
+		return bookDAO.selectBookList();
 	}
 
 	@Override
 	protected int insertBook(BookVO vo) {
-		return 0;
+		return bookDAO.insertBook(vo);
 	}
 
 	@Override
 	protected int updateBook(BookVO vo) {
-		return 0;
+		return bookDAO.updateBook(vo);
 	}
 
 	@Override
 	protected int deletebook(String isbn) {
-		return 0;
+		return bookDAO.deleteBook(isbn);
 	}
 
+	//detail
+	public BookVO selectBookOne(String isbn) {
+		return bookDAO.selectBookOne(isbn);
+	}
+	//대출 신청 - 대출상태 update
+	public int updateBookState(String isbn) {
+		return bookDAO.updateBookState(isbn);
+	}
+	
+	
+	
+	//-------------------------------------------------------------
+	
 	
 	@Override
 	protected List<BorrowVO> selectBorrowList() {
-		return null;
+		return borrowDAO.selectBorrowkList();
 	}
 
 	@Override
 	protected int insertBorrow(BorrowVO vo) {
-		return 0;
+		return borrowDAO.insertBorrow(vo);
 	}
 
 	@Override
 	protected int updateBorrow(BorrowVO vo) {
-		return 0;
+		return borrowDAO.updateBorrow(vo);
 	}
 
 	@Override
 	protected int deleteBorrow(int bwNo) {
-		return 0;
+		return borrowDAO.deleteBorrow(bwNo);
 	}
 	
-	
-	
-	
-	
-	
-	
-	//detail
-	public BookVO selectBookOne(String isbn) {
-		return null;
-	}
-	//대출 신청 - 대출상태 update
-	public int updateBookState(String isbn) {
-		return 0;
-	}
-	
+
 	
 	
 	

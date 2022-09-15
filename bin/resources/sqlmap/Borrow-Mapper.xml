@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.mbiz.library.mapper.BorrowMapper">
+	
+	<resultMap id="BorrowMap" type="BorrowVO">
+		<result property="borrowNo" column="BW_NO" />
+		<result property="bookIsbn" column="BK_ISBN" />
+		<result property="bookNm" column="BK_NM" />
+		<result property="bookWtr" column="BK_WTR" />
+		<result property="startDate" column="BW_START" />
+		<result property="endDate" column="BW_END" />
+		<result property="returnDate" column="BW_RETURN" />
+		<result property="overdue" column="BW_OVERDUE" />
+		
+		<result property="isSelect" column="isSelect" />
+	</resultMap>
+	
+
+
+	
+	<select id="selectBorrowkList" resultMap="BorrowMap">
+		SELECT 
+			   BW_NO             /*대출 번호*/
+			 , BK_ISBN           /*도서 ISBN*/
+			 , BK_NM             /*도서명*/
+			 , BK_WTR            /*저자*/
+			 , BW_START          /*대출 시작 일자*/
+			 , BW_END            /*대출 마감 일자*/
+			 , BW_RETURN         /*반납 일자*/
+			 , BW_OVERDUE        /*연체일 수*/
+			       
+		FROM   BORROW
+	</select>
+	
+	<insert id="insertBorrow" parameterType="BorrowVO">
+		INSERT INTO BORROW 
+							(
+								       
+							  , BK_ISBN       
+							  , BK_NM         
+							  , BK_WTR        
+							  
+							  ) VALUES (
+							  				 #{bookIsbn}
+							  			   , #{bookNm}
+							  			   , #{bookWtr}
+							  			)
+	</insert>
+	
+	<!-- 반납라기 -->
+	<update id="updateBorrow" parameterType="BorrowVO">
+		UPDATE BORROW 
+		SET	   BW_RETURN   = GETDATE()  
+			 , BW_OVERDUE  = #{overdue}    
+		WHERE  BW_NO       = #{borrowNo}  
+	</update>
+	
+	<delete id="deleteBorrow" parameterType="int">
+		DELETE 
+		FROM   BORROW
+		WHERE  BW_NO = #{borrowNo}  
+	</delete>
+	
+	
+</mapper>

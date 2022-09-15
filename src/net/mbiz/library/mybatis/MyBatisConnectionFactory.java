@@ -38,5 +38,7 @@ public class MyBatisConnectionFactory {
         return sqlSessionFactory;
     }
     
+    
+    
 }
 

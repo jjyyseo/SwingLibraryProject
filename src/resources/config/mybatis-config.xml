@@ -13,9 +13,11 @@
             <!--  connecting to Local MySql -->
             <dataSource type="POOLED">
                 <property name="driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-                <property name="url" value="jdbc:sqlserver://localhost:1433;databaseName=BOOKMGR"/>
-                <property name="username" value="jang"/>
-                <property name="password" value="1234"/>
+                <property name="url" value="jdbc:sqlserver://192.168.1.93:1433;databaseName=BOOKMGR;
+                	encrypt=true;trustServerCertificate=true"/> <!-- SQL Server TLS 인증서의 유효성을 검사하지 않아도 되는 인증된 서버라는 값 -->
+                	<!-- 지금 SSL 사용 중인 것 같음 -->
+                <property name="username" value="BOOKMGR"/>
+                <property name="password" value="BOOKMGR"/>
             </dataSource>
        </environment>
     </environments>
@@ -23,5 +25,6 @@
     <mappers>
     	<!-- 생성한 매퍼 매핑 -->
        <mapper resource="resources/sqlmap/Book-Mapper.xml"/>
+       <mapper resource="resources/sqlmap/Borrow-Mapper.xml"/>
     </mappers>
 </configuration>
