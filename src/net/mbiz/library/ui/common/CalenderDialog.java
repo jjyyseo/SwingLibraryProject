@@ -176,8 +176,8 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 		dayPrint(year, month);
 		
 		
-		selectMonth = cbbMonth.getSelectedItem().toString();
-		selectYear = cbbYear.getSelectedItem().toString();
+		selectMonth = cbbMonth.getSelectedItem().toString().trim();
+		selectYear = cbbYear.getSelectedItem().toString().trim();
 
 		prevBtn.addActionListener(this);
 		nextBtn.addActionListener(this);
@@ -327,25 +327,28 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 	
 	/**
 	 * 선택한 날짜를 문자열로 반환하는 메서드.
-	 * @param day
+	 * @param day 달력에서 클릭한 버튼.getText()
 	 * @return
 	 */
 	private String addStrDate(String day) {
 		
-		if (selectYear.equals("") || selectYear.isEmpty()) {
-			selectYear = Integer.toString(year);
-		}
-		if (selectMonth.equals("") || selectMonth.isEmpty()) {
-			selectMonth = Integer.toString(month);
+		if (selectMonth.equals(Integer.toString(month))) {
+			
 			if (selectMonth.length() < 2) {
 				selectMonth = "0" + selectMonth;
+				System.out.println("여기는 오니???");
 			}
+			
+			
+		} 
+		
+		if (day.length() < 2) {
+			day = "0" + day;
 		}
 		
-		
-		rsltDate = selectYear + "." + selectMonth + "." + day;
+		rsltDate = selectYear + "-" + selectMonth + "-" + day;
 
-		System.out.println("여기는 getSelectedDate ----> 선택한 날짜는?" + rsltDate);
+		System.out.println("여기는 addStrDate ----> 선택한 날짜는?" + rsltDate);
 		return rsltDate;
 	}
 	

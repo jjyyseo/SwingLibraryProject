@@ -314,19 +314,14 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 			JOptionPane.showMessageDialog(null, "도서 isbn은 14자리 숫자로 입력해 주세요.", "isbn이 유효하지 않습니다. ", JOptionPane.INFORMATION_MESSAGE);
 			
 		} else {
-			try {
-				insertBookVO();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			insertBookVO();
 		}
 	}
 
 	/**
 	 * 입력된 정보로 BookVO를 생성하여 BookList에 add하는 데서드.
-	 * @throws IOException 
 	 */
-	private void insertBookVO() throws IOException{
+	private void insertBookVO(){
 
 			BookVO vo = new BookVO();
 			
@@ -335,7 +330,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 			String publisher = tfPublisher.getText();
 			String bookIsbn = tfIsbn.getText();
 			String releaseDate = tfDate.getText();
-			String booksub = txtArea.getText().replaceAll("\n","").replace("\n", "");
+			String booksub = txtArea.getText().replaceAll("\n","").replace("\n", ""); //enter 제거
 			
 			vo.setBookNm(bkNm);
 			vo.setBookWtr(bkWtr);
@@ -344,7 +339,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 			vo.setReleaseDate( DateFomatUtil.formatToDate(releaseDate));
 			vo.setCategory(category);
 			vo.setBooksub(booksub);
-			vo.setRegistDate(new Date());
+//			vo.setRegistDate(new Date());
 			
 			int rslt = DBSqlHandler.getInstance().insertBook(vo);
 			

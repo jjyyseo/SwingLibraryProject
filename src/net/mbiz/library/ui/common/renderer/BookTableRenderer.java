@@ -29,14 +29,14 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 			int row, int col) {
 		setOpaque(true); // 불투명
 		setFont(CommonConstants.FONT_BASE_17);
-
+		
 		BookVO vo = (BookVO) value;
 		String str = "";
-
+		int num = 0;
 		/*데이터  쪼개기*/
 		switch (col) {
 		case 1:
-			str = null;
+
 			break;
 		case 2:
 			str = vo.getBookNm();

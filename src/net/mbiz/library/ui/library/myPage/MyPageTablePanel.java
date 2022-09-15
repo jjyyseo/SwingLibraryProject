@@ -10,7 +10,6 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.FileHandler;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;

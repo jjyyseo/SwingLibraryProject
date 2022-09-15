@@ -40,12 +40,6 @@ public class CheckBoxRenderer extends JCheckBox implements TableCellRenderer{
         	this.setBackground(bgColor);
         }
 		
-//		if (this.isSelected()) {
-//			this.setForeground(Color.MAGENTA);
-//		} else {
-//			this.setForeground(Color.BLACK);
-//		}
-		
 		
 		
 		boolean isChecked = false;

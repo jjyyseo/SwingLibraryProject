@@ -1,4 +1,4 @@
-package net.mbiz.library.file;
+package net.mbiz.library.util;
 
 public class FileLocationConstants {
 	//파일 저장 경로

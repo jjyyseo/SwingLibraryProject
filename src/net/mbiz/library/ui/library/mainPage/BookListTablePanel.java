@@ -250,8 +250,8 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	private void initTable() {
 		/* 테이블을 위한 setting */
 		
-		String topHeader[] = {"check","No","도서명", "저자", "출판사", "출간일", "카테고리", "대출상태" };	// 헤더 setting
-		int[] col = {60, 60, 600, 296, 200, 180, 180, 180 };								// 열 넓이
+		String topHeader[] = {"check", "No","도서명", "저자", "출판사", "출간일", "카테고리", "대출상태" };	// 헤더 setting
+		int[] col = {67, 67, 600, 296, 200, 180, 180, 180 };								// 열 넓이
 		
 		this.bkModel = new BeanTableModel<BookVO>(topHeader, col) {
 			// 객체의 컬럼 별 데이터를 한꺼번에 테이블에 뿌려준다.

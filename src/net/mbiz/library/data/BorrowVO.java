@@ -2,12 +2,10 @@ package net.mbiz.library.data;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.mbiz.library.handler.DBSqlHandler;
 
 @Getter
 @Setter

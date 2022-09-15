@@ -15,11 +15,10 @@ import java.util.List;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.file.FileLocationConstants;
-import net.mbiz.library.manager.LibraryManager;
+import net.mbiz.library.util.FileLocationConstants;
 import net.mbiz.library.util.LibraryVOParser;
 
-public class FileHandler extends LibraryManager{
+public class FileHandler implements DataHandler{
 	
 	private static FileHandler fileHandler = new FileHandler();
 
@@ -27,6 +26,9 @@ public class FileHandler extends LibraryManager{
 	}
 	
 	public static FileHandler getInstance() {
+	    if(fileHandler == null){
+	    	fileHandler = new FileHandler();
+	    }
 		return fileHandler;
 	}
 

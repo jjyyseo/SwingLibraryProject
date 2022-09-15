@@ -78,8 +78,8 @@ public class CommonConstants {
 			for (int k = 0; k < model.getColumnCount(); k++) {
 				TableColumn column = new TableColumn(k, model.getColumnWidth(k), renderer, null);
 				table.addColumn(column);
-				model.setNumbering(true);
 			}
+
 		} else if (type.equals("borrow")) {
 			BorrowTableRenderer renderer = new BorrowTableRenderer();
 			for (int k = 0; k < model.getColumnCount(); k++) {
@@ -87,8 +87,7 @@ public class CommonConstants {
 				table.addColumn(column);
 			}
 		}
-
-		setTableCheckBox(table, model); //체크박스 그리기.
+		setTableCheckBox(table, model);
 	}
 
 

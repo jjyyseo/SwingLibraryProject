@@ -4,7 +4,10 @@ import java.util.List;
 
 import net.mbiz.library.data.BookVO;
 
-// 데이터베이스에 접근
+/**
+ * Mybatis 매핑XML에 기재된 SQL을 호출하기 위한 매퍼 클래스.
+ * @author metabiz
+ */
 public interface BookMapper {
 
 	public List<BookVO> selectBookList();

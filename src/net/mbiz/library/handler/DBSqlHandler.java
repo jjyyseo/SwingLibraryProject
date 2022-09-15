@@ -6,11 +6,11 @@ import net.mbiz.library.dao.BookDAO;
 import net.mbiz.library.dao.BorrowDAO;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.manager.LibraryManager;
+import net.mbiz.library.manager.HandlerManager;
 
 
 // 비즈니스 로직 처리
-public class DBSqlHandler extends LibraryManager {
+public class DBSqlHandler extends HandlerManager implements DataHandler {
 
 	private static DBSqlHandler dbHandler = new DBSqlHandler();
 
@@ -18,18 +18,16 @@ public class DBSqlHandler extends LibraryManager {
 	}
 	
 	public static DBSqlHandler getInstance() {
+        if(dbHandler == null){
+        	dbHandler = new DBSqlHandler();
+        }
 		return dbHandler;
 	}
-
 	
 	
 	private BookDAO bookDAO = new BookDAO();
 	private BorrowDAO borrowDAO = new BorrowDAO();
 	
-	public static void main(String[] args) {
-		List<BookVO> list  = new DBSqlHandler().selectBookList();
-		System.out.println(list);
-	}
 	
 	@Override
 	public List<BookVO> selectBookList() {
@@ -86,11 +84,6 @@ public class DBSqlHandler extends LibraryManager {
 	}
 	
 
-	
-	
-	
-	
-	
 
 
 }

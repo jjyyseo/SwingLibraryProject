@@ -8,7 +8,9 @@ import net.mbiz.library.data.BookVO;
 import net.mbiz.library.mapper.BookMapper;
 import net.mbiz.library.mybatis.MyBatisConnectionFactory;
 
-/* sqlSessionFactory를 이용하여 SqlSession을 얻는다. */
+/* 비즈니스 로직에 필요한 쿼리를 호출하는 dao 클래스.
+ * sqlSessionFactory를 이용하여 SqlSession을 얻는다. 
+ * */
 public class BookDAO {
 
     private BookMapper bookMapper;
