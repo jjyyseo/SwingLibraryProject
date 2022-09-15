@@ -2,8 +2,6 @@ package net.mbiz.library.ui.common;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.IOException;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
@@ -14,9 +12,6 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
-import net.mbiz.library.data.BookVO;
-import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.handler.FileHandler;
 import net.mbiz.library.ui.common.renderer.BookTableRenderer;
 import net.mbiz.library.ui.common.renderer.BorrowTableRenderer;
 import net.mbiz.library.ui.common.renderer.CheckBoxRenderer;

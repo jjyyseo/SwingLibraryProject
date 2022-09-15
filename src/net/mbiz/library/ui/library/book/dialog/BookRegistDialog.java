@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Date;
+import java.util.logging.FileHandler;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -26,7 +27,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import net.mbiz.library.data.BookVO;
-import net.mbiz.library.handler.FileHandler;
+import net.mbiz.library.handler.DBSqlHandler;
 import net.mbiz.library.ui.common.CalenderDialog;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.util.DateFomatUtil;
@@ -345,7 +346,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 			vo.setBooksub(booksub);
 			vo.setRegistDate(new Date());
 			
-			int rslt = FileHandler.getInstance().insertBook(vo);
+			int rslt = DBSqlHandler.getInstance().insertBook(vo);
 			
 			if (rslt == 1) {
 				JOptionPane.showMessageDialog(null, bkNm + "(이)가 등록되었습니다.", bkNm, JOptionPane.INFORMATION_MESSAGE);

@@ -24,7 +24,7 @@ import javax.swing.JTextField;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.BookVO;
-import net.mbiz.library.handler.FileHandler;
+import net.mbiz.library.handler.DBSqlHandler;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.dialog.BookRegistDialog;
 import net.mbiz.library.ui.library.book.dialog.BookUpdateDialog;
@@ -71,7 +71,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	}
 
 	private void initialize() {
-		this.bkModel.addDataList((ArrayList) FileHandler.getInstance().selectBookList()); // 리스트로 한꺼번에 집어넣기 가능
+		this.bkModel.addDataList((ArrayList) DBSqlHandler.getInstance().selectBookList()); // 리스트로 한꺼번에 집어넣기 가능
 		this.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
@@ -348,7 +348,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			this.bkModel.removeAll();
 			
 			
-			for (BookVO bv : FileHandler.getInstance().selectBookList()) {
+			for (BookVO bv : DBSqlHandler.getInstance().selectBookList()) {
 				String cbb = (String) cbbSearch.getSelectedItem();
 				
 				if (cbb.equals("도서명")) {
@@ -402,7 +402,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			return 0;
 			
 		} else {
-			FileHandler.getInstance().deletebook(vo.getBookIsbn());
+			DBSqlHandler.getInstance().deletebook(vo.getBookIsbn());
 
 			repaintBookTable();
 			bookTbl.removeAll();

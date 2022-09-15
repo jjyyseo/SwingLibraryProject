@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,7 +21,7 @@ import javax.swing.JTextArea;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.handler.FileHandler;
+import net.mbiz.library.handler.DBSqlHandler;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.dialog.BookDetailDialog;
 
@@ -270,7 +269,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 		borrowVO.setEndDate(endDate);
 		
 		//TODO 결과 처리
-		FileHandler.getInstance().insertBorrow(borrowVO);
+		DBSqlHandler.getInstance().insertBorrow(borrowVO);
 		
 	}
 
@@ -281,7 +280,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 	private void updateBookState() {
 		// bookList update
 		String isbn = BookDetailDialog.bkDatilVO.getBookIsbn();
-		for (BookVO vo : FileHandler.getInstance().selectBookList()) {
+		for (BookVO vo : DBSqlHandler.getInstance().selectBookList()) {
 			if (vo.getBookIsbn().equals(isbn)) {
 				vo.setIsBorrowed(1);
 			}

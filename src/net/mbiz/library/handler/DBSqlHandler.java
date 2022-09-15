@@ -12,6 +12,17 @@ import net.mbiz.library.manager.LibraryManager;
 // 비즈니스 로직 처리
 public class DBSqlHandler extends LibraryManager {
 
+	private static DBSqlHandler dbHandler = new DBSqlHandler();
+
+	private DBSqlHandler(){
+	}
+	
+	public static DBSqlHandler getInstance() {
+		return dbHandler;
+	}
+
+	
+	
 	private BookDAO bookDAO = new BookDAO();
 	private BorrowDAO borrowDAO = new BorrowDAO();
 	
@@ -21,22 +32,22 @@ public class DBSqlHandler extends LibraryManager {
 	}
 	
 	@Override
-	protected List<BookVO> selectBookList() {
+	public List<BookVO> selectBookList() {
 		return bookDAO.selectBookList();
 	}
 
 	@Override
-	protected int insertBook(BookVO vo) {
+	public int insertBook(BookVO vo) {
 		return bookDAO.insertBook(vo);
 	}
 
 	@Override
-	protected int updateBook(BookVO vo) {
+	public int updateBook(BookVO vo) {
 		return bookDAO.updateBook(vo);
 	}
 
 	@Override
-	protected int deletebook(String isbn) {
+	public int deletebook(String isbn) {
 		return bookDAO.deleteBook(isbn);
 	}
 
@@ -55,22 +66,22 @@ public class DBSqlHandler extends LibraryManager {
 	
 	
 	@Override
-	protected List<BorrowVO> selectBorrowList() {
+	public List<BorrowVO> selectBorrowList() {
 		return borrowDAO.selectBorrowkList();
 	}
 
 	@Override
-	protected int insertBorrow(BorrowVO vo) {
+	public int insertBorrow(BorrowVO vo) {
 		return borrowDAO.insertBorrow(vo);
 	}
 
 	@Override
-	protected int updateBorrow(BorrowVO vo) {
+	public int updateBorrow(BorrowVO vo) {
 		return borrowDAO.updateBorrow(vo);
 	}
 
 	@Override
-	protected int deleteBorrow(int bwNo) {
+	public int deleteBorrow(int bwNo) {
 		return borrowDAO.deleteBorrow(bwNo);
 	}
 	

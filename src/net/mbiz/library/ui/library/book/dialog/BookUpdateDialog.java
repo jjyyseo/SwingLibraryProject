@@ -7,9 +7,9 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.FileHandler;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -26,7 +26,7 @@ import javax.swing.JTextField;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.handler.FileHandler;
+import net.mbiz.library.handler.DBSqlHandler;
 import net.mbiz.library.ui.common.CalenderDialog;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.util.DateFomatUtil;
@@ -400,7 +400,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		String updateStr = LibraryVOParser.addUpToString(isbn, bkNm, bkWtr, publisher, releaseDate, category, registDate, updateDate, booksub);
 		BookVO vo = LibraryVOParser.stringToBookVO(updateStr);
 		
-		if (FileHandler.getInstance().updateBook(vo) == 1) {
+		if (DBSqlHandler.getInstance().updateBook(vo) == 1) {
 			return 1;
 		}
 		return 0;
@@ -414,8 +414,6 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		// borrowList에 대출 기록 추가
 		
 		BorrowVO vo = new BorrowVO();
-		vo.setBorrowNo(vo.settingBorrowNo());
-		System.err.println(vo.settingBorrowNo());
 		vo.setBookNm(bkNm);
 		vo.setBookIsbn(tfIsbn.getText());
 		vo.setBookWtr(tfBookWtr.getText());
@@ -428,7 +426,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		vo.setStartDate(new Date());
 		vo.setEndDate(endDate);
 		
-		int rslt = FileHandler.getInstance().insertBorrow(vo);
+		int rslt = DBSqlHandler.getInstance().insertBorrow(vo);
 		if (rslt==1) {
 			return 1;
 		}
@@ -446,7 +444,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 
 		vo.setIsBorrowed(1);
 		
-		int rslt = FileHandler.getInstance().updateBook(vo);
+		int rslt = DBSqlHandler.getInstance().updateBook(vo);
 		if (rslt == 1) {
 			return 1;
 		}

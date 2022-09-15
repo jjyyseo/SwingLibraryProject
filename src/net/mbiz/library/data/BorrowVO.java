@@ -7,8 +7,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.mbiz.library.handler.FileHandler;
-import net.mbiz.library.ui.common.CommonConstants;
+import net.mbiz.library.handler.DBSqlHandler;
 
 @Getter
 @Setter
@@ -33,17 +32,5 @@ public class BorrowVO implements Comparable<BorrowVO>, Serializable{
 		return this.borrowNo - o.borrowNo;
 	}
 	
-	
-	public int settingBorrowNo() {
-		List<BorrowVO> list = FileHandler.getInstance().selectBorrowList();
-		for (int i = 0; i < list.size(); i++) {
-			for (int j = 1; j < 500; j++) {
-				if (list.get(i).getBorrowNo() != j) {
-					return j;
-				}
-			}
-		}
-		return 0;
-	}
 
 }

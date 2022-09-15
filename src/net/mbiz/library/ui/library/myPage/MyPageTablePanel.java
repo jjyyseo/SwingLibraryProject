@@ -8,9 +8,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.FileHandler;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -27,7 +27,7 @@ import javax.swing.JTextField;
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.handler.FileHandler;
+import net.mbiz.library.handler.DBSqlHandler;
 import net.mbiz.library.main.LibraryMain;
 import net.mbiz.library.ui.common.CommonConstants;
 
@@ -68,7 +68,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	}
 
 	private void initialize() {
-		this.bwModel.addDataList((ArrayList) FileHandler.getInstance().selectBorrowList());
+		this.bwModel.addDataList((ArrayList) DBSqlHandler.getInstance().selectBorrowList());
 		this.bwModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
@@ -392,7 +392,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	    	vo.setOverdue(overDay);
 	    }
         
-	    int rslt = FileHandler.getInstance().updateBorrow(vo);
+	    int rslt = DBSqlHandler.getInstance().updateBorrow(vo);
 	    
 	    if (rslt==1) {
 	    	return 1;
@@ -413,7 +413,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		BorrowVO bwvo = this.bwModel.getRowAt(borrowTbl.getSelectedRow());
 		String isbn = bwvo.getBookIsbn();
 		
-		List<BookVO> bkList = FileHandler.getInstance().selectBookList();
+		List<BookVO> bkList = DBSqlHandler.getInstance().selectBookList();
 		
 		BookVO udtVO = null;
 		
@@ -424,7 +424,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			}
 		}
 		
-		int rslt = FileHandler.getInstance().updateBook(udtVO);
+		int rslt = DBSqlHandler.getInstance().updateBook(udtVO);
 		
 		if (rslt == 1) {
 			return 1;
@@ -479,7 +479,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
 			this.bwModel.removeAll();
 			
-			for (BorrowVO bv : FileHandler.getInstance().selectBorrowList()) {
+			for (BorrowVO bv : DBSqlHandler.getInstance().selectBorrowList()) {
 				String cbb = (String) cbbSearch.getSelectedItem();
 				
 				if (cbb.equals("도서명")) {
@@ -503,7 +503,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	 * 대출 기록을 삭제하는 메서드
 	 */
 	private int deleteBorrowVO(BorrowVO vo) {
-		int rslt = FileHandler.getInstance().deleteBorrow(vo.getBorrowNo());
+		int rslt = DBSqlHandler.getInstance().deleteBorrow(vo.getBorrowNo());
 		if (rslt==1) {
 			repaintBorrowTable();
 			return 1;
