@@ -18,7 +18,9 @@ import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.util.FileLocationConstants;
 import net.mbiz.library.util.LibraryVOParser;
 
-public class FileHandler implements DataHandler{
+
+//TODO dataHandler 양식에 맞게 수정하깅.
+public class FileHandler extends DataHandler{
 	
 	private static FileHandler fileHandler = new FileHandler();
 
@@ -40,7 +42,6 @@ public class FileHandler implements DataHandler{
 	 * @return bookFileList
 	 * @throws IOException
 	 */
-	@Override
 	public List<BookVO> selectBookList() {
 		File file = new File(FileLocationConstants.BOOK_DATA_lOCATION);
 		BufferedReader br = null;
@@ -87,8 +88,8 @@ public class FileHandler implements DataHandler{
 	 * @return 		 성공 시 = 1, 실패 시 = 0
 	 * @throws IOException
 	 */
-	@Override
 	public int insertBook(BookVO vo) {
+		System.out.println("여기는 file핸들러");
 		File file = new File(FileLocationConstants.BOOK_DATA_lOCATION);
 		String bkStr = LibraryVOParser.bookVOToString(vo);
 
@@ -122,9 +123,8 @@ public class FileHandler implements DataHandler{
 	 * @param vo     도서 객체
 	 * @return 		 성공 시 = 1, 실패 시 = 0
 	 */
-	@Override
 	public int updateBook(BookVO vo) {
-		deletebook(vo.getBookIsbn()); 
+		deleteBook(vo.getBookIsbn()); 
 		insertBook(vo);
 		return 1;
 	}
@@ -138,8 +138,7 @@ public class FileHandler implements DataHandler{
 	 * @param isbn
 	 * @return 		 성공 시 = 1, 실패 시 = 0
 	 */
-	@Override
-	public int deletebook(String isbn) {
+	public int deleteBook(String isbn) {
 		File oldFile = new File(FileLocationConstants.BOOK_DATA_lOCATION);
 		String newPath = "C:\\LibraryData\\book\\udtbookData.txt";
 
@@ -207,7 +206,6 @@ public class FileHandler implements DataHandler{
 	 * @return borrowFileList
 	 * @throws IOException
 	 */
-	@Override
 	public List<BorrowVO> selectBorrowList(){
 		File file = new File(FileLocationConstants.BORROW_DATA_lOCATION);
 		BufferedReader br = null;
@@ -254,7 +252,6 @@ public class FileHandler implements DataHandler{
 	 * @return 		 성공 시 = 1, 실패 시 = 0
 	 * @throws IOException
 	 */
-	@Override
 	public int insertBorrow(BorrowVO vo) {
 		PrintWriter pw = null;
 		File file = new File(FileLocationConstants.BORROW_DATA_lOCATION);
@@ -285,7 +282,6 @@ public class FileHandler implements DataHandler{
 	 * @param vo	  대출 객체
 	 * @return 		  성공 시 = 1, 실패 시 = 0
 	 */
-	@Override
 	public int updateBorrow(BorrowVO vo) {
 		deleteBorrow(vo.getBorrowNo());
 		insertBorrow(vo);
@@ -301,7 +297,6 @@ public class FileHandler implements DataHandler{
 	 * @param bwNo
 	 * @return 		 성공 시 = 1, 실패 시 = 0
 	 */
-	@Override
 	public int deleteBorrow(int bwNo) {
 		
 		String borrowNo = Integer.toString(bwNo);
@@ -367,6 +362,24 @@ public class FileHandler implements DataHandler{
 		
 		
 		return 1;
+	}
+
+	@Override
+	public BookVO selectBookOne(String isbn) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int borrowBook(BorrowVO vo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int returnBook(BorrowVO vo) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

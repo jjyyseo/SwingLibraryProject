@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.mainPage.MainPanel;
 import net.mbiz.library.ui.library.myPage.MyPageTablePanel;
@@ -140,6 +141,8 @@ public class LibraryMain extends JFrame implements ActionListener{
 	}
 	
 	public static void main(String[] args) {
+		// 핸들러매니저 호출하여 디비커넥션 여부 확인.
+		HandlerManager.getInstance().initializeHandbler();
 		new LibraryMain().setLocationCenter();
 	}
 

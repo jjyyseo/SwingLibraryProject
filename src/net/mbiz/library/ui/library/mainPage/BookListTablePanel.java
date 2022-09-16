@@ -24,7 +24,7 @@ import javax.swing.JTextField;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.BookVO;
-import net.mbiz.library.handler.DBSqlHandler;
+import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.dialog.BookRegistDialog;
 import net.mbiz.library.ui.library.book.dialog.BookUpdateDialog;
@@ -62,7 +62,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	private List<BookVO> checkedList = new ArrayList<>(); 
 	
 	private BeanTableModel<BookVO> bkModel;
-	
+	private HandlerManager manager = HandlerManager.getInstance();
 	
 	public BookListTablePanel(MainPanel pn) {
 		jbInit();
@@ -71,7 +71,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	}
 
 	private void initialize() {
-		this.bkModel.addDataList((ArrayList) DBSqlHandler.getInstance().selectBookList()); // 리스트로 한꺼번에 집어넣기 가능
+		this.bkModel.addDataList((ArrayList) manager.selectBookList()); // 리스트로 한꺼번에 집어넣기 가능
 		this.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 
@@ -348,7 +348,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			this.bkModel.removeAll();
 			
 			
-			for (BookVO bv : DBSqlHandler.getInstance().selectBookList()) {
+			for (BookVO bv : manager.selectBookList()) {
 				String cbb = (String) cbbSearch.getSelectedItem();
 				
 				if (cbb.equals("도서명")) {
@@ -402,8 +402,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			return 0;
 			
 		} else {
-			DBSqlHandler.getInstance().deletebook(vo.getBookIsbn());
-
+			manager.deleteBookData(vo.getBookIsbn());
 			repaintBookTable();
 			bookTbl.removeAll();
 			
@@ -502,7 +501,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	 */
 	private void getBookDetailDialog() {
 		BookVO vo = this.bkModel.getRowAt(bookTbl.getSelectedRow());
-		
 		System.out.println("선택한 도서기록은?? -----> " + vo);
 		
 		BookUpdateDialog uptDialog = new BookUpdateDialog();
@@ -510,13 +508,8 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		uptDialog.setLocationCenter();
 		
 		repaintBookTable();
+		manager.selectBorrowList();
 		
-//		this.bkModel.fireTableDataChanged();
-//		bookTbl.repaint();
-		//마이페이지 테이블 repaint()
-//		CommonConstants.repaintBorrowTable();
-		
-
 	}
 	
 	/**

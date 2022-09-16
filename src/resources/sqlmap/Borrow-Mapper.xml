@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="net.mbiz.library.mapper.BorrowMapper">
+<mapper namespace="BorrowMapper">
 	
 	<resultMap id="BorrowMap" type="BorrowVO">
 		<result property="borrowNo" column="BW_NO" />
@@ -36,7 +36,7 @@
 		INSERT INTO BORROW 
 							(
 								       
-							  , BK_ISBN       
+							    BK_ISBN       
 							  , BK_NM         
 							  , BK_WTR        
 							  
@@ -60,6 +60,21 @@
 		FROM   BORROW
 		WHERE  BW_NO = #{borrowNo}  
 	</delete>
+	
+		<!-- detail -->
+	<select id="selectBorrowOne" parameterType="int" resultType="BorrowVO">
+		SELECT 
+			   BK_ISBN           /*도서 ISBN*/  
+			 , BK_NM             /*도서명*/      
+			 , BK_WTR            /*저자*/       
+			 , BW_START          /*대출 시작 일자*/ 
+			 , BW_END            /*대출 마감 일자*/   
+			 , BW_RETURN         /*반납 일자*/    
+			 , BW_OVERDUE        /*연체일 수*/    
+			 
+		FROM   BORROW
+		WHERE BW_NO = #{borrowNo} 
+	</select>
 	
 	
 </mapper>

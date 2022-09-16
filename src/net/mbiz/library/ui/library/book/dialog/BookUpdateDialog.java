@@ -25,7 +25,7 @@ import javax.swing.JTextField;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.handler.DBSqlHandler;
+import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CalenderDialog;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.util.DateFomatUtil;
@@ -73,6 +73,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	private String category = "";
 	private BookVO vo;
 	private String bkNm;
+	private HandlerManager manager = HandlerManager.getInstance();
 	
 	public BookUpdateDialog(){
 		setTitle(bkNm);
@@ -291,6 +292,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(updateBtn)) {
+			validateTextField();
 			openUpdateDialog();
 		} else if (e.getSource().equals(calenderBtn)) {
 			openCalenderDialog();
@@ -311,7 +313,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 			
 			if(vo.getIsBorrowed()!=1) {
 				
-				if (updateBookState() == 1 && insertBorrowVO() == 1) {
+				if (borrowBook() == 1) {
 					JOptionPane.showMessageDialog(null, "대출 신청이 완료되었습니다.");
 					dispose();
 				} else {
@@ -343,42 +345,39 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	
 	
 	/**
-	 * 입력된 정보로 BookVO를 생성하여 BookList에 add하는 데서드.
+	 * 도서 정보 update 결과에 따른 다이어로그를 띄우는 메서드.
 	 */
 	private void openUpdateDialog(){
+		if (updateBookVO() == 1) {
+			JOptionPane.showMessageDialog(null, vo.getBookNm() + "(이)가 수정되었습니다.", vo.getBookNm(), JOptionPane.INFORMATION_MESSAGE);
+			dispose();
+		} else if (updateBookVO() == 2) {
+			JOptionPane.showMessageDialog(null, "해당 도서는 대출 중입니다.");
+		} else {
+			JOptionPane.showMessageDialog(null, "도서 수정 실패. 오류가 발생 하였습니다.", "도서 수정 실패", JOptionPane.INFORMATION_MESSAGE);
+		}
+			
+	};
+	
+	
+	private void validateTextField() {
 		if (category.equals("") || category.isEmpty() ) {
 			category = "소설" ;
 		}
-		System.out.println("여기는 등록 " + category);
-		
-		if(vo.getIsBorrowed()!=1) {
+		System.out.println("카테고리 선택 : " + category);
+		// 어느 하나 빈칸이 있는 경우
+		if ( tfBookNm.getText().isEmpty() || tfBookWtr.getText().isEmpty()
+				|| tfPublisher.getText().isEmpty() || category.equals("") || category.isEmpty()
+				|| tfDate.getText().isEmpty() || tfIsbn.getText().isEmpty()
+				|| txtArea.getText().isEmpty() ) {
 			
-			// 어느 하나 빈칸이 있는 경우
-			if ( tfBookNm.getText().isEmpty() || tfBookWtr.getText().isEmpty()
-					|| tfPublisher.getText().isEmpty() || category.equals("") || category.isEmpty()
-					|| tfDate.getText().isEmpty() || tfIsbn.getText().isEmpty()
-					|| txtArea.getText().isEmpty() ) {
-				
-				JOptionPane.showMessageDialog(null, "정보가 모두 입력되지 않았습니다. 모두 입력해 주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
-				
-			} else if (tfIsbn.getText().length() != 13) {	// isbn이 13자리가 아닌 경우  
-				JOptionPane.showMessageDialog(null, "도서 isbn은 14자리 숫자로 입력해 주세요.", "isbn이 유효하지 않습니다. ", JOptionPane.INFORMATION_MESSAGE);
-				
-			} else {
-				
-				if (updateBookVO() == 1 && insertBorrowVO()== 1) {
-					JOptionPane.showMessageDialog(null, vo.getBookNm() + "(이)가 수정되었습니다.", vo.getBookNm(), JOptionPane.INFORMATION_MESSAGE);
-					dispose();
-				} else if (updateBookVO() == 0) {
-					JOptionPane.showMessageDialog(null, "도서 수정 실패. 오류가 발생 하였습니다.", "도서 수정 실패", JOptionPane.INFORMATION_MESSAGE);
-				
-				}
-			}
+			JOptionPane.showMessageDialog(null, "정보가 모두 입력되지 않았습니다. 모두 입력해 주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
 			
-		} else {
-			JOptionPane.showMessageDialog(null, "해당 도서는 대출 중입니다.");
-		}
-	};
+		} else if (tfIsbn.getText().length() != 13) {	// isbn이 13자리가 아닌 경우  
+			JOptionPane.showMessageDialog(null, "도서 isbn은 14자리 숫자로 입력해 주세요.", "isbn이 유효하지 않습니다. ", JOptionPane.INFORMATION_MESSAGE);
+			
+		} 
+	}
 	
 	/**
 	 * 도서 정보를 update하는 메서드.
@@ -399,7 +398,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		String updateStr = LibraryVOParser.addUpToString(isbn, bkNm, bkWtr, publisher, releaseDate, category, registDate, updateDate, booksub);
 		BookVO vo = LibraryVOParser.stringToBookVO(updateStr);
 		
-		if (DBSqlHandler.getInstance().updateBook(vo) == 1) {
+		if (manager.updateBookData(vo) == 1) {
 			return 1;
 		}
 		return 0;
@@ -409,7 +408,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	 * 대출 기록을 insert하는 메서드.
 	 * @return 성공 = 1, 실패 = 0
 	 */
-	private int insertBorrowVO() {
+	private int borrowBook() {
 		// borrowList에 대출 기록 추가
 		
 		BorrowVO vo = new BorrowVO();
@@ -425,31 +424,10 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		vo.setStartDate(new Date());
 		vo.setEndDate(endDate);
 		
-		int rslt = DBSqlHandler.getInstance().insertBorrow(vo);
-		if (rslt==1) {
-			return 1;
-		}
-		return 0;
+		return manager.borrowBook(vo);
 	}
 	
 
-
-
-	/**
-	 * 도서의 대출 상태를 update하는 메서드.
-	 * @return 성공 = 1, 실패 = 0
-	 */
-	private int updateBookState() {
-
-		vo.setIsBorrowed(1);
-		
-		int rslt = DBSqlHandler.getInstance().updateBook(vo);
-		if (rslt == 1) {
-			return 1;
-		}
-		return 0;
-	}
-	
 	
 
 	public void setLocationCenter() {

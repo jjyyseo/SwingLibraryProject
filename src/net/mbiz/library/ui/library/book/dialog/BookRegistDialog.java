@@ -8,9 +8,6 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.Date;
-import java.util.logging.FileHandler;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -27,7 +24,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import net.mbiz.library.data.BookVO;
-import net.mbiz.library.handler.DBSqlHandler;
+import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CalenderDialog;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.util.DateFomatUtil;
@@ -72,6 +69,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 	
 	private String category = "";
 	private ImageIcon calImg = null;
+	private HandlerManager manager = HandlerManager.getInstance();
 	
 	public BookRegistDialog(){
 		setTitle("도서 정보 추가하기");
@@ -281,7 +279,8 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 //	@Override-------------------------------------------------------------
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(registBtn)) {
-			checkTextIsEmpty();
+			validateTextField();
+			openInsertDialog();
 		} else if (e.getSource().equals(calenderBtn)) {
 			openCalenderDialog();
 		} else if (e.getSource().equals(attachBtn)) {
@@ -296,12 +295,26 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 		tfDate.setText(CalenderDialog.rsltDate);
 	}
 
-	private void checkTextIsEmpty() {
+	/**
+	 * 도서 정보 update 결과에 따른 다이어로그를 띄우는 메서드.
+	 */
+	private void openInsertDialog(){
+		if (insertBookVO() == 1) {
+			JOptionPane.showMessageDialog(null, tfBookNm.getText() + "(이)가 등록되었습니다.", tfBookNm.getText(), JOptionPane.INFORMATION_MESSAGE);
+			dispose();
+		} else if(insertBookVO() == 2) {
+			JOptionPane.showMessageDialog(null, "이미 추가된 도서입니다. isbn을 확인 해주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(null, "도서 추가 실패", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
+		}
+			
+	};
+	
+	private void validateTextField() {
 		if (category.equals("") || category.isEmpty() ) {
 			category = "소설" ;
 		}
-		System.out.println("여기는 등록 " + category);
-		
+		System.out.println("카테고리 선택 : " + category);
 		// 어느 하나 빈칸이 있는 경우
 		if ( tfBookNm.getText().isEmpty() || tfBookWtr.getText().isEmpty()
 				|| tfPublisher.getText().isEmpty() || category.equals("") || category.isEmpty()
@@ -313,44 +326,32 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 		} else if (tfIsbn.getText().length() != 13) {	// isbn이 13자리가 아닌 경우  
 			JOptionPane.showMessageDialog(null, "도서 isbn은 14자리 숫자로 입력해 주세요.", "isbn이 유효하지 않습니다. ", JOptionPane.INFORMATION_MESSAGE);
 			
-		} else {
-			insertBookVO();
-		}
+		} 
 	}
 
 	/**
 	 * 입력된 정보로 BookVO를 생성하여 BookList에 add하는 데서드.
 	 */
-	private void insertBookVO(){
+	private int insertBookVO(){
 
-			BookVO vo = new BookVO();
-			
-			String bkNm = tfBookNm.getText();
-			String bkWtr = tfBookWtr.getText();
-			String publisher = tfPublisher.getText();
-			String bookIsbn = tfIsbn.getText();
-			String releaseDate = tfDate.getText();
-			String booksub = txtArea.getText().replaceAll("\n","").replace("\n", ""); //enter 제거
-			
-			vo.setBookNm(bkNm);
-			vo.setBookWtr(bkWtr);
-			vo.setPublisher(publisher);
-			vo.setBookIsbn(bookIsbn);
-			vo.setReleaseDate( DateFomatUtil.formatToDate(releaseDate));
-			vo.setCategory(category);
-			vo.setBooksub(booksub);
-//			vo.setRegistDate(new Date());
-			
-			int rslt = DBSqlHandler.getInstance().insertBook(vo);
-			
-			if (rslt == 1) {
-				JOptionPane.showMessageDialog(null, bkNm + "(이)가 등록되었습니다.", bkNm, JOptionPane.INFORMATION_MESSAGE);
-				dispose();
-			} else {
-				JOptionPane.showMessageDialog(null, "도서 추가 실패", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
-			}
-			
+		BookVO vo = new BookVO();
 		
+		String bkNm = tfBookNm.getText();
+		String bkWtr = tfBookWtr.getText();
+		String publisher = tfPublisher.getText();
+		String bookIsbn = tfIsbn.getText();
+		String releaseDate = tfDate.getText();
+		String booksub = txtArea.getText().replaceAll("\n","").replace("\n", ""); //enter 제거
+		
+		vo.setBookNm(bkNm);
+		vo.setBookWtr(bkWtr);
+		vo.setPublisher(publisher);
+		vo.setBookIsbn(bookIsbn);
+		vo.setReleaseDate( DateFomatUtil.formatToDate(releaseDate));
+		vo.setCategory(category);
+		vo.setBooksub(booksub);
+		
+		return manager.insertBookData(vo);
 	};
 	
 	

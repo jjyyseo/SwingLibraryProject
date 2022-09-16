@@ -5,25 +5,27 @@ import java.util.List;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 
-// ui에서 생성하여 사용
-public interface DataHandler {
+public abstract class DataHandler {
 	
-	//book
-	public List<BookVO> selectBookList();
+	/*도서리스트 select*/
+	public abstract List<BookVO> selectBookList();
+	/*도서 정보 insert*/
+	public abstract int insertBook(BookVO vo);
+	/*도서 정보 update*/
+	public abstract int updateBook(BookVO vo);
+	/*도서 정보 delete*/
+	public abstract int deleteBook(String isbn);
+	/*도서 detail*/
+	public abstract BookVO selectBookOne(String isbn);
+	/*도서 대출하기*/
+	public abstract int borrowBook(BorrowVO vo);
+	/*도서 반납하기*/
+	public abstract int returnBook(BorrowVO vo);
 	
-	public int insertBook(BookVO vo);
 	
-	public int updateBook(BookVO vo);
-	
-	public int deletebook(String isbn);
-
-	//borrow
-	public List<BorrowVO> selectBorrowList();
-	
-	public int insertBorrow(BorrowVO vo);
-	
-	public int updateBorrow(BorrowVO vo);
-	
-	public int deleteBorrow(int bwNo);
+	/*대출 리스트 select*/
+	public abstract List<BorrowVO> selectBorrowList();
+	/*대출 기록 delete*/
+	public abstract int deleteBorrow(int bwNo);
 	
 }

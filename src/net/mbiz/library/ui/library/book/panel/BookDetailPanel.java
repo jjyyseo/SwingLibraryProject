@@ -22,6 +22,7 @@ import javax.swing.JTextArea;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.handler.DBSqlHandler;
+import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.dialog.BookDetailDialog;
 
@@ -62,6 +63,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 	private JTextArea txtArea;    // in pnIntro
 	private JButton borrowBtn;	
 	
+	private HandlerManager manager = HandlerManager.getInstance();
 	
 	public BookDetailPanel(BookDetailDialog dl) {
 		jbInit();
@@ -269,7 +271,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 		borrowVO.setEndDate(endDate);
 		
 		//TODO 결과 처리
-		DBSqlHandler.getInstance().insertBorrow(borrowVO);
+		
 		
 	}
 
@@ -280,7 +282,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 	private void updateBookState() {
 		// bookList update
 		String isbn = BookDetailDialog.bkDatilVO.getBookIsbn();
-		for (BookVO vo : DBSqlHandler.getInstance().selectBookList()) {
+		for (BookVO vo : manager.selectBookList()) {
 			if (vo.getBookIsbn().equals(isbn)) {
 				vo.setIsBorrowed(1);
 			}
