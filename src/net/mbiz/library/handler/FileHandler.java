@@ -19,7 +19,7 @@ import net.mbiz.library.util.FileLocationConstants;
 import net.mbiz.library.util.LibraryVOParser;
 
 
-//TODO dataHandler 양식에 맞게 수정하깅.
+
 public class FileHandler extends DataHandler{
 	
 	private static FileHandler fileHandler = new FileHandler();
@@ -88,7 +88,6 @@ public class FileHandler extends DataHandler{
 	 * @throws IOException
 	 */
 	public int insertBook(BookVO vo) {
-		System.out.println("여기는 file핸들러");
 		File file = new File(FileLocationConstants.BOOK_DATA_lOCATION);
 		String bkStr = LibraryVOParser.bookVOToString(vo);
 
