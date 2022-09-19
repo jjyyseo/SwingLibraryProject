@@ -363,19 +363,47 @@ public class FileHandler extends DataHandler{
 
 	@Override
 	public BookVO selectBookOne(String isbn) {
-		// TODO Auto-generated method stub
+		File file = new File(FileLocationConstants.BOOK_DATA_lOCATION);
+		BufferedReader br = null;
+		String str;
+		BookVO vo = null;
+		
+		if(file.exists()){
+			
+			try {
+				FileReader fileReader = new FileReader(file);
+				br = new BufferedReader(fileReader);
+
+				while((str = br.readLine()) != null ) {
+//					String strr = br.readLine().contains(isbn); //boolean 이래요/.
+					System.out.println("FileHandler : 선택된 도서" + br.readLine());
+				}			
+				
+			} catch (IOException e) {
+				System.err.println("대출 기록 조회 중 에러 발생!");
+			} finally {
+				
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			
+		} else {
+			System.out.println("net.mbiz.library.handler.FileHandler.readBorrowList : borrowData.txt 파일이 존재하지 않음.");
+		}
 		return null;
 	}
 
 	@Override
 	public int borrowBook(BorrowVO vo) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public int returnBook(BorrowVO bwvo, BookVO bkvo) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

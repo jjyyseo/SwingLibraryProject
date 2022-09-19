@@ -169,20 +169,7 @@ public class HandlerManager {
 		return null;
 	}
 
-	/*도서 대출하기*/
-	public int borrowBook(BorrowVO vo) {
-		for (int i = 0; i < handlerList.size(); i++) {
-			return handlerList.get(i).borrowBook(vo);
-		}
-		return 0;
-	};
-	/*도서 반납하기*/
-	public int returnBook(BorrowVO bwvo, BookVO bkvo) {
-		for (int i = 0; i < handlerList.size(); i++) {
-			return handlerList.get(i).returnBook(bwvo, bkvo);
-		}
-		return 0;
-	}
+
 	
 
 	public List<BorrowVO> selectBorrowList(){
@@ -204,8 +191,34 @@ public class HandlerManager {
 	}
 	
 	public int deleteBorrow(int bwNo) {
+		int rslt1 = 0;
+		int rslt2 = 0;
+		
+		try {
+			rslt1 = handlerList.get(0).deleteBorrow(bwNo);
+			rslt2 = handlerList.get(1).deleteBorrow(bwNo);
+		} catch (Exception e) {
+			System.err.println("FileHandler : 대출 정보 delete 도중 예외 발생! 실행결과 ---> " + rslt1 + rslt2);
+		}
+		
+		if (rslt1 == 1 && rslt2 == 1) {
+			return 1;
+		}
+		return 0;
+		
+	}
+	
+	/*도서 대출하기*/
+	public int borrowBook(BorrowVO vo) {
 		for (int i = 0; i < handlerList.size(); i++) {
-			return handlerList.get(i).deleteBorrow(bwNo);
+			return handlerList.get(i).borrowBook(vo);
+		}
+		return 0;
+	};
+	/*도서 반납하기*/
+	public int returnBook(BorrowVO bwvo, BookVO bkvo) {
+		for (int i = 0; i < handlerList.size(); i++) {
+			return handlerList.get(i).returnBook(bwvo, bkvo);
 		}
 		return 0;
 	}
