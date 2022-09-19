@@ -25,13 +25,14 @@ import javax.swing.JTextField;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.listener.BookEventListener;
 import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CalenderDialog;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.util.DateFomatUtil;
 import net.mbiz.library.util.LibraryVOParser;
 
-public class BookUpdateDialog extends JDialog implements ActionListener{
+public class BookUpdateDialog extends JDialog implements ActionListener, BookEventListener{
 
 	
 	private JPanel pnMain;        
@@ -50,7 +51,6 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	private JButton attachBtn;	  // in pnAttach
 	private JButton updateBtn;	  // in pnFooter
 	private JButton borrowBtn;	  // in pnFooter
-	
 	private JTextArea txtArea;    // in pnIntro
 	
 	// 도서 정보 입력란
@@ -61,6 +61,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	private JTextField tfIsbn;
 	private JTextField tfDate;
 	private JPanel pnReleaseDate;
+	private JPanel pnCal;
 	private JButton calenderBtn;
 
 	private JLabel lblBookNm;
@@ -187,7 +188,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		this.tfPublisher = new JTextField();
 		this.tfIsbn = new JTextField(14);
 		this.tfDate = new JTextField();
-		tfDate.setPreferredSize(new Dimension(215,0));
+		tfDate.setPreferredSize(new Dimension(190,0));
 		tfDate.setEditable(false);
 		
 		tfBookNm.setFont(CommonConstants.FONT_BASE_17);
@@ -199,8 +200,11 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 
 		
 		this.calenderBtn = new JButton("달력");
-		calenderBtn.setPreferredSize(new Dimension(45,35));
 		
+		this.pnCal = new JPanel();
+		pnCal.setLayout(new BorderLayout());
+		pnCal.setPreferredSize(new Dimension(65,0));
+		pnCal.add(calenderBtn, BorderLayout.CENTER);
 		
 		this.lblBookNm = new JLabel("도서명");
 		this.lblBookWtr = new JLabel("저자");
@@ -219,7 +223,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		this.pnReleaseDate= new JPanel();
 		pnReleaseDate.setLayout(new BorderLayout());;
 		
-		pnReleaseDate.add(calenderBtn, BorderLayout.EAST);
+		pnReleaseDate.add(pnCal, BorderLayout.EAST);
 		pnReleaseDate.add(tfDate, BorderLayout.WEST);
 		
 		pnCntEast.add(tfBookNm);
@@ -308,7 +312,12 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		} 
 		
 	}
-	
+
+
+	@Override
+	public void reloadPerformed(ActionEvent e) {
+		
+	}
 	
 	private void openBorrowDialog() {
 		
@@ -433,14 +442,14 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 	}
 	
 
-	
+
+
 
 	public void setLocationCenter() {
 		Dimension d = this.getToolkit().getScreenSize(); 
 		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
 		this.setVisible(true);
 	}
-
 
 
 

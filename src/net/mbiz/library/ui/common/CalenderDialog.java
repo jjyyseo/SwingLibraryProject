@@ -26,14 +26,17 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 	private JPanel pnCnt; 
 	private JPanel pnBottom; 
 
-	// in pnTop
+	// pnTop
 	private JPanel pnYM; 
 	private JPanel pnYear; 
 	private JPanel pnMonth; 
-	
-	// in pnCnt
+	private JPanel pnPrev;
+	// pnCnt
 	private JPanel pnWeek; 
 	private JPanel pnDate; 
+	
+	//pnBottom
+	private JPanel pnPick;
 	
 	private JButton prevBtn; 
 	private JButton nextBtn; 
@@ -51,6 +54,7 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 	private String selectMonth = "";
 	private String selectYear = "";
 
+	private int isSelect = 0;
 	
 	Calendar now = null;
 	int year = 0;
@@ -65,6 +69,7 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 	public CalenderDialog() {
 		jbInit();
 	}
+
 
 	/**
 	 * 기본 UI Init.
@@ -91,18 +96,23 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 		pnBottom.setPreferredSize(new Dimension(0,45));
 		pnBottom.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		
-		this.pickBtn = new JButton("확인");
+		this.pickBtn = new JButton("완료");
 		pickBtn.setFont(CommonConstants.FONT_BASE_12);
 		pickBtn.setPreferredSize(new Dimension(50,0));
 		
-		pnBottom.add(pickBtn, BorderLayout.EAST);
+		this.pnPick = new JPanel();
+		pnPick.setLayout(new BorderLayout());
+		pnPick.setPreferredSize(new Dimension(65,0));
+		
+		pnPick.add(pickBtn, BorderLayout.CENTER);
+		pnBottom.add(pnPick, BorderLayout.EAST);
 		
 		
 		
 		/*pnTop*/
 		this.pnYM = new JPanel();
 		pnYM.setLayout(new BorderLayout());
-		pnYM.setPreferredSize(new Dimension(450,0));
+		pnYM.setPreferredSize(new Dimension(150,0));
 		pnYM.setBorder(BorderFactory.createEmptyBorder(0,50,0,50));
 		pnYM.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		this.pnYear = new JPanel();
@@ -118,26 +128,30 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 		
 		this.cbbYear = new JComboBox<Integer>();
 		cbbYear.setPreferredSize(new Dimension(70,0));
+		cbbYear.setFont(CommonConstants.FONT_BASE_15);
 		this.cbbMonth = new JComboBox<Integer>();
 		cbbMonth.setPreferredSize(new Dimension(70,0));
+		cbbMonth.setFont(CommonConstants.FONT_BASE_15);
 		
 		this.prevBtn = new JButton("◀");
-		prevBtn.setPreferredSize(new Dimension(100,0));
 		this.nextBtn = new JButton("▶");
 		prevBtn.setPreferredSize(new Dimension(20,0));
 		
+		this.pnPrev = new JPanel();
+		pnPrev.setLayout(new BorderLayout());
+		pnPrev.setPreferredSize(new Dimension(45,0));
 		
-
-		
+		pnPrev.add(prevBtn, BorderLayout.CENTER);
 		pnYear.add(cbbYear, BorderLayout.WEST);
 		pnYear.add(lblYear, BorderLayout.EAST);
 		pnMonth.add(cbbMonth, BorderLayout.WEST);
 		pnMonth.add(lblMonth, BorderLayout.EAST);
+
 		pnYM.add(pnYear, BorderLayout.WEST);
 		pnYM.add(pnMonth, BorderLayout.EAST);
 
 		pnTop.add(pnYM, BorderLayout.CENTER);
-		pnTop.add(prevBtn, BorderLayout.WEST);
+		pnTop.add(pnPrev, BorderLayout.WEST);
 		pnTop.add(nextBtn, BorderLayout.EAST);
 		
 		monthYearInit();
@@ -267,9 +281,15 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		/* 날짜 선택 후 확인 버튼 */	
+		if(e.getSource().equals(pickBtn)) {
+			if (rsltDate == null || rsltDate.equals("")) {
+				JOptionPane.showMessageDialog(null, "날짜를 선택해주세요.", "선택된 날짜 없음.", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				dispose();
+			}
 		/* 이벤트 객체가 버튼인 경우 */
-		if (e.getSource() instanceof JButton) {
+		} else if (!e.getSource().equals(pnPick) && e.getSource() instanceof JButton) {
 			JButton eventBtn = (JButton) e.getSource();
 			int yy = (Integer) cbbYear.getSelectedItem();
 			int mm = (Integer) cbbMonth.getSelectedItem();
@@ -296,13 +316,6 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 		/* 이벤트 객체가 콤보 박스인 경우 */	
 		} else if (e.getSource() instanceof JComboBox) {
 			createDayStart();
-		/* 날짜 선택 후 확인 버튼 */		
-		} else if(e.getSource().equals(pickBtn)) {
-			if (!selectDay.equals("") || !selectMonth.equals("") || !selectYear.equals("")) {
-				dispose();
-			} else {
-				JOptionPane.showMessageDialog(null, "날짜를 선택해주세요.", "", JOptionPane.INFORMATION_MESSAGE);
-			}
 		}
 	}
 
@@ -333,13 +346,9 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 	private String addStrDate(String day) {
 		
 		if (selectMonth.equals(Integer.toString(month))) {
-			
 			if (selectMonth.length() < 2) {
 				selectMonth = "0" + selectMonth;
-				System.out.println("여기는 오니???");
 			}
-			
-			
 		} 
 		
 		if (day.length() < 2) {
@@ -360,28 +369,39 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 //---------------------MouseListener Override------------------------
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() instanceof JButton) {
-
-			JButton eventBtn = (JButton) e.getSource(); 
-			eventBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-			
+			JButton eventBtn = (JButton) e.getSource();
 			selectDay = eventBtn.getText();
 			addStrDate(selectDay);
+			if (isSelect == 1) {
+				isSelect = 0;	
+
+				eventBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+				System.out.println("그다음 mouseClicked ----> 선택한 날짜는?" + rsltDate);
+			} else {
+				isSelect = 1;	
+				eventBtn.setBackground(Color.gray);
+			}
 		} 
+		
 	}
 
 	// 마우스가 컴포넌트 위에 올라갈 때
 	public void mouseEntered(MouseEvent e) {
 		if (e.getSource() instanceof JButton) {
-			JButton eventBtn =  (JButton) e.getSource(); 
-			eventBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+			if (isSelect!=1) {
+				JButton eventBtn = (JButton) e.getSource(); 
+				eventBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+			}
 		}
 		
 	}
 	// 마우스가 컴포넌트 위에서 내려갈 때
 	public void mouseExited(MouseEvent e) {
 		if (e.getSource() instanceof JButton) {
-			JButton eventBtn =  (JButton) e.getSource(); 
-			eventBtn.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
+			if (isSelect!=1) {
+				JButton eventBtn =  (JButton) e.getSource(); 
+				eventBtn.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
+			}
 		}
 	}
 	

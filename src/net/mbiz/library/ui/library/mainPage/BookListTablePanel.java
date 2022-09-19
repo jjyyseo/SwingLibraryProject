@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.BookVO;
+import net.mbiz.library.listener.BookEventListener;
 import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.dialog.BookDetailDialog;
@@ -237,7 +238,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		pvsBtn.addActionListener(this);      /*전체 보기*/  
 		registBtn.addActionListener(this);   /*도서 등록하기*/  
 		deleteBtn.addActionListener(this);   /*도서 삭제하기*/  
-		
 		bookTbl.addMouseListener(this);		 /*도서 상세정보 창 띄우기*/
 
 	}
@@ -506,11 +506,12 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		BookUpdateDialog uptDialog = new BookUpdateDialog();
 		uptDialog.initializeBookOne(vo);
 		uptDialog.setLocationCenter();
+		
 //		BookDetailDialog detail = new BookDetailDialog(vo);
 //		detail.setLocationCenter();
+//		manager.selectBorrowList();
 		
 		repaintBookTable();
-		manager.selectBorrowList();
 		
 	}
 	
@@ -521,8 +522,9 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	private void repaintBookTable() {
 		this.bkModel.removeAll();
 		initialize();
-//		bookTbl.setModel(this.bkModel);
+		
 	}
+
 	
 	
 

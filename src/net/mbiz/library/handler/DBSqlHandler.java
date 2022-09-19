@@ -38,13 +38,14 @@ public class DBSqlHandler extends DataHandler {
 		SqlSession session = sqlSessionFactory.openSession();
 		
 		try {
-			
 			BookVO overlap = session.selectOne("BookMapper.selectBookOne", vo.getBookIsbn());
 			if(overlap==null) {
+				
 				rslt = session.insert("BookMapper.insertBook", vo); // namespace.id , param
 			} else {
 				return 2;
 			}
+
 		} finally {
 			session.commit();
 			session.close();
@@ -122,7 +123,6 @@ public class DBSqlHandler extends DataHandler {
 				System.out.println("대출 실패!!! 도서 대출 상태 update 작업이나 대출 기록 insert 작업 도중 실패 하였습니다. 롤백합니다.");
 				return 0;
 			}
-			
 		} finally {
 			session.commit();
 			session.close();
