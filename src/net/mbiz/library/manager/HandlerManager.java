@@ -40,21 +40,41 @@ public class HandlerManager {
 	}
 	
 	
+//	public void initializeHandbler(){
+//		if (!isDBConnection()) {
+//			DataHandler handler = new DBSqlHandler(sqlSessionFactory);
+//			handlerList.add(handler);
+//			System.out.println("DB연결에 성공 하였습니다.");
+//		} else {
+//			System.err.println("DB연결에 실패 하였습니다. 파일 로드를 시도합니다.");
+//			if (isExistDirectory()) {
+//				DataHandler handler = FileHandler.getInstance();
+//				handlerList.add(handler);
+//			} else {
+//				System.err.println("디렉토리가 존재하지 않습니다. 파일 로드에 실패 하였습니다.");
+//			}
+//		}
+//	}
+	
 	public void initializeHandbler(){
+		
 		if (!isDBConnection()) {
 			DataHandler handler = new DBSqlHandler(sqlSessionFactory);
 			handlerList.add(handler);
 			System.out.println("DB연결에 성공 하였습니다.");
 		} else {
-			System.err.println("DB연결에 실패 하였습니다. 파일 연결을 시도합니다.");
-			if (isExistDirectory()) {
-				DataHandler handler = FileHandler.getInstance();
-				handlerList.add(handler);
-			} else {
-				System.err.println("디렉토리가 존재하지 않습니다. 파일 연결에 실패 하였습니다.");
-			}
+			System.err.println("DB연결에 실패 하였습니다. 저장된 파일로 프로그램을 로드합니다.");
 		}
+		
+		if (isExistDirectory()) {
+			DataHandler handler = FileHandler.getInstance();
+			handlerList.add(handler);
+		} else {
+			System.err.println("디렉토리가 존재하지 않습니다. 파일 로드에 실패 하였습니다.");
+		}
+		
 	}
+	
 	
 	private boolean isDBConnection() {
 		try {
@@ -117,7 +137,6 @@ public class HandlerManager {
 		}
 		return 0;
 	}
-	
 	
 
 	public List<BorrowVO> selectBorrowList(){

@@ -66,7 +66,6 @@ public class FileHandler extends DataHandler{
 				try {
 					br.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -124,9 +123,10 @@ public class FileHandler extends DataHandler{
 	 * @return 		 성공 시 = 1, 실패 시 = 0
 	 */
 	public int updateBook(BookVO vo) {
-		deleteBook(vo.getBookIsbn()); 
-		insertBook(vo);
-		return 1;
+		if (deleteBook(vo.getBookIsbn())==1 && insertBook(vo)==1) {
+			return 1;	
+		}
+		return 0;
 	}
 
 	
@@ -141,13 +141,10 @@ public class FileHandler extends DataHandler{
 	public int deleteBook(String isbn) {
 		File oldFile = new File(FileLocationConstants.BOOK_DATA_lOCATION);
 		String newPath = "C:\\LibraryData\\book\\udtbookData.txt";
-
-		// 파일 객체 생성
-		Path path = Paths.get(FileLocationConstants.BOOK_DATA_lOCATION);
-		// 기존 파일 내용 담을 list
-		List<String> list = new ArrayList<>();
-		// 수정 파일 내용 담을 list
-		List<String> udtList = new ArrayList<>();
+		
+		Path path = Paths.get(FileLocationConstants.BOOK_DATA_lOCATION);	// 파일 객체 생성
+		List<String> list = new ArrayList<>();								// 기존 파일 내용 담을 list
+		List<String> udtList = new ArrayList<>();							// 수정 파일 내용 담을 list
 		
 		try {
 			list = Files.readAllLines(path);
@@ -168,8 +165,9 @@ public class FileHandler extends DataHandler{
 		
 		/*새 파일 내용쓰기*/
 		File udtfile = new File(newPath);
+		BufferedWriter bfw = null;
 		try {
-			BufferedWriter bfw = new BufferedWriter(new FileWriter(udtfile));
+			bfw = new BufferedWriter(new FileWriter(udtfile));
 			
 			if (udtfile.isFile() && udtfile.canWrite()) {
 				for (String line : udtList) {
@@ -182,7 +180,7 @@ public class FileHandler extends DataHandler{
 		} catch (IOException e) {
 			System.err.println("net.mbiz.library.handler.FileHandler.deleteBookOne : 새 파일 내용 쓰기 실패.");
 			return 0;
-		}
+		} 
 		
 		if(oldFile.delete()){
 			System.out.println("net.mbiz.library.handler.FileHandler.deleteBookOne : bookData.txt 파일삭제 성공");
