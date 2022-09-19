@@ -84,7 +84,7 @@ public class LibraryVOParser {
 		
 		
 		return  isbn + "@" + bkNm + "@" + bkWtr + "@" + publisher 
-				+ "@" + releaseDate+ "@" + category + "@" + "1" + "@" + registDate
+				+ "@" + releaseDate+ "@" + category + "@" + "0" + "@" + registDate
 				+ "@" + updateDate + "@" + booksub;
 	}
 	

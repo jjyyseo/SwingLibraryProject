@@ -76,26 +76,32 @@
 	
 	
 	<!-- detail -->
-	<select id="selectBookOne" parameterType="String" resultType="BookVO">
+	<select id="selectBookOne" parameterType="java.lang.String" resultMap="BookMap">
 		SELECT 
-			   BK_NM            /* 도서명*/           
-			 , BK_WTR           /* 저자*/            
-			 , BK_PBLSR         /* 출판사*/           
-			 , BK_RLS           /* 출간일*/           
-			 , CATEGORY         /* 카테고리*/          
-			 , ISBORROW         /* 대출가능=0 대출중=1*/  
-			 , BK_SUB           /* 도서 소개글*/        
-			 , BK_REG           /* 등록일자*/ 
-			 , BK_UDT           /* 수정일자*/ 
+			   BK_ISBN
+			 , BK_NM            
+			 , BK_WTR           
+			 , BK_PBLSR         
+			 , BK_RLS           
+			 , CATEGORY         
+			 , ISBORROW          
+			 , BK_SUB           
+			 , BK_REG           
+			 , BK_UDT           
 		FROM   BOOK
 		WHERE BK_ISBN = #{bookIsbn} 
 	</select>
 	
 	<!-- 도서 대출하기. -->
-	<update id="updateBookState" parameterType="String">
+	<update id="updateBookState" parameterType="BookVO"> 
 		UPDATE BOOK 
-		SET	   ISBORROW  = (1)    
-		WHERE  BK_ISBN  = #{bookIsbn}  
+			<if test="isBorrowed == 1">
+			SET	   ISBORROW = (0)
+			</if>  
+			<if test="isBorrowed == 0">
+			SET	   ISBORROW = (1)
+			</if>   
+		WHERE  BK_ISBN = #{bookIsbn}  
 	</update>
 	
 </mapper>

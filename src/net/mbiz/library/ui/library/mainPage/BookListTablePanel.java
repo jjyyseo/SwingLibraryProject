@@ -26,6 +26,7 @@ import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CommonConstants;
+import net.mbiz.library.ui.library.book.dialog.BookDetailDialog;
 import net.mbiz.library.ui.library.book.dialog.BookRegistDialog;
 import net.mbiz.library.ui.library.book.dialog.BookUpdateDialog;
 
@@ -501,11 +502,12 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	 */
 	private void getBookDetailDialog() {
 		BookVO vo = this.bkModel.getRowAt(bookTbl.getSelectedRow());
-		System.out.println("선택한 도서기록은?? -----> " + vo);
 		
 		BookUpdateDialog uptDialog = new BookUpdateDialog();
 		uptDialog.initializeBookOne(vo);
 		uptDialog.setLocationCenter();
+//		BookDetailDialog detail = new BookDetailDialog(vo);
+//		detail.setLocationCenter();
 		
 		repaintBookTable();
 		manager.selectBorrowList();
@@ -517,9 +519,9 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	 * model의 데이터를 모두 지운 후 데이터를 다시 초기화 한다.
 	 */
 	private void repaintBookTable() {
-		bkModel.removeAll();
+		this.bkModel.removeAll();
 		initialize();
-		bookTbl.setModel(this.bkModel);
+//		bookTbl.setModel(this.bkModel);
 	}
 	
 	

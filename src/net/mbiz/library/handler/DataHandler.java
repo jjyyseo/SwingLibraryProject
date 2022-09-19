@@ -20,7 +20,7 @@ public abstract class DataHandler {
 	/*도서 대출하기*/
 	public abstract int borrowBook(BorrowVO vo);
 	/*도서 반납하기*/
-	public abstract int returnBook(BorrowVO vo);
+	public abstract int returnBook(BorrowVO bwvo, BookVO bkvo);
 	
 	
 	/*대출 리스트 select*/

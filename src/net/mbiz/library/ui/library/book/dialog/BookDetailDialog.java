@@ -16,29 +16,41 @@ import net.mbiz.library.data.BookVO;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.panel.BookDetailPanel;
 import net.mbiz.library.ui.library.book.panel.BookUpdatePanel;
+import net.mbiz.library.util.DateFomatUtil;
 
 public class BookDetailDialog extends JDialog implements ActionListener{
 	private JPanel pnCard;
 	private JPanel pnUpdate;   
 	private JButton updateBtn;
-	
-	private BookDetailPanel detail;
-	private BookDetailPanel update;
-	
+
 	private CardLayout cards = new CardLayout();
+	private BookDetailPanel detail;
+	private BookUpdatePanel update;
 	
 	// table list에서 넘겨받을 vo 객체
-	public static BookVO bkDatilVO;
+//	public static BookVO bkDatilVO;
 	
-	public BookDetailDialog() {
+	private BookVO vo = null;
+	private String bkNm;
+	
+	public BookDetailDialog(BookVO vo) {
+		this.vo = vo;
+		this.bkNm = vo.getBookNm();
+		setTitle(bkNm);
 		jbInit();
+		
 	}
-
+	
+	public void initialize(BookVO vo) {
+		System.out.println(vo);
+	}
+	
 	/**
 	 * 기본 UI Init()
 	 */
 	private void jbInit() {
-		this.setTitle(bkDatilVO.getBookNm());
+		System.out.println("여기는 dialog--vo??>>" + vo);
+		this.setTitle(bkNm);
 		setLocationRelativeTo(this); // 화면 중앙 설정
 		setLayout(new BorderLayout());
 		setSize((new Dimension(600,700)));
@@ -72,11 +84,13 @@ public class BookDetailDialog extends JDialog implements ActionListener{
 		
 		pnUpdate.add(updateBtn, BorderLayout.CENTER);
 		
-		pnCard.add("datail", new BookDetailPanel(this));
-		pnCard.add("update", new BookUpdatePanel(this));
 		
-		detail = new BookDetailPanel(this);
-		pnCard.add(detail);
+		pnCard.add("datail", new BookDetailPanel(this, vo));
+		pnCard.add("update", new BookUpdatePanel(this, vo));
+		
+		
+		
+		pnCard.add(new BookDetailPanel(this, vo));
 		
 		
 		
@@ -88,25 +102,28 @@ public class BookDetailDialog extends JDialog implements ActionListener{
 		
 	}
 	
-	public void setLocationCenter() {
-		Dimension d = this.getToolkit().getScreenSize(); 
-		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
-		this.setVisible(true);
-	}
+
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(updateBtn)) {
-			changeDetailCard();
+			System.out.println("btn click");
+			changeUpdateCard();
 		}
 	}
 	
 	public void changeDetailCard() {
 		cards.show(pnCard, "detail");
-//		Detail.initializeBookInfo(bkDatilVO);
 	};
 	public void changeUpdateCard() {
-		cards.show(pnUpdate, "update");
+		cards.show(pnCard, "update");
 	};
 
+	public void setLocationCenter() {
+		Dimension d = this.getToolkit().getScreenSize(); 
+		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
+		this.setVisible(true);
+	}
+	
+	
 }

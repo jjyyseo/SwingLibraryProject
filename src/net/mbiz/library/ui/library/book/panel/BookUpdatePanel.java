@@ -1,21 +1,426 @@
 package net.mbiz.library.ui.library.book.panel;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
+import net.mbiz.library.data.BookVO;
+import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.manager.HandlerManager;
+import net.mbiz.library.ui.common.CalenderDialog;
+import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.dialog.BookDetailDialog;
+import net.mbiz.library.util.DateFomatUtil;
+import net.mbiz.library.util.LibraryVOParser;
 
-public class BookUpdatePanel extends JPanel{
+public class BookUpdatePanel extends JPanel implements ActionListener{
+
+	private JPanel pnMain;
+	// pnMain
+	private JPanel pnTop;		  
+	private JPanel pnBottom;     
+	// pnTop
+	private JPanel pnWest;       
+	private JPanel pnEast;       
+	// pnWest
+	private JPanel pnImg;        
+	private JPanel pnAttach;     
+	// pnEast
+	private JPanel pnCnt;        
+	private JPanel pnCntWest;    
+	private JPanel pnCntEast;    
+	// pnBottom
+	private JPanel pnIntro;      
+	private JPanel pnFooter;     
 	
+	private JButton attachBtn;	 
+	// pnFooter
+	private JButton updateBtn;	 
+	private JButton borrowBtn;	 
 	
+	private JTextArea txtArea;   
 	
-	public BookUpdatePanel(BookDetailDialog di) {
+	// 도서 정보 입력란
+	private JTextField tfBookNm;
+	private JTextField tfBookWtr;
+	private JTextField tfPublisher;
+	private JComboBox<String> cbbCategory;
+	private JTextField tfIsbn;
+	private JTextField tfDate;
+	private JPanel pnReleaseDate;
+	private JButton calenderBtn;
+
+	private JLabel lblBookNm;
+	private JLabel lblBookWtr;
+	private JLabel lblPublisher;
+	private JLabel lblCategory;
+	private JLabel lblReleaseDate;
+	private JLabel lblIsbn;
+	
+	private String category = "";
+	private BookVO vo;
+	private String bkNm;
+	private HandlerManager manager = HandlerManager.getInstance();
+	private BookDetailDialog dl;
+	public BookUpdatePanel(BookDetailDialog dl, BookVO vo) {
+		this.vo = vo;
+		this.dl = dl;
 		jbInit();
+		
+		
+	}
+	
+	/**
+	 * 기본 UI Init
+	 */
+	private void jbInit() {
+		setLayout(new BorderLayout());
+		
+		/*pnMain - pnTop(NORTH), pnCenter(CENTER), pnBottom(SOUTH)*/
+		this.pnMain = new JPanel();
+		pnMain.setLayout(new BorderLayout());
+		pnMain.setPreferredSize(new Dimension(560,660));
+		pnMain.setBackground(Color.blue);
+		
+		//NORTH
+		this.pnTop = new JPanel();
+		pnTop.setLayout(new BorderLayout());
+		pnTop.setPreferredSize(new Dimension(0,318));
+		//SOUTH
+		this.pnBottom = new JPanel();
+		pnBottom.setLayout(new BorderLayout());
+		pnBottom.setPreferredSize(new Dimension(0,305));
+		pnBottom.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+		
+		
+		
+		/*pnTop - pnWest(WEST), pnEast(EAST)*/
+		//WEST
+		this.pnWest = new JPanel();
+		pnWest.setLayout(new BorderLayout());
+		pnWest.setPreferredSize(new Dimension(180,0));
+		pnWest.setBorder(BorderFactory.createEmptyBorder(18,10,10,10));
+		//EAST
+		this.pnEast = new JPanel();
+		pnEast.setLayout(new BorderLayout());
+		pnEast.setPreferredSize(new Dimension(367,0));
+		pnEast.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+		
+
+		
+		/*pnWest - pnImg(CENTER), pnBorrow(SOUTH)*/
+		this.pnImg = new JPanel();
+		pnImg.setPreferredSize(new Dimension(185,260));
+		pnImg.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		pnWest.add(pnImg, BorderLayout.CENTER);
+		this.pnAttach = new JPanel();
+		pnAttach.setLayout(new BorderLayout());
+		pnAttach.setPreferredSize(new Dimension(185,70));
+		pnAttach.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+		pnAttach.add(Box.createVerticalStrut(8), BorderLayout.SOUTH);		
+		this.attachBtn = new JButton("사진 첨부");
+		attachBtn.setFont(CommonConstants.FONT_BASE_17);
+
+		pnAttach.add(attachBtn, BorderLayout.CENTER);
+		pnWest.add(pnAttach, BorderLayout.SOUTH);
+				
+		/*pnEast - pnCnt(CENTER)*/
+		//CENTER
+		this.pnCnt = new JPanel();
+		pnCnt.setLayout(new BorderLayout());
+		pnCnt.setPreferredSize(new Dimension(0, 163));
+		this.pnCntWest = new JPanel();
+		pnCntWest.setLayout(new GridLayout(6,1));
+		pnCntWest.setPreferredSize(new Dimension(80, 0));
+		this.pnCntEast = new JPanel();
+		pnCntEast.setLayout(new GridLayout(6,1, 5 ,10));
+		pnCntEast.setPreferredSize(new Dimension(273, 0));
+		pnCntEast.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+
+		pnCnt.add(pnCntEast, BorderLayout.EAST);
+		pnCnt.add(pnCntWest, BorderLayout.WEST);
+		
+		
+		
+		this.cbbCategory = new JComboBox<>();
+		cbbCategory.setModel(new DefaultComboBoxModel<>(new String[] {"소설","어린이","경제경영","자기계발","자연과학"}));
+		cbbCategory.setFont(CommonConstants.FONT_BASE_15);
+		
+		this.tfBookNm = new JTextField();
+		this.tfBookWtr = new JTextField();
+		this.tfPublisher = new JTextField();
+		this.tfIsbn = new JTextField(14);
+		this.tfDate = new JTextField();
+		tfDate.setPreferredSize(new Dimension(215,0));
+		tfDate.setEditable(false);
+		
+		tfBookNm.setFont(CommonConstants.FONT_BASE_17);
+		tfBookWtr.setFont(CommonConstants.FONT_BASE_17);
+		tfPublisher.setFont(CommonConstants.FONT_BASE_17);
+		tfIsbn.setFont(CommonConstants.FONT_BASE_17);
+		tfDate.setFont(CommonConstants.FONT_BASE_17);
+		tfDate.setForeground(Color.black);
+
+		
+		this.calenderBtn = new JButton("달력");
+		calenderBtn.setPreferredSize(new Dimension(45,35));
+		
+		
+		this.lblBookNm = new JLabel("도서명");
+		this.lblBookWtr = new JLabel("저자");
+		this.lblPublisher = new JLabel("출판사");
+		this.lblIsbn = new JLabel("ISBN");
+		this.lblCategory = new JLabel("카테고리");
+		this.lblReleaseDate = new JLabel("출간일");
+		lblBookNm.setFont(CommonConstants.FONT_BASE_17);
+		lblBookWtr.setFont(CommonConstants.FONT_BASE_17); 
+		lblPublisher.setFont(CommonConstants.FONT_BASE_17);
+		lblIsbn.setFont(CommonConstants.FONT_BASE_17);
+		lblCategory.setFont(CommonConstants.FONT_BASE_17);
+		lblReleaseDate.setFont(CommonConstants.FONT_BASE_17);
+		
+
+		this.pnReleaseDate= new JPanel();
+		pnReleaseDate.setLayout(new BorderLayout());;
+		
+		pnReleaseDate.add(calenderBtn, BorderLayout.EAST);
+		pnReleaseDate.add(tfDate, BorderLayout.WEST);
+		
+		pnCntEast.add(tfBookNm);
+		pnCntEast.add(tfBookWtr);
+		pnCntEast.add(tfPublisher);
+		pnCntEast.add(tfIsbn);
+		pnCntEast.add(cbbCategory);
+		pnCntEast.add(pnReleaseDate);
+		
+		pnCntWest.add(lblBookNm);
+		pnCntWest.add(lblBookWtr);
+		pnCntWest.add(lblPublisher);
+		pnCntWest.add(lblIsbn);
+		pnCntWest.add(lblCategory);
+		pnCntWest.add(lblReleaseDate);
+		
+		
+		
+		/*pnBottom - pnIntro(NORTH), pnFooter(SOUTH)*/
+		//NORTH
+		this.pnIntro = new JPanel();
+		pnIntro.setLayout(new BorderLayout());
+		pnIntro.setPreferredSize(new Dimension(0,230));
+		pnIntro.setBorder(BorderFactory.createEmptyBorder(20,10,0,10));
+		this.txtArea = new JTextArea();
+		txtArea.setLineWrap(true); 
+		txtArea.setPreferredSize(new Dimension(0,210));
+		txtArea.setFont(CommonConstants.FONT_BASE_17);
+		
+		JScrollPane srlPn = new JScrollPane(txtArea);
+		pnIntro.add(srlPn, BorderLayout.CENTER);
+		
+		//SOUTH		
+		this.pnFooter = new JPanel();
+		pnFooter.setLayout(new FlowLayout());
+		pnFooter.setPreferredSize(new Dimension(0,70));
+		pnFooter.setBorder(BorderFactory.createEmptyBorder(5,0,0,0));
+		
+		this.updateBtn = new JButton("수정");
+		updateBtn.setPreferredSize(new Dimension(100,50));
+		updateBtn.setFont(CommonConstants.FONT_BASE_17);
+		this.borrowBtn = new JButton("대출신청");
+		borrowBtn.setPreferredSize(new Dimension(100,50));
+		borrowBtn.setFont(CommonConstants.FONT_BASE_17);
+		pnFooter.add(borrowBtn, BorderLayout.CENTER);
+		pnFooter.add(updateBtn, BorderLayout.CENTER);
+		
+		
+		
+		
+		pnEast.add(pnCnt, BorderLayout.CENTER);
+
+		pnTop.add(pnWest, BorderLayout.WEST);
+		pnTop.add(pnEast, BorderLayout.EAST);
+		pnBottom.add(pnIntro, BorderLayout.NORTH);
+		pnBottom.add(pnFooter, BorderLayout.SOUTH);
+		
+		pnMain.add(pnTop, BorderLayout.NORTH);
+		pnMain.add(pnBottom, BorderLayout.SOUTH);
+		this.add(pnMain, BorderLayout.CENTER);
+		
+		category = cbbCategory.getSelectedItem().toString();
+		
+		
+		
+		calenderBtn.addActionListener(this);
+		attachBtn.addActionListener(this);
+		borrowBtn.addActionListener(this);
+		updateBtn.addActionListener(this);
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(updateBtn)) {
+			if (validateTextField()==1) {
+				openUpdateDialog();
+			} 
+		
+		} else if (e.getSource().equals(calenderBtn)) {
+			openCalenderDialog();
+		} else if (e.getSource().equals(attachBtn)) {
+			openAttachMsgDialog();
+		} else if (e.getSource().equals(borrowBtn)) {
+			openBorrowDialog();
+			
+		} 
+		
+	}
+	
+	
+	private void openBorrowDialog() {
+		
+		int rslt = JOptionPane.showConfirmDialog(null, vo.getBookNm()+ " 을(를) 대출 신청 하시겠습니까?", vo.getBookNm(), JOptionPane.YES_NO_OPTION);
+		if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
+			
+			if(vo.getIsBorrowed()!=1) {
+				
+				if (borrowBook() == 1) {
+					JOptionPane.showMessageDialog(null, "대출 신청이 완료되었습니다.");
+					dl.dispose();
+				} else {
+					JOptionPane.showMessageDialog(null, "대출 신청 중 문제가 발생 하였습니다.");	
+				}
+				
+			} else {
+				JOptionPane.showMessageDialog(null, "해당 도서는 대출 중입니다.");
+			}
+			
+		} else { 
+			System.out.println(vo.getBookNm() + " 대출 신청을 취소합니다.");
+		}
+		
+		
+		
 	}
 
-	private void jbInit() {
+	private void openAttachMsgDialog() {
+		JOptionPane.showMessageDialog(null, "서비스 준비 중입니다.", "도서 사진 첨부하기", JOptionPane.INFORMATION_MESSAGE);
 		
-		
+	}
+
+	private void openCalenderDialog() {
+		new CalenderDialog().setLocationCenter();
+		tfDate.setText(CalenderDialog.rsltDate);
 	}
 
 	
+	
+	/**
+	 * 도서 정보 update 결과에 따른 다이어로그를 띄우는 메서드.
+	 */
+	private void openUpdateDialog(){
+		if (updateBookVO() == 1) {
+			JOptionPane.showMessageDialog(null, vo.getBookNm() + "(이)가 수정되었습니다.", vo.getBookNm(), JOptionPane.INFORMATION_MESSAGE);
+			dl.dispose();
+		} else if (updateBookVO() == 2) {
+			JOptionPane.showMessageDialog(null, "해당 도서는 대출 중입니다.");
+		} else {
+			JOptionPane.showMessageDialog(null, "도서 수정 실패. 오류가 발생 하였습니다.", "도서 수정 실패", JOptionPane.INFORMATION_MESSAGE);
+		}
+			
+	};
+	
+	
+	private int validateTextField() {
+		if (category.equals("") || category.isEmpty() ) {
+			category = "소설" ;
+		}
+		System.out.println("카테고리 선택 : " + category);
+		// 어느 하나 빈칸이 있는 경우
+		if ( tfBookNm.getText().isEmpty() || tfBookWtr.getText().isEmpty()
+				|| tfPublisher.getText().isEmpty() || category.equals("") || category.isEmpty()
+				|| tfDate.getText().isEmpty() || tfIsbn.getText().isEmpty()
+				|| txtArea.getText().isEmpty() ) {
+			
+			JOptionPane.showMessageDialog(null, "정보가 모두 입력되지 않았습니다. 모두 입력해 주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
+			return 0;
+		} else if (tfIsbn.getText().length() != 13) {	// isbn이 13자리가 아닌 경우  
+			JOptionPane.showMessageDialog(null, "도서 isbn은 14자리 숫자로 입력해 주세요.", "isbn이 유효하지 않습니다. ", JOptionPane.INFORMATION_MESSAGE);
+			return 0;
+		} 
+		return 1;
+	}
+	
+	/**
+	 * 도서 정보를 update하는 메서드.
+	 * @return 성공 = 1, 실패 = 0
+	 */
+	private int updateBookVO() {
+
+		String bkNm = tfBookNm.getText();
+		String bkWtr = tfBookWtr.getText();
+		String publisher = tfPublisher.getText();
+		String isbn = tfIsbn.getText();
+		String releaseDate = tfDate.getText();
+		String booksub = txtArea.getText();
+		
+		String registDate = DateFomatUtil.formatToString("registDate", new Date());
+		String updateDate = DateFomatUtil.formatToString("updateDate", new Date());
+		
+		String updateStr = LibraryVOParser.addUpToString(isbn, bkNm, bkWtr, publisher, releaseDate, category, registDate, updateDate, booksub);
+		BookVO vo = LibraryVOParser.stringToBookVO(updateStr);
+		
+		if (manager.updateBookData(vo) == 1) {
+			return 1;
+		}
+		return 0;
+	}
+
+	/**
+	 * 대출 기록을 insert하는 메서드.
+	 * @return 성공 = 1, 실패 = 0
+	 */
+	private int borrowBook() {
+		// borrowList에 대출 기록 추가
+		
+		BorrowVO vo = new BorrowVO();
+		vo.setBookNm(bkNm);
+		vo.setBookIsbn(tfIsbn.getText());
+		vo.setBookWtr(tfBookWtr.getText());
+		
+		Calendar cal = Calendar.getInstance(); 
+		cal.setTime(new Date()); 	
+		cal.add(Calendar.DATE, 14);
+		Date endDate = cal.getTime();
+		
+		vo.setStartDate(new Date());
+		vo.setEndDate(endDate);
+		
+		return manager.borrowBook(vo);
+	}
+	
+
+	
+
+	public void setLocationCenter() {
+		Dimension d = this.getToolkit().getScreenSize(); 
+		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
+		this.setVisible(true);
+	}
+
 }

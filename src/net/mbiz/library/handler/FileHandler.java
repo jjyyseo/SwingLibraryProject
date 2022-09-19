@@ -377,7 +377,7 @@ public class FileHandler extends DataHandler{
 	}
 
 	@Override
-	public int returnBook(BorrowVO vo) {
+	public int returnBook(BorrowVO bwvo, BookVO bkvo) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

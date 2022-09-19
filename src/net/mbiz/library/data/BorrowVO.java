@@ -20,6 +20,7 @@ public class BorrowVO implements Comparable<BorrowVO>, Serializable{
 	private Date endDate;          /* 대출 마감 일자*/
 	private Date returnDate;       /* 반납 일자*/
 	private int overdue;           /* 연체일 수*/
+	private int isBorrowed;         /* 대출가능=0 대출중=1*/
 	
 	private boolean isSelect;	   /* 체크박스 선택 여부!*/
 

@@ -21,7 +21,6 @@ import javax.swing.JTextArea;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.handler.DBSqlHandler;
 import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.ui.library.book.dialog.BookDetailDialog;
@@ -62,14 +61,15 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 	                              
 	private JTextArea txtArea;    // in pnIntro
 	private JButton borrowBtn;	
-	
+	private BookVO vo;
 	private HandlerManager manager = HandlerManager.getInstance();
 	
-	public BookDetailPanel(BookDetailDialog dl) {
+	public BookDetailPanel(BookDetailDialog dl, BookVO vo) {
+		this.vo = vo;
 		jbInit();
 	}
 
-	
+
 	/**
 	 * 기본 UI Init
 	 */
@@ -118,7 +118,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 		pnBorrow.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
 		pnWest.add(pnBorrow, BorderLayout.SOUTH);
 		
-		if (BookDetailDialog.bkDatilVO.getIsBorrowed() == 0) {
+		if (vo.getIsBorrowed() == 0) {
 			this.borrowBtn = new JButton("대출 신청");
 		} else {
 			this.borrowBtn = new JButton("대출중");
@@ -136,7 +136,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 		pnTitle.setPreferredSize(new Dimension(0, 80));
 		pnTitle.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
 		
-		this.tfBookNm = new JTextArea(BookDetailDialog.bkDatilVO.getBookNm());
+		this.tfBookNm = new JTextArea(vo.getBookNm());
 		tfBookNm.setFont(CommonConstants.FONT_TITLE_22);
 		tfBookNm.setEditable(false);
 		tfBookNm.setLineWrap(true); // 줄바꿈 되도록.
@@ -181,11 +181,11 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일");
 		
-		this.bookWtr = new JLabel(BookDetailDialog.bkDatilVO.getBookWtr());
-		this.category = new JLabel(BookDetailDialog.bkDatilVO.getCategory());
-		this.publisher = new JLabel(BookDetailDialog.bkDatilVO.getPublisher());
-		this.releaseDate = new JLabel(sdf.format(BookDetailDialog.bkDatilVO.getReleaseDate()));
-		this.isbn = new JLabel(BookDetailDialog.bkDatilVO.getBookIsbn());
+		this.bookWtr = new JLabel(vo.getBookWtr());
+		this.category = new JLabel(vo.getCategory());
+		this.publisher = new JLabel(vo.getPublisher());
+		this.releaseDate = new JLabel(sdf.format(vo.getReleaseDate()));
+		this.isbn = new JLabel(vo.getBookIsbn());
 		bookWtr.setFont(CommonConstants.FONT_BASE_17); 
 		category.setFont(CommonConstants.FONT_BASE_17);
 		publisher.setFont(CommonConstants.FONT_BASE_17);
@@ -207,7 +207,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 		pnIntro.setLayout(new BorderLayout());
 		pnIntro.setBackground(Color.GREEN);
 		
-		this.txtArea = new JTextArea(BookDetailDialog.bkDatilVO.getBooksub());
+		this.txtArea = new JTextArea(vo.getBooksub());
 		txtArea.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
 		txtArea.setEditable(false);
 		txtArea.setLineWrap(true); 
@@ -240,13 +240,13 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(borrowBtn)) {
 			
-			int rslt = JOptionPane.showConfirmDialog(null, BookDetailDialog.bkDatilVO.getBookNm()+ " 을(를) 대출 신청 하시겠습니까?", BookDetailDialog.bkDatilVO.getBookNm(), JOptionPane.YES_NO_OPTION);
+			int rslt = JOptionPane.showConfirmDialog(null, vo.getBookNm()+ " 을(를) 대출 신청 하시겠습니까?", vo.getBookNm(), JOptionPane.YES_NO_OPTION);
 			if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
 				insertBorrowInfo();
 				updateBookState();
 				JOptionPane.showMessageDialog(null, "대출 신청이 완료되었습니다.");
 			} else { 
-				System.out.println(BookDetailDialog.bkDatilVO.getBookNm() + " 대출 신청을 취소합니다.");
+				System.out.println(vo.getBookNm() + " 대출 신청을 취소합니다.");
 			}
 			
 		} 
@@ -259,8 +259,8 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 	private void insertBorrowInfo() {
 		
 		BorrowVO borrowVO = new BorrowVO();
-		borrowVO.setBookNm(BookDetailDialog.bkDatilVO.getBookNm());
-		borrowVO.setBookIsbn(BookDetailDialog.bkDatilVO.getBookIsbn());
+		borrowVO.setBookNm(vo.getBookNm());
+		borrowVO.setBookIsbn(vo.getBookIsbn());
 		
 		Calendar cal = Calendar.getInstance(); 
 		cal.setTime(new Date()); 	
@@ -281,7 +281,7 @@ public class BookDetailPanel extends JPanel implements ActionListener{
 	 */
 	private void updateBookState() {
 		// bookList update
-		String isbn = BookDetailDialog.bkDatilVO.getBookIsbn();
+		String isbn = vo.getBookIsbn();
 		for (BookVO vo : manager.selectBookList()) {
 			if (vo.getBookIsbn().equals(isbn)) {
 				vo.setIsBorrowed(1);

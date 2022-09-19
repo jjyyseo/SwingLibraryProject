@@ -111,9 +111,9 @@ public class HandlerManager {
 		return 0;
 	};
 	/*도서 반납하기*/
-	public int returnBook(BorrowVO vo) {
+	public int returnBook(BorrowVO bwvo, BookVO bkvo) {
 		for (int i = 0; i < handlerList.size(); i++) {
-			return handlerList.get(i).returnBook(vo);
+			return handlerList.get(i).returnBook(bwvo, bkvo);
 		}
 		return 0;
 	}

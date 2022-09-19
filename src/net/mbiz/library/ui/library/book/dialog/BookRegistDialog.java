@@ -279,8 +279,9 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 //	@Override-------------------------------------------------------------
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(registBtn)) {
-			validateTextField();
-			openInsertDialog();
+			if (validateTextField()==1) {
+				openInsertDialog();
+			} 
 		} else if (e.getSource().equals(calenderBtn)) {
 			openCalenderDialog();
 		} else if (e.getSource().equals(attachBtn)) {
@@ -310,7 +311,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 			
 	};
 	
-	private void validateTextField() {
+	private int validateTextField() {
 		if (category.equals("") || category.isEmpty() ) {
 			category = "소설" ;
 		}
@@ -322,11 +323,13 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 				|| txtArea.getText().isEmpty() ) {
 			
 			JOptionPane.showMessageDialog(null, "정보가 모두 입력되지 않았습니다. 모두 입력해 주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
-			
+			return 0;
 		} else if (tfIsbn.getText().length() != 13) {	// isbn이 13자리가 아닌 경우  
 			JOptionPane.showMessageDialog(null, "도서 isbn은 14자리 숫자로 입력해 주세요.", "isbn이 유효하지 않습니다. ", JOptionPane.INFORMATION_MESSAGE);
-			
+			return 0;
 		} 
+		
+		return 1;
 	}
 
 	/**
