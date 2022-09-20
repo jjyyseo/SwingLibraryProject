@@ -21,14 +21,14 @@
 	
 	<select id="selectBorrowkList" resultMap="BorrowMap">
 		SELECT 
-			   BW_NO             /*대출 번호*/
-			 , BK_ISBN           /*도서 ISBN*/
-			 , BK_NM             /*도서명*/
-			 , BK_WTR            /*저자*/
-			 , BW_START          /*대출 시작 일자*/
-			 , BW_END            /*대출 마감 일자*/
-			 , BW_RETURN         /*반납 일자*/
-			 , BW_OVERDUE        /*연체일 수*/
+			   BW_NO             
+			 , BK_ISBN           
+			 , BK_NM             
+			 , BK_WTR            
+			 , BW_START          
+			 , BW_END            
+			 , BW_RETURN         
+			 , BW_OVERDUE        
 			       
 		FROM   BORROW
 	</select>
@@ -77,6 +77,37 @@
 		FROM   BORROW
 		WHERE BW_NO = #{borrowNo} 
 	</select>
+	
+	
+	<select id="searchBorrowList" parameterType="BorrowVO" resultMap="BorrowMap">
+		SELECT 
+				  BW_NO        
+				, BK_ISBN      
+				, BK_NM        
+				, BK_WTR       
+				, BW_START     
+				, BW_END       
+				, BW_RETURN    
+				, BW_OVERDUE   
+		FROM BORROW
+		WHERE 1=1 
+		<if test="option == null or option =='all' ">
+		AND (
+				BK_NM like '%' || #{query} || '%'
+		OR		BK_WTR like '%' || #{query} || '%'
+		) 
+		</if> 
+		<if test="option != null or option =='bookNm' ">
+		AND BK_NM like '%' || #{query} || '%'
+		</if> 
+		<if test="option != null and option =='bookWtr' ">
+		AND BK_WTR like '%' || #{query} || '%'
+		</if> 
+	</select>
+	
+	
+	
+	
 	
 	
 </mapper>

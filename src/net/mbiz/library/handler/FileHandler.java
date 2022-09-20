@@ -15,27 +15,58 @@ import java.util.List;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.listener.BookEventListener;
+import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.util.FileLocationConstants;
 import net.mbiz.library.util.LibraryVOParser;
 
 
 
-public class FileHandler extends DataHandler{
-	
-	private static FileHandler fileHandler = new FileHandler();
+public class FileHandler extends DataHandler implements BookEventListener{
 
-	private FileHandler(){
+	public FileHandler(){
+		initialize();
 	}
 	
-	public static FileHandler getInstance() {
-	    if(fileHandler == null){
-	    	fileHandler = new FileHandler();
-	    }
-		return fileHandler;
+	public void initialize() {
+    	HandlerManager.getInstance().addBookEventListener(this);
+	}
+    
+	
+	
+	@Override
+	public int bookAdded(BookVO vo) {
+		System.out.println("여기는 FileHandler~~bookAdded");
+		return insertBook(vo);
 	}
 
-	
-	
+	@Override
+	public int bookUpdated(BookVO vo) {
+		return updateBook(vo);
+	}
+
+	@Override
+	public int bookDeleted(String isbn) {
+		return deleteBook(isbn);
+	}
+    
+	@Override
+	public int borrowAdded(BorrowVO vo) {
+		return borrowBook(vo);
+	}
+
+	@Override
+	public int borrowUpdated(BorrowVO vo) {
+		return returnBook(vo);
+	}
+
+	@Override
+	public int borrowDeleted(int bwNo) {
+		return deleteBorrow(bwNo);
+	}
+    
+
+    
 	/**
 	 * bookData.txt 파일을 읽는 메서드.  
 	 * List<BookVO>를 리턴한다.
@@ -88,6 +119,7 @@ public class FileHandler extends DataHandler{
 	 * @throws IOException
 	 */
 	public int insertBook(BookVO vo) {
+		System.err.println("여기는 FileHandler~~insertBook");
 		File file = new File(FileLocationConstants.BOOK_DATA_lOCATION);
 		String bkStr = LibraryVOParser.bookVOToString(vo);
 
@@ -326,7 +358,6 @@ public class FileHandler extends DataHandler{
 				udtList.add(line);
 			}
 		}
-		System.err.println("해당 도서 정보를 제외한 도서 정보" + udtList);
 		
 		
 		/*새 파일 내용쓰기*/
@@ -363,47 +394,73 @@ public class FileHandler extends DataHandler{
 
 	@Override
 	public BookVO selectBookOne(String isbn) {
-		File file = new File(FileLocationConstants.BOOK_DATA_lOCATION);
-		BufferedReader br = null;
-		String str;
-		BookVO vo = null;
+		Path path = Paths.get(FileLocationConstants.BOOK_DATA_lOCATION);
 		
-		if(file.exists()){
-			
-			try {
-				FileReader fileReader = new FileReader(file);
-				br = new BufferedReader(fileReader);
-
-				while((str = br.readLine()) != null ) {
-//					String strr = br.readLine().contains(isbn); //boolean 이래요/.
-					System.out.println("FileHandler : 선택된 도서" + br.readLine());
-				}			
-				
-			} catch (IOException e) {
-				System.err.println("대출 기록 조회 중 에러 발생!");
-			} finally {
-				
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			
-		} else {
-			System.out.println("net.mbiz.library.handler.FileHandler.readBorrowList : borrowData.txt 파일이 존재하지 않음.");
+		String str;
+		List<String> list = new ArrayList<>();
+		BookVO vo =null;
+		
+		try {
+			list = Files.readAllLines(path);
+		} catch (IOException e) {
+			System.out.println("selectBookOne : 파일을 읽을 수 없음");
+			return null;
 		}
-		return null;
+		for (String line : list) {
+			String[] arr = line.split("@");
+			
+			if (arr[0].toString().equals(isbn)) { 
+				vo =LibraryVOParser.stringToBookVO(line);
+				break;
+			} 
+		}
+		return vo;
 	}
+	
 
-	@Override
-	public int borrowBook(BorrowVO vo) {
+
+	/**
+	 * bookData.txt 파일을 update하는 메서드.
+	 * 원본 파일 삭제 후 새 파일 생성, update된 정보 추가
+	 * @param vo     도서 객체
+	 * @return 		 성공 시 = 1, 실패 시 = 0
+	 */
+	public int updateBookState(String isbn) {
+		BookVO vo = selectBookOne(isbn);
+		if (vo.getIsBorrowed()==1) {
+			vo.setIsBorrowed(0);
+		} else {
+			vo.setIsBorrowed(1);
+		}
+		
+		if (deleteBook(isbn)==1 && insertBook(vo)==1) {
+			return 1;	
+		}
 		return 0;
 	}
 
+	/**
+	 * 도서 대출하기.
+	 * 도서 정보 update & 대출 정보 insert
+	 */
 	@Override
-	public int returnBook(BorrowVO bwvo, BookVO bkvo) {
+	public int borrowBook(BorrowVO vo) {
+		if (updateBookState(vo.getBookIsbn())==1 && insertBorrow(vo)==1) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	
+	/**
+	 * 도서 반납하기.
+	 * 도서 정보 update & 대출 정보 update
+	 */
+	@Override
+	public int returnBook(BorrowVO bwvo) {
+		if(updateBorrow(bwvo)==1 && updateBookState(bwvo.getBookIsbn())==1) {
+			return 1;
+		}
 		return 0;
 	}
 

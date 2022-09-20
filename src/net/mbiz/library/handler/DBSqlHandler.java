@@ -7,19 +7,60 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.listener.BookEventListener;
+import net.mbiz.library.manager.HandlerManager;
 
 
 // 비즈니스 로직 처리
-public class DBSqlHandler extends DataHandler {
-	
+public class DBSqlHandler extends DataHandler implements BookEventListener{
+
 	private SqlSessionFactory sqlSessionFactory = null;
 	
 	public DBSqlHandler(SqlSessionFactory sqlSessionFactory) {
 		this.sqlSessionFactory = sqlSessionFactory;
+		initialize();
 	}
 	
+	public void initialize() {
+    	HandlerManager.getInstance().addBookEventListener(this);
+	}
 
+	
+	@Override
+	public int bookAdded(BookVO vo) {
+		System.out.println("여기는 FileHandler~~bookAdded");
+		return insertBook(vo);
+	}
 
+	@Override
+	public int bookUpdated(BookVO vo) {
+		return updateBook(vo);
+	}
+
+	@Override
+	public int bookDeleted(String isbn) {
+		return deleteBook(isbn);
+	}
+    
+	@Override
+	public int borrowAdded(BorrowVO vo) {
+		return borrowBook(vo);
+	}
+
+	@Override
+	public int borrowUpdated(BorrowVO vo) {
+		return returnBook(vo);
+	}
+
+	@Override
+	public int borrowDeleted(int bwNo) {
+		return deleteBorrow(bwNo);
+	}
+    
+    
+    
+    
+    
 	public List<BookVO> selectBookList() {
 		List<BookVO> list = null;
 		SqlSession session = sqlSessionFactory.openSession();
@@ -34,6 +75,7 @@ public class DBSqlHandler extends DataHandler {
 
 	
 	public int insertBook(BookVO vo) {
+
 		int rslt = 0;
 		SqlSession session = sqlSessionFactory.openSession();
 		
@@ -130,12 +172,11 @@ public class DBSqlHandler extends DataHandler {
 		return 1;
 	}
 	
-	public int returnBook(BorrowVO bwvo, BookVO bkvo) {
+	public int returnBook(BorrowVO bwvo) {
 		SqlSession session = sqlSessionFactory.openSession();
 		
 		try {
-			System.out.println("update Data : " + bkvo.toString());
-			
+			BookVO bkvo = selectBookOne(bwvo.getBookIsbn());
 			int state = session.update("BookMapper.updateBookState", bkvo); // namespace.id, param
 			int update = session.update("BorrowMapper.updateBorrow", bwvo);
 			
@@ -193,6 +234,7 @@ public class DBSqlHandler extends DataHandler {
 		}
 		return rslt;
 	}
+
 	
 
 

@@ -1,12 +1,12 @@
 package net.mbiz.library.listener;
 
-import javax.swing.event.EventListenerList;
+import java.util.EventObject;
 
-public abstract class BookEvent {
+public class BookEvent extends EventObject{
+
+	public BookEvent(Object source) {
+		super(source);
+	}
     
-    protected EventListenerList listenerList = new EventListenerList();
-    
-    public void addBookListener(BookEventListener l) {
-        listenerList.add(BookEventListener.class, l);
-    }
+
 }

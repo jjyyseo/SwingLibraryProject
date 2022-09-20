@@ -295,12 +295,10 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			if (vo.getReturnDate() == null) { // 대출 중 --> 삭제 버튼 비활성화.
 				returnBtn.setEnabled(true);
 				deleteBtn.setEnabled(false);
-				System.err.println("반납일이 null임. 대출 중인 도서입니다. ");
 
 			} else if (vo.getReturnDate() != null){
 				returnBtn.setEnabled(false);
 				deleteBtn.setEnabled(true);
-				System.err.println("반납일이 null. 반납이 완료된 도서입니다. ");
 
 			}
 		}
@@ -388,7 +386,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	    	bwvo.setOverdue(overDay);
 	    }		     
 	
-		return manager.returnBook(bwvo, bkvo);
+		return manager.returnBook(bwvo);
 	}
 	
 	
@@ -414,6 +412,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			if(borrowTbl.getSelectedRow()> -1) {  //선택한 row가 없음.
 				BorrowVO bwvo = this.bwModel.getData(borrowTbl.getSelectedRow());
 				BookVO bkvo = manager.selectBookOne(bwvo.getBookIsbn());
+				
 				int rslt = JOptionPane.showConfirmDialog(null, bwvo.getBookNm()+" 을(를) 반납 하시겠습니까??", bwvo.getBookNm(),JOptionPane.YES_NO_OPTION);
 				if (rslt == JOptionPane.YES_OPTION) { 
 					if (returnBook(bwvo, bkvo) == 1) {
@@ -466,7 +465,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	 */
 	private int deleteBorrowVO(BorrowVO vo) {
 		System.out.println("삭제버튼 클릭!----->vo: " + vo);
-		return manager.deleteBorrow(vo.getBorrowNo());
+		return manager.deleteBorrowData(vo.getBorrowNo());
 	}
 	
 	

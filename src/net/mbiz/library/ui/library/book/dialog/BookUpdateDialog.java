@@ -25,14 +25,13 @@ import javax.swing.JTextField;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.listener.BookEventListener;
 import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CalenderDialog;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.util.DateFomatUtil;
 import net.mbiz.library.util.LibraryVOParser;
 
-public class BookUpdateDialog extends JDialog implements ActionListener, BookEventListener{
+public class BookUpdateDialog extends JDialog implements ActionListener{
 
 	
 	private JPanel pnMain;        
@@ -83,7 +82,6 @@ public class BookUpdateDialog extends JDialog implements ActionListener, BookEve
 
 	
 	public void initializeBookOne(BookVO vo) {
-		System.out.println("udtDialog: "+vo);
 		this.vo = vo;
 		this.bkNm = vo.getBookNm();
 		tfBookNm.setText(vo.getBookNm());
@@ -92,8 +90,6 @@ public class BookUpdateDialog extends JDialog implements ActionListener, BookEve
 		tfDate.setText( DateFomatUtil.formatToString("releaseDate", vo.getReleaseDate()) );
 		tfIsbn.setText(vo.getBookIsbn());
 		txtArea.setText(vo.getBooksub());
-		System.out.println("여기는 initializeBookOne : 도서 대출상태??" + vo.getIsBorrowed());
-		System.err.println(vo.toString());
 	}
 
 
@@ -314,10 +310,7 @@ public class BookUpdateDialog extends JDialog implements ActionListener, BookEve
 	}
 
 
-	@Override
-	public void reloadPerformed(ActionEvent e) {
-		
-	}
+
 	
 	private void openBorrowDialog() {
 		
@@ -450,6 +443,9 @@ public class BookUpdateDialog extends JDialog implements ActionListener, BookEve
 		this.setLocation((int) d.getWidth() / 2 - this.getWidth() / 2, (int) d.getHeight() / 2 - this.getHeight() / 2);
 		this.setVisible(true);
 	}
+
+
+
 
 
 

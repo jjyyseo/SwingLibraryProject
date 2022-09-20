@@ -104,4 +104,37 @@
 		WHERE  BK_ISBN = #{bookIsbn}  
 	</update>
 	
+	<select id="searchBookList" parameterType="BookVO" resultMap="BookMap">
+		SELECT 
+				  BK_ISBN  
+				, BK_NM    
+				, BK_WTR   
+				, BK_PBLSR 
+				, BK_RLS   
+				, CATEGORY 
+				, ISBORROW 
+				, BK_SUB   
+				, BK_REG   
+				, BK_UDT   
+		FROM BOOK
+		WHERE 1=1 
+		<if test="option == null or option =='all' ">
+		AND (
+				BK_NM like '%' || #{query} || '%'
+		OR		BK_WTR like '%' || #{query} || '%'
+		OR		BK_PBLSR like '%' || #{query} || '%'
+		) 
+		</if> 
+		<if test="option != null or option =='bookNm' ">
+		AND BK_NM like '%' || #{query} || '%'
+		</if> 
+		<if test="option != null and option =='bookWtr' ">
+		AND BK_WTR like '%' || #{query} || '%'
+		</if> 
+		<if test="option != null and option =='publisher' ">
+		AND BK_PBLSR like '%' || #{query} || '%'
+		</if> 
+	</select>
+	
+	
 </mapper>

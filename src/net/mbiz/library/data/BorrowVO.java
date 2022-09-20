@@ -23,7 +23,8 @@ public class BorrowVO implements Comparable<BorrowVO>, Serializable{
 	private int isBorrowed;         /* 대출가능=0 대출중=1*/
 	
 	private boolean isSelect;	   /* 체크박스 선택 여부!*/
-
+	private String query;			/* 검색어*/
+	private String option;			/* 콤보박스 선택 값*/
 
 	
 	@Override

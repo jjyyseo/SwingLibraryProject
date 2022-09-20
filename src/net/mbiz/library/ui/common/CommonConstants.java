@@ -2,6 +2,7 @@ package net.mbiz.library.ui.common;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
@@ -12,6 +13,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
+import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.renderer.BookTableRenderer;
 import net.mbiz.library.ui.common.renderer.BorrowTableRenderer;
 import net.mbiz.library.ui.common.renderer.CheckBoxRenderer;
@@ -43,19 +45,6 @@ public class CommonConstants {
 	public static final Font FONT_TITLE_22 = new Font("나눔고딕", Font.BOLD, 22);
 
 
-//	public static List<BookVO> readBookFileList() {
-//		
-//		List<BookVO> list = FileHandler.getInstance().selectBook();
-//		
-//		return list;
-//	}
-//	
-//	public static List<BorrowVO> readBorrowFileList() {
-//		List<BorrowVO> list = FileHandler.getInstance().selectBorrow();
-//		
-//		return list;
-//	}
-	
 	// table setting
 	
 	/**
@@ -142,6 +131,7 @@ public class CommonConstants {
 
 	}
 
+	
 }
 
 //CellEdito란 무엇인가...?

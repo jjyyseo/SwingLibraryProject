@@ -27,13 +27,17 @@ public class LibraryMain extends JFrame implements ActionListener{
 	private JButton myPageBtn;
 	
 	private CardLayout cards = new CardLayout();
-
+	private HandlerManager manager = HandlerManager.getInstance();
 
 	public LibraryMain() {
 		this.setTitle("도서 관리 프로그램");
+		initialize();
 		jbInit();
 	}
-
+	private void initialize(){
+		manager.initializeHandler();
+	}
+	
 	/*
 	 * 기본 UI Init
 	 */
@@ -121,14 +125,14 @@ public class LibraryMain extends JFrame implements ActionListener{
 			mainBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 			mainBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
 			cards.show(pnCard, "main");
-			
+//			manager.selectBookList();
 		} else if (btn.equals(myPageBtn)) {
 			myPageBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 			myPageBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
 			mainBtn.setBackground(CommonConstants.COLOR_MENUBAR_BACKGROUND);
 			mainBtn.setForeground(CommonConstants.COLOR_MENU_FONT);
 			cards.show(pnCard, "mypage");
-		
+//			manager.selectBorrowList();
 		}
 		
 	}
@@ -142,7 +146,6 @@ public class LibraryMain extends JFrame implements ActionListener{
 	
 	public static void main(String[] args) {
 		// 핸들러매니저 호출하여 디비커넥션 여부 확인.
-		HandlerManager.getInstance().initializeHandbler();
 		new LibraryMain().setLocationCenter();
 	}
 

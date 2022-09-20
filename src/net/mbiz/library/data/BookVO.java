@@ -24,7 +24,9 @@ public class BookVO implements Serializable{
 	private Date registDate;		/* 등록일자*/
 	private Date updateDate;		/* 수정일자*/
 	
-	private boolean isSelect;		/* 체크박스 선택 여부!*/
+	private boolean isSelect;		/* 체크박스 선택 여부*/
+	private String query;			/* 검색어*/
+	private String option;			/* 콤보박스 선택 값*/
 
 
 }
