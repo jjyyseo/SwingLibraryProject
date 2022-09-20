@@ -210,7 +210,17 @@ public class HandlerManager {
 		}
 		return 0;
 	}
-
+	
+	/*도서 리스트에서 검색하기*/	
+	public List<BookVO> searchBookList(BookVO vo) {
+		for (int i = 0; i < handlerList.size(); i++) {
+			if (handlerList.get(i) instanceof DBSqlHandler) {
+				return handlerList.get(i).searchBookList(vo);
+			}
+		}
+		return null;
+	}
+	
 	
 	private boolean isDBConnection() {
 		try {

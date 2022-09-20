@@ -61,19 +61,8 @@ public class DBSqlHandler extends DataHandler implements BookEventListener{
     
     
     
-	public List<BookVO> selectBookList() {
-		List<BookVO> list = null;
-		SqlSession session = sqlSessionFactory.openSession();
-		
-		try {
-			list = session.selectList("BookMapper.selectBookList"); // namespace.id
-		} finally {
-			session.close();
-		}
-		return list;
-	}
 
-	
+
 	public int insertBook(BookVO vo) {
 
 		int rslt = 0;
@@ -193,20 +182,7 @@ public class DBSqlHandler extends DataHandler implements BookEventListener{
 		}
 		return 1;
 	}
-
 	
-	public List<BorrowVO> selectBorrowList() {
-		List<BorrowVO> list = null;
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			list = session.selectList("BorrowMapper.selectBorrowkList");
-		} finally {
-			session.close();
-		}
-		return list;
-	}
-
-
 	/**
 	 * 대출 정보를 삭제하는 메서드
 	 * @return 삭제 성공 = 1, 삭제 실패 = 0, 대출 중인 도서 = 2. 
@@ -234,7 +210,48 @@ public class DBSqlHandler extends DataHandler implements BookEventListener{
 		}
 		return rslt;
 	}
+	
+	
 
+	public List<BookVO> selectBookList() {
+		List<BookVO> list = null;
+		SqlSession session = sqlSessionFactory.openSession();
+		
+		try {
+			list = session.selectList("BookMapper.selectBookList"); // namespace.id
+		} finally {
+			session.close();
+		}
+		return list;
+	}
+	
+	public List<BookVO> searchBookList(BookVO vo) {
+		List<BookVO> list = null;
+		SqlSession session = sqlSessionFactory.openSession();
+		
+		try {
+			list = session.selectList("BookMapper.searchBookList", vo); // namespace.id
+		} finally {
+			session.close();
+		}
+		return list;
+	}
+	
+	public List<BorrowVO> selectBorrowList() {
+		List<BorrowVO> list = null;
+		SqlSession session = sqlSessionFactory.openSession();
+		try {
+			list = session.selectList("BorrowMapper.selectBorrowkList");
+		} finally {
+			session.close();
+		}
+		return list;
+	}
+	
+	public List<BorrowVO> searchBorrowkList(String option, String query) {
+		
+		return null;
+	}
 	
 
 

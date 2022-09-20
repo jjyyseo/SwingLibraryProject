@@ -155,7 +155,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		pnCbb.add(Box.createVerticalStrut(1),BorderLayout.SOUTH);
 		pnCbb.add(Box.createHorizontalStrut(10),BorderLayout.EAST);
 		this.cbbSearch = new JComboBox<>();
-		cbbSearch.setModel(new DefaultComboBoxModel<>(new String[] {"도서명","저자","출판사","카테고리"}));
+		cbbSearch.setModel(new DefaultComboBoxModel<>(new String[] {"전체","도서명","저자","출판사"}));
 		cbbSearch.setFont(CommonConstants.FONT_BASE_15);
 		cbbSearch.setPreferredSize(new Dimension(100,60));
 		
@@ -344,32 +344,26 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	 * 도서 검색 메서드
 	 */
 	private void getSearchBookList() {
-		
+
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
-			this.bkModel.removeAll();
 			
-			
-			for (BookVO bv : manager.selectBookList()) {
-				String cbb = (String) cbbSearch.getSelectedItem();
-				
-				if (cbb.equals("도서명")) {
-					if (bv.getBookNm().contains(schFd.getText())) {
-						this.bkModel.addData(bv);				
-					} 
-				} else if(cbb.equals("저자")) {
-					if (bv.getBookWtr().contains(schFd.getText())) {
-						this.bkModel.addData(bv);				
-					} 
-				} else if(cbb.equals("출판사")) {
-					if (bv.getPublisher().contains(schFd.getText())) {
-						this.bkModel.addData(bv);				
-					} 
-				} else if(cbb.equals("카테고리")) {
-					if (bv.getCategory().contains(schFd.getText())) {
-						this.bkModel.addData(bv);				
-					} 
-				} 
+			String cbb = (String) cbbSearch.getSelectedItem();
+			if (cbb.equals("") || cbb.isEmpty() ) {
+				cbb = "전체" ;
 			}
+			
+			if	(cbb.equals("전체")) cbb = "all";
+			else if(cbb.equals("도서명")) cbb = "bookNm";
+			else if(cbb.equals("저자")) cbb = "bookWtr";
+			else if(cbb.equals("출판사")) cbb = "publisher";
+			
+			BookVO vo = new BookVO();
+			vo.setOption(cbb);
+			vo.setQuery(schFd.getText().toString());
+			System.out.println("vo? " + vo);
+			
+			this.bkModel.removeAll();
+			this.bkModel.addDataList((ArrayList) manager.searchBookList(vo));;	
 			this.bookTbl.setModel(this.bkModel);
 			
 		} else {

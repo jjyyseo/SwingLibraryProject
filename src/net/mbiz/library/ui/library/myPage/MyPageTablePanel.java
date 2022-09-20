@@ -243,15 +243,17 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 					
 					if (vo.isSelect()) {
 						vo.setSelect(false);
+						checkedList.remove(vo);
 					}
 					else {
 						vo.setSelect(true);
+						checkedList.add(vo);
 					}
 					
-					checkedList.add(vo);
 				}
 				else {
 					BorrowVO vo = getRowAt(row);
+					checkedList.remove(vo);
 					vo.setSelect(false);
 				}
 			}
@@ -289,21 +291,44 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		
 		// 테이블 row 선택 시 해당 도서의 상태에 따라, 반납/삭제 버튼 -> 활성화/비활성화
 		if (arg0.getSource().equals(borrowTbl)) {
-
 			BorrowVO vo = this.bwModel.getRowAt(borrowTbl.getSelectedRow());
-			
-			if (vo.getReturnDate() == null) { // 대출 중 --> 삭제 버튼 비활성화.
-				returnBtn.setEnabled(true);
-				deleteBtn.setEnabled(false);
 
-			} else if (vo.getReturnDate() != null){
-				returnBtn.setEnabled(false);
-				deleteBtn.setEnabled(true);
+			if (checkedList.size() == 0) {
+				/*선택한 열이 반납일이 없음 --> 반납 활성화*/
+				if (vo.getReturnDate() == null) {
+					returnBtn.setEnabled(true);
+					deleteBtn.setEnabled(false);
+				/*선택한 열이 반납일이 있음 --> 삭제 활성화*/
+				} else if (vo.getReturnDate() != null){
+					returnBtn.setEnabled(false);
+					deleteBtn.setEnabled(true);
 
+				}
+			} else {
+				int cnt = 0;
+				/*체크박스 안 값 중 반납일이 null인 기록이 하나라도 있을 경우 count*/
+				for (BorrowVO borrowVO : checkedList) {
+					if(borrowVO.getReturnDate() == null) {
+						cnt++;
+					} 
+				}
+				
+				if (cnt == 0) {
+					returnBtn.setEnabled(false);
+					deleteBtn.setEnabled(true);	
+				} 
+				if (cnt >= 1) {
+					returnBtn.setEnabled(true);
+					deleteBtn.setEnabled(false);
+				}
+				
 			}
+			
 		}
 		
 	}
+	
+	
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
@@ -333,8 +358,15 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			int rslt = JOptionPane.showConfirmDialog(null,  checkedList.size() + "개의" + " 대출 기록을 삭제 하시겠습니까?", "대출 기록을 삭제합니다.", JOptionPane.YES_NO_OPTION);
 			if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
 				deleteCheckedList(checkedList);
+				if (deleteCheckedList(checkedList)==1) {
+					JOptionPane.showMessageDialog(null,"삭제 완료 되었습니다.");
+				} else if (deleteCheckedList(checkedList) == 2) {
+					JOptionPane.showMessageDialog(null,"대출 중인 도서가 있습니다.");
+				} else {
+					JOptionPane.showMessageDialog(null,"삭제에 실패 하였습니다.");
+				}
 				repaintBorrowTable();
-				JOptionPane.showMessageDialog(null,"삭제 완료 되었습니다.");
+				
 			} else { 
 				JOptionPane.showMessageDialog(null, "삭제 취소 되었습니다.");
 			}	
@@ -399,8 +431,11 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			if (rslt == JOptionPane.YES_OPTION) {
 				if (returnCheckedList(checkedList) == 1) {
 					JOptionPane.showMessageDialog(null, "반납 되었습니다.");
+				} else if(returnCheckedList(checkedList) == 2) {
+					JOptionPane.showMessageDialog(null, "반납 완료된 도서가 있습니다. 해당 도서를 제외하고 선택해 주세요.");
 				} else {
 					JOptionPane.showMessageDialog(null, "반납에 실패하였습니다. 다시 시도해 주세요.");
+					
 				}
 				repaintBorrowTable();
 			} else {
@@ -464,7 +499,6 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	 * 대출 기록을 삭제하는 메서드
 	 */
 	private int deleteBorrowVO(BorrowVO vo) {
-		System.out.println("삭제버튼 클릭!----->vo: " + vo);
 		return manager.deleteBorrowData(vo.getBorrowNo());
 	}
 	
@@ -474,17 +508,9 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	 * @param List<BorrowVO> checkedList
 	 */
 	private int deleteCheckedList(List<BorrowVO> checkedList) {
-		
-		for (int i = 0; i < checkedList.size(); i++) {
-			BorrowVO vo = checkedList.get(i);
-			int rslt = deleteBorrowVO(vo);
-			if (rslt == 0) {
-				return 0;
-			} else if(rslt == 2) {
-				return 0;
-			}
+		for (BorrowVO borrowVO : checkedList) {
+			manager.deleteBorrowData(borrowVO.getBorrowNo());
 		}
-		checkedList.clear();
 		return 1;
 	}
 	
@@ -495,20 +521,23 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	 */
 	private int returnCheckedList(List<BorrowVO> checkedList) {
 		
-		for (int i = 0; i < checkedList.size(); i++) {
-			BorrowVO bwvo = checkedList.get(i);
-			BookVO bkvo = manager.selectBookOne(bwvo.getBookIsbn());
-			int rslt = returnBook(bwvo, bkvo);
-			if (rslt == 0) {
-				return 0;
-			} else if(rslt == 2) {
-				return 0;
+		int cnt = 0;
+		for (BorrowVO borrowVO : checkedList) {
+			if (borrowVO.getReturnDate() != null) {
+				cnt++;
 			}
-			
 		}
-		
-		checkedList.clear();
-		return 1;
+			
+		// 이미 반납된 기록 개수
+		if (cnt == 0) {
+			for (BorrowVO borrowVO : checkedList) {
+				BookVO bkvo = manager.selectBookOne(borrowVO.getBookIsbn());
+				returnBook(borrowVO, bkvo);
+			}
+			return 1;
+		} else {
+			return 2;
+		}
 	}
 	
 	private void repaintBorrowTable() {

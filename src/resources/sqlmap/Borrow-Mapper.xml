@@ -14,6 +14,8 @@
 		<result property="isBorrowed" column="ISBORROW" />
 		
 		<result property="isSelect" column="isSelect" />
+		<result property="query" column="query" />
+		<result property="option" column="option" />
 	</resultMap>
 	
 
@@ -104,7 +106,6 @@
 		AND BK_WTR like '%' || #{query} || '%'
 		</if> 
 	</select>
-	
 	
 	
 	

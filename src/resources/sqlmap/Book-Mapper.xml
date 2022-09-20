@@ -15,6 +15,8 @@
 		<result property="updateDate" column="BK_UDT" />
 		
 		<result property="isSelect" column="isSelect" />
+		<result property="query" column="query" />
+		<result property="option" column="option" />
 	</resultMap>
 	
 
@@ -117,23 +119,24 @@
 				, BK_REG   
 				, BK_UDT   
 		FROM BOOK
-		WHERE 1=1 
+		<where>
 		<if test="option == null or option =='all' ">
 		AND (
-				BK_NM like '%' || #{query} || '%'
-		OR		BK_WTR like '%' || #{query} || '%'
-		OR		BK_PBLSR like '%' || #{query} || '%'
+				BK_NM like '%' + #{query} + '%'
+		OR		BK_WTR like '%' + #{query} + '%'
+		OR		BK_PBLSR like '%' + #{query} + '%'
 		) 
 		</if> 
-		<if test="option != null or option =='bookNm' ">
-		AND BK_NM like '%' || #{query} || '%'
+		<if test="option != null and option =='bookNm' ">
+		AND  BK_NM like '%' + #{query} + '%'
 		</if> 
 		<if test="option != null and option =='bookWtr' ">
-		AND BK_WTR like '%' || #{query} || '%'
+		AND  BK_WTR like '%' + #{query} + '%'
 		</if> 
 		<if test="option != null and option =='publisher' ">
-		AND BK_PBLSR like '%' || #{query} || '%'
-		</if> 
+		AND  BK_PBLSR like '%' + #{query} + '%'
+		</if>
+		</where> 
 	</select>
 	
 	

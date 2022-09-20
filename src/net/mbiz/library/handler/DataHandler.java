@@ -22,12 +22,15 @@ public abstract class DataHandler implements BookEventListener{
 	public abstract int borrowBook(BorrowVO vo);
 	/*도서 반납하기*/
 	public abstract int returnBook(BorrowVO bwvo);
+	/*도서 리스트 검색*/
+	public abstract List<BookVO> searchBookList(BookVO vo);
 
 	
 	/*대출 리스트 select*/
 	public abstract List<BorrowVO> selectBorrowList();
 	/*대출 기록 delete*/
 	public abstract int deleteBorrow(int bwNo);
-	
+	/*대출 리스트 검색*/
+	public abstract List<BorrowVO> searchBorrowkList(String option, String query);
 
 }
