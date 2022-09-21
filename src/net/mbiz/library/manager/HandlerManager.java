@@ -12,6 +12,7 @@ import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.handler.DBSqlHandler;
 import net.mbiz.library.handler.DataHandler;
 import net.mbiz.library.handler.FileHandler;
+import net.mbiz.library.listener.BookEventListener;
 import net.mbiz.library.mybatis.MyBatisConnectionFactory;
 
 /**
@@ -23,6 +24,8 @@ import net.mbiz.library.mybatis.MyBatisConnectionFactory;
 public class HandlerManager {
 
 	// field
+	private List<BookEventListener> listenerList = new ArrayList<>();
+	
 	private List<DataHandler> handlerList = new ArrayList<>();
 	private SqlSessionFactory sqlSessionFactory = MyBatisConnectionFactory.getSqlSessionFactory();
 
@@ -42,10 +45,42 @@ public class HandlerManager {
 	
 	
 	// 이벤트리스너를 impl한 핸들러를 handlerList에 추가한다.
-	public void addBookEventListener(DataHandler handler) {
-		handlerList.add(handler);
+	public void addBookEventListener(BookEventListener listener) {
+		listenerList.add(listener);
 	}
 
+	
+	
+	public void addedBook(BookVO vo) {
+		for (BookEventListener listener : listenerList) {
+			listener.bookAdded(vo);
+		}
+	}
+	public void updatedBook(BookVO vo) {
+		for (BookEventListener listener : listenerList) {
+			listener.bookUpdated(vo);
+		}
+	}
+	public void deletedBook(String isbn) {
+		for (BookEventListener listener : listenerList) {
+			listener.bookDeleted(isbn);
+		}
+	}
+	public void addedBorrow(BorrowVO vo) {
+		for (BookEventListener listener : listenerList) {
+			listener.borrowAdded(vo);
+		}
+	}
+	public void updatedBorrow(BorrowVO vo) {
+		for (BookEventListener listener : listenerList) {
+			listener.borrowUpdated(vo);
+		}
+	}
+	public void deletedBorrow(int bwNo) {
+		for (BookEventListener listener : listenerList) {
+			listener.borrowDeleted(bwNo);
+		}
+	}
 
 	/**
 	 * 핸들러 매니저를 초기화하는 메서드.
@@ -55,6 +90,7 @@ public class HandlerManager {
 
 		if (!isDBConnection()) {
 			DataHandler dbHandler = new DBSqlHandler(sqlSessionFactory);
+			handlerList.add(dbHandler);
 			System.out.println("DB연결에 성공 하였습니다. DB핸들러 생성.");
 			
 		} else {
@@ -63,6 +99,7 @@ public class HandlerManager {
 
 		if (isExistDirectory()) {
 			DataHandler fileHandler = new FileHandler();
+			handlerList.add(fileHandler);
 			System.out.println("파일핸들러 생성.");
 			
 		} else {
@@ -103,13 +140,13 @@ public class HandlerManager {
 		}
 		return null;
 	}
-	public int insertBookData(BookVO vo) {
+	public int bookAdded(BookVO vo) {
 		int rslt1 = 0;
 		int rslt2 = 0;
 
 		try {
-			rslt1 = handlerList.get(0).bookAdded(vo);
-			rslt2 = handlerList.get(1).bookAdded(vo);
+			rslt1 = handlerList.get(0).insertBook(vo);
+			rslt2 = handlerList.get(1).insertBook(vo);
 
 			System.err.println("FileHandler : 도서 정보 insert 실행결과 ---> " + "rslt1: " + rslt1 + "rslt2: " + rslt2);
 		} catch (Exception e) {
@@ -124,13 +161,13 @@ public class HandlerManager {
 		return 0;
 	}
 	
-	public int updateBookData(BookVO vo) {
+	public int bookUpdated(BookVO vo) {
 		int rslt1 = 0;
 		int rslt2 = 0;
 
 		try {
-			rslt1 = handlerList.get(0).bookUpdated(vo);
-			rslt2 = handlerList.get(1).bookUpdated(vo);
+			rslt1 = handlerList.get(0).updateBook(vo);
+			rslt2 = handlerList.get(1).updateBook(vo);
 		} catch (Exception e) {
 			System.err.println("FileHandler : 도서 정보 update 도중 예외 발생! 실행결과 ---> " + "rslt1: " + rslt1 + "rslt2: " + rslt2);
 		}
@@ -140,14 +177,14 @@ public class HandlerManager {
 		}
 		return 0;
 	}
-	public int deleteBookData(String isbn) {
+	public int bookDeleted(String isbn) {
 
 		int rslt1 = 0;
 		int rslt2 = 0;
 
 		try {
-			rslt1 = handlerList.get(0).bookDeleted(isbn);
-			rslt2 = handlerList.get(1).bookDeleted(isbn);
+			rslt1 = handlerList.get(0).deleteBook(isbn);
+			rslt2 = handlerList.get(1).deleteBook(isbn);
 		} catch (Exception e) {
 			System.err.println("FileHandler : 도서 정보 delete 도중 예외 발생! 실행결과 ---> " + "rslt1: " + rslt1 + "rslt2: " + rslt2);
 		}
@@ -158,13 +195,13 @@ public class HandlerManager {
 		return 0;
 	}
 
-	public int deleteBorrowData(int bwNo) {
+	public int borrowDeleted(int bwNo) {
 		int rslt1 = 0;
 		int rslt2 = 0;
 
 		try {
-			rslt1 = handlerList.get(0).borrowDeleted(bwNo);
-			rslt2 = handlerList.get(1).borrowDeleted(bwNo);
+			rslt1 = handlerList.get(0).deleteBorrow(bwNo);
+			rslt2 = handlerList.get(1).deleteBorrow(bwNo);
 		} catch (Exception e) {
 			System.err.println("FileHandler : 대출 정보 delete 도중 예외 발생! 실행결과 ---> " + "rslt1: " + rslt1 + "rslt2: " + rslt2);
 		}
@@ -176,13 +213,13 @@ public class HandlerManager {
 
 	}
 	/* 도서 대출하기 */
-	public int borrowBook(BorrowVO vo) {
+	public int borrowAdded(BorrowVO vo) {
 		int rslt1 = 0;
 		int rslt2 = 0;
 
 		try {
-			rslt1 = handlerList.get(0).borrowAdded(vo);
-			rslt2 = handlerList.get(1).borrowAdded(vo);
+			rslt1 = handlerList.get(0).borrowBook(vo);
+			rslt2 = handlerList.get(1).borrowBook(vo);
 		} catch (Exception e) {
 			System.err.println("FileHandler : 도서 대출 도중 예외 발생! 실행결과 ---> " + "rslt1: " + rslt1 + "rslt2: " + rslt2);
 		}
@@ -194,13 +231,13 @@ public class HandlerManager {
 	};
 
 	/* 도서 반납하기 */
-	public int returnBook(BorrowVO bwvo) {
+	public int borrowUpdated(BorrowVO bwvo) {
 		int rslt1 = 0;
 		int rslt2 = 0;
 
 		try {
-			rslt1 = handlerList.get(0).borrowUpdated(bwvo);
-			rslt2 = handlerList.get(1).borrowUpdated(bwvo);
+			rslt1 = handlerList.get(0).returnBook(bwvo);
+			rslt2 = handlerList.get(1).returnBook(bwvo);
 		} catch (Exception e) {
 			System.err.println("FileHandler : 도서 반납 도중 예외 발생! 실행결과 ---> "  + "rslt1: " + rslt1 + "rslt2: " + rslt2);
 		}

@@ -22,50 +22,9 @@ import net.mbiz.library.util.LibraryVOParser;
 
 
 
-public class FileHandler extends DataHandler implements BookEventListener{
+public class FileHandler extends DataHandler {
 
-	public FileHandler(){
-		initialize();
-	}
 	
-	public void initialize() {
-    	HandlerManager.getInstance().addBookEventListener(this);
-	}
-    
-	
-	
-	@Override
-	public int bookAdded(BookVO vo) {
-		System.out.println("여기는 FileHandler~~bookAdded");
-		return insertBook(vo);
-	}
-
-	@Override
-	public int bookUpdated(BookVO vo) {
-		return updateBook(vo);
-	}
-
-	@Override
-	public int bookDeleted(String isbn) {
-		return deleteBook(isbn);
-	}
-    
-	@Override
-	public int borrowAdded(BorrowVO vo) {
-		return borrowBook(vo);
-	}
-
-	@Override
-	public int borrowUpdated(BorrowVO vo) {
-		return returnBook(vo);
-	}
-
-	@Override
-	public int borrowDeleted(int bwNo) {
-		return deleteBorrow(bwNo);
-	}
-    
-
     
 	/**
 	 * bookData.txt 파일을 읽는 메서드.  

@@ -21,17 +21,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.EventListenerList;
 
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.BookVO;
+import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.listener.BookEventListener;
 import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CommonConstants;
-import net.mbiz.library.ui.library.book.dialog.BookDetailDialog;
 import net.mbiz.library.ui.library.book.dialog.BookRegistDialog;
 import net.mbiz.library.ui.library.book.dialog.BookUpdateDialog;
 
-public class BookListTablePanel extends JPanel implements ActionListener, MouseListener{
+public class BookListTablePanel extends JPanel implements ActionListener, MouseListener, BookEventListener{
 
 	private JPanel pnBody;
 	//body
@@ -65,6 +66,8 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	
 	private BeanTableModel<BookVO> bkModel;
 	private HandlerManager manager = HandlerManager.getInstance();
+	private List<BookEventListener> listenerList = new ArrayList<>();
+
 	
 	public BookListTablePanel(MainPanel pn) {
 		jbInit();
@@ -76,6 +79,13 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		this.bkModel.addDataList((ArrayList) manager.selectBookList()); // 리스트로 한꺼번에 집어넣기 가능
 		this.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
+	
+	
+	// 이벤트리스너를 impl한 핸들러를 handlerList에 추가한다.
+	public void addBookEventListener(BookEventListener listener) {
+		listenerList.add(listener);
+	}
+	
 
 
 	private void jbInit() {
@@ -239,7 +249,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		registBtn.addActionListener(this);   /*도서 등록하기*/  
 		deleteBtn.addActionListener(this);   /*도서 삭제하기*/  
 		bookTbl.addMouseListener(this);		 /*도서 상세정보 창 띄우기*/
-
+		manager.addBookEventListener(this);
 	}
 	
 	
@@ -294,7 +304,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	
 	
 	
-	//---------------------------ActionListener, MouseListener------------------------------------
+	//ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -311,7 +321,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	}
 	
 	
-
+	//MouseListener
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		
@@ -321,12 +331,9 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			}
 		}
 	}
-
-	// 마우스가 컴포넌트 위에 올라갈 때
 	@Override
 	public void mouseEntered(MouseEvent e) {
 	}
-	// 마우스가 컴포넌트 위에서 내려갈 때
 	@Override
 	public void mouseExited(MouseEvent e) {
 	}
@@ -337,8 +344,44 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	public void mouseReleased(MouseEvent e) {
 	}
 	
-	
 
+	//BookEventListener
+	@Override
+	public void bookAdded(BookVO vo) {
+		System.out.println("BookList : book Added~~");
+		repaintBookTable();
+		this.bkModel.fireTableDataChanged();
+	}
+
+	@Override
+	public void bookUpdated(BookVO vo) {
+		repaintBookTable();
+		this.bkModel.fireTableDataChanged();
+	}
+
+	@Override
+	public void bookDeleted(String isbn) {
+		this.bkModel.fireTableDataChanged();
+	}
+
+	@Override
+	public void borrowAdded(BorrowVO vo) {
+		repaintBookTable();
+		System.out.println("BookList : borrow Added!");
+		this.bkModel.fireTableDataChanged();
+	}
+
+	@Override
+	public void borrowUpdated(BorrowVO vo) {
+		System.out.println("BookList : borrow updated!");
+		this.bkModel.fireTableDataChanged();
+	}
+
+	@Override
+	public void borrowDeleted(int bwNo) {
+	}
+
+	
 	
 	/**
 	 * 도서 검색 메서드
@@ -381,7 +424,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		registDialog.setLocationCenter();
 		
 		// Dialog 종료 후 repaint
-		repaintBookTable();
 		
 	}
 	
@@ -397,10 +439,9 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			return 0;
 			
 		} else {
-			manager.deleteBookData(vo.getBookIsbn());
-			repaintBookTable();
-			bookTbl.removeAll();
 			
+			manager.bookDeleted(vo.getBookIsbn());
+			manager.deletedBook(vo.getBookIsbn());
 			return 1;
 		}
 	}
@@ -435,8 +476,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			return 0;	
 		}
 		
-		repaintBookTable();
-	
 		return 1;
 	}
 	
@@ -505,8 +544,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 //		detail.setLocationCenter();
 //		manager.selectBorrowList();
 		
-		repaintBookTable();
-		
 	}
 	
 	/**
@@ -519,7 +556,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		
 	}
 
-	
 	
 
 }

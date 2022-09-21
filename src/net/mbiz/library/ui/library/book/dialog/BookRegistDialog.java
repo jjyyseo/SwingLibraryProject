@@ -303,6 +303,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 		if (insertBookVO() == 1) {
 			JOptionPane.showMessageDialog(null, tfBookNm.getText() + "(이)가 등록되었습니다.", tfBookNm.getText(), JOptionPane.INFORMATION_MESSAGE);
 			dispose();
+
 		} else if(insertBookVO() == 2) {
 			JOptionPane.showMessageDialog(null, "이미 추가된 도서입니다. isbn을 확인 해주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
 		} else {
@@ -354,7 +355,8 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 		vo.setCategory(category);
 		vo.setBooksub(booksub);
 		
-		return manager.insertBookData(vo);
+		manager.addedBook(vo);
+		return manager.bookAdded(vo);
 	};
 	
 	

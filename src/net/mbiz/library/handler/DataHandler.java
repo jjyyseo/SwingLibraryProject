@@ -6,7 +6,7 @@ import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
 import net.mbiz.library.listener.BookEventListener;
 
-public abstract class DataHandler implements BookEventListener{
+public abstract class DataHandler{
 	
 	/*도서리스트 select*/
 	public abstract List<BookVO> selectBookList();

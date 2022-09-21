@@ -405,9 +405,10 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		String updateStr = LibraryVOParser.addUpToString(isbn, bkNm, bkWtr, publisher, releaseDate, category, registDate, updateDate, booksub);
 		BookVO vo = LibraryVOParser.stringToBookVO(updateStr);
 		
-		if (manager.updateBookData(vo) == 1) {
+		if (manager.bookUpdated(vo) == 1) {
 			return 1;
 		}
+		manager.updatedBook(vo);
 		return 0;
 	}
 
@@ -431,7 +432,8 @@ public class BookUpdateDialog extends JDialog implements ActionListener{
 		vo.setStartDate(new Date());
 		vo.setEndDate(endDate);
 		
-		return manager.borrowBook(vo);
+		manager.addedBorrow(vo);
+		return manager.borrowAdded(vo);
 	}
 	
 
