@@ -221,6 +221,16 @@ public class HandlerManager {
 		return null;
 	}
 	
+	/*대출 리스트에서 검색하기*/	
+	public List<BorrowVO> searchBorrowList(BorrowVO vo) {
+		for (int i = 0; i < handlerList.size(); i++) {
+			if (handlerList.get(i) instanceof DBSqlHandler) {
+				return handlerList.get(i).searchBorrowkList(vo);
+			}
+		}
+		return null;
+	}
+	
 	
 	private boolean isDBConnection() {
 		try {

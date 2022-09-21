@@ -465,15 +465,14 @@ public class FileHandler extends DataHandler implements BookEventListener{
 	}
 
 
-
 	@Override
-	public List<BorrowVO> searchBorrowkList(String option, String query) {
+	public List<BookVO> searchBookList(BookVO vo) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<BookVO> searchBookList(BookVO vo) {
+	public List<BorrowVO> searchBorrowkList(BorrowVO vo) {
 		// TODO Auto-generated method stub
 		return null;
 	}

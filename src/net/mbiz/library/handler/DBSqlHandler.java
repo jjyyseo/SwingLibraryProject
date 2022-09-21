@@ -248,9 +248,16 @@ public class DBSqlHandler extends DataHandler implements BookEventListener{
 		return list;
 	}
 	
-	public List<BorrowVO> searchBorrowkList(String option, String query) {
+	public List<BorrowVO> searchBorrowkList(BorrowVO vo) {
+		List<BorrowVO> list = null;
+		SqlSession session = sqlSessionFactory.openSession();
 		
-		return null;
+		try {
+			list = session.selectList("BorrowMapper.searchBorrowList", vo); // namespace.id
+		} finally {
+			session.close();
+		}
+		return list;
 	}
 	
 

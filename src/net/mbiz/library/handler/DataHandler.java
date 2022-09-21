@@ -31,6 +31,6 @@ public abstract class DataHandler implements BookEventListener{
 	/*대출 기록 delete*/
 	public abstract int deleteBorrow(int bwNo);
 	/*대출 리스트 검색*/
-	public abstract List<BorrowVO> searchBorrowkList(String option, String query);
+	public abstract List<BorrowVO> searchBorrowkList(BorrowVO vo);
 
 }

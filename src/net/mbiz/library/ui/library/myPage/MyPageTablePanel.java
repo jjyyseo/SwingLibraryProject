@@ -165,7 +165,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		pnCbb.add(Box.createHorizontalStrut(10),BorderLayout.EAST);
 
 		this.cbbSearch = new JComboBox<>();
-		cbbSearch.setModel(new DefaultComboBoxModel<>(new String[] {"도서명","저자"}));
+		cbbSearch.setModel(new DefaultComboBoxModel<>(new String[] {"전체","도서명","저자"}));
 		cbbSearch.setFont(CommonConstants.FONT_BASE_15);
 		cbbSearch.setPreferredSize(new Dimension(100,50));
 
@@ -473,24 +473,26 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	private void getSearchBorrowList() {
 		
 		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
-			this.bwModel.removeAll();
 			
-			for (BorrowVO bv : manager.selectBorrowList()) {
-				String cbb = (String) cbbSearch.getSelectedItem();
-				
-				if (cbb.equals("도서명")) {
-					if (bv.getBookNm().contains(schFd.getText())) {
-						this.bwModel.addData(bv);
-					}	
-				} else if (cbb.equals("저자")) {
-					if (bv.getBookWtr().contains(schFd.getText())) {
-						this.bwModel.addData(bv);
-					}
-				}
+			String cbb = (String) cbbSearch.getSelectedItem();
+			if (cbb.equals("") || cbb.isEmpty() ) {
+				cbb = "전체" ;
 			}
+			
+			if	(cbb.equals("전체")) cbb = "all";
+			else if(cbb.equals("도서명")) cbb = "bookNm";
+			else if(cbb.equals("저자")) cbb = "bookWtr";
+			
+			BorrowVO vo = new BorrowVO();
+			vo.setOption(cbb);
+			vo.setQuery(schFd.getText().toString());
+			System.out.println("vo? " + vo);
+			
+			this.bwModel.removeAll();
+			this.bwModel.addDataList((ArrayList) manager.searchBorrowList(vo));;	
 			this.borrowTbl.setModel(this.bwModel);
-
 		} else {
+			// 검색어 없을 시, 새로고침.
 			repaintBorrowTable();
 		}
 	}
@@ -539,6 +541,9 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			return 2;
 		}
 	}
+	
+	
+
 	
 	private void repaintBorrowTable() {
 		this.bwModel.removeAll();
