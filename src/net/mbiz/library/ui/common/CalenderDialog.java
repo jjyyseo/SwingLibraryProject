@@ -199,6 +199,63 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 		
 	}
 
+	
+	//---------------------MouseListener Override------------------------
+	public void mouseClicked(MouseEvent e) {
+		if (e.getSource() instanceof JButton) {
+			JButton eventBtn = (JButton) e.getSource();
+			selectDay = eventBtn.getText();
+			addStrDate(selectDay);
+			if (isSelect == 1) {
+				isSelect = 0;	
+
+				eventBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+				System.out.println("그다음 mouseClicked ----> 선택한 날짜는?" + rsltDate);
+			} else {
+				isSelect = 1;	
+				eventBtn.setBackground(Color.gray);
+			}
+		} 
+		
+	}
+
+	// 마우스가 컴포넌트 위에 올라갈 때
+	public void mouseEntered(MouseEvent e) {
+		if (e.getSource() instanceof JButton) {
+			if (isSelect!=1) {
+				JButton eventBtn = (JButton) e.getSource(); 
+				eventBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+			}
+		}
+		
+	}
+	// 마우스가 컴포넌트 위에서 내려갈 때
+	public void mouseExited(MouseEvent e) {
+		if (e.getSource() instanceof JButton) {
+			if (isSelect!=1) {
+				JButton eventBtn =  (JButton) e.getSource(); 
+				eventBtn.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
+			}
+		}
+	}
+	
+	public void mousePressed(MouseEvent e) {
+	}
+	public void mouseReleased(MouseEvent e) {
+	}
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * 일자를 계산하여 출력하는 메서드.
 	 * @param y year
@@ -366,50 +423,6 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 		return selectDay;
 	}
 	
-//---------------------MouseListener Override------------------------
-	public void mouseClicked(MouseEvent e) {
-		if (e.getSource() instanceof JButton) {
-			JButton eventBtn = (JButton) e.getSource();
-			selectDay = eventBtn.getText();
-			addStrDate(selectDay);
-			if (isSelect == 1) {
-				isSelect = 0;	
-
-				eventBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-				System.out.println("그다음 mouseClicked ----> 선택한 날짜는?" + rsltDate);
-			} else {
-				isSelect = 1;	
-				eventBtn.setBackground(Color.gray);
-			}
-		} 
-		
-	}
-
-	// 마우스가 컴포넌트 위에 올라갈 때
-	public void mouseEntered(MouseEvent e) {
-		if (e.getSource() instanceof JButton) {
-			if (isSelect!=1) {
-				JButton eventBtn = (JButton) e.getSource(); 
-				eventBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
-			}
-		}
-		
-	}
-	// 마우스가 컴포넌트 위에서 내려갈 때
-	public void mouseExited(MouseEvent e) {
-		if (e.getSource() instanceof JButton) {
-			if (isSelect!=1) {
-				JButton eventBtn =  (JButton) e.getSource(); 
-				eventBtn.setBackground(CommonConstants.COLOR_BASE_BACKGROUND);
-			}
-		}
-	}
-	
-	public void mousePressed(MouseEvent e) {
-	}
-	public void mouseReleased(MouseEvent e) {
-	}
-
 	
 	public static void main(String[] args) {
 		new CalenderDialog().setLocationCenter();

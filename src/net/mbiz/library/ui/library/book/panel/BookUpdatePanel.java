@@ -277,7 +277,8 @@ public class BookUpdatePanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(updateBtn)) {
 			if (validateTextField()==1) {
-				openUpdateDialog();
+				checkBookState();
+				updateBookVO();
 			} 
 		
 		} else if (e.getSource().equals(calenderBtn)) {
@@ -298,23 +299,14 @@ public class BookUpdatePanel extends JPanel implements ActionListener{
 		if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
 			
 			if(vo.getIsBorrowed()!=1) {
-				
-				if (borrowBook() == 1) {
-					JOptionPane.showMessageDialog(null, "대출 신청이 완료되었습니다.");
-					dl.dispose();
-				} else {
-					JOptionPane.showMessageDialog(null, "대출 신청 중 문제가 발생 하였습니다.");	
-				}
-				
+				borrowBook();
+				dl.dispose();
 			} else {
 				JOptionPane.showMessageDialog(null, "해당 도서는 대출 중입니다.");
 			}
-			
 		} else { 
 			System.out.println(vo.getBookNm() + " 대출 신청을 취소합니다.");
 		}
-		
-		
 		
 	}
 
@@ -328,24 +320,44 @@ public class BookUpdatePanel extends JPanel implements ActionListener{
 		tfDate.setText(CalenderDialog.rsltDate);
 	}
 
-	
-	
+
 	/**
-	 * 도서 정보 update 결과에 따른 다이어로그를 띄우는 메서드.
+	 * 도서 정보를 update하는 메서드.
+	 * @return 성공 = 1, 실패 = 0
 	 */
-	private void openUpdateDialog(){
-		if (updateBookVO() == 1) {
-			JOptionPane.showMessageDialog(null, vo.getBookNm() + "(이)가 수정되었습니다.", vo.getBookNm(), JOptionPane.INFORMATION_MESSAGE);
-			dl.dispose();
-		} else if (updateBookVO() == 2) {
-			JOptionPane.showMessageDialog(null, "해당 도서는 대출 중입니다.");
-		} else {
-			JOptionPane.showMessageDialog(null, "도서 수정 실패. 오류가 발생 하였습니다.", "도서 수정 실패", JOptionPane.INFORMATION_MESSAGE);
+	private void updateBookVO() {
+
+		String bkNm = tfBookNm.getText();
+		String bkWtr = tfBookWtr.getText();
+		String publisher = tfPublisher.getText();
+		String isbn = tfIsbn.getText();
+		String releaseDate = tfDate.getText();
+		String booksub = txtArea.getText();
+		
+		String registDate = DateFomatUtil.formatToString("registDate", new Date());
+		String updateDate = DateFomatUtil.formatToString("updateDate", new Date());
+		
+		String updateStr = LibraryVOParser.addUpToString(isbn, bkNm, bkWtr, publisher, releaseDate, category, registDate, updateDate, booksub);
+		BookVO vo = LibraryVOParser.stringToBookVO(updateStr);
+		
+		try {
+			manager.bookUpdated(vo);
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(updateBtn, e);
 		}
-			
-	};
+		
+		manager.updatedBook(vo);
+		JOptionPane.showMessageDialog(null, vo.getBookNm() + "(이)가 수정되었습니다.", vo.getBookNm(), JOptionPane.INFORMATION_MESSAGE);
+		
+		dl.dispose();
+	}
 	
 	
+	private void checkBookState() {
+		JOptionPane.showMessageDialog(null, "해당 도서는 대출 중입니다.");
+	}
+
 	private int validateTextField() {
 		if (category.equals("") || category.isEmpty() ) {
 			category = "소설" ;
@@ -366,36 +378,13 @@ public class BookUpdatePanel extends JPanel implements ActionListener{
 		return 1;
 	}
 	
-	/**
-	 * 도서 정보를 update하는 메서드.
-	 * @return 성공 = 1, 실패 = 0
-	 */
-	private int updateBookVO() {
 
-		String bkNm = tfBookNm.getText();
-		String bkWtr = tfBookWtr.getText();
-		String publisher = tfPublisher.getText();
-		String isbn = tfIsbn.getText();
-		String releaseDate = tfDate.getText();
-		String booksub = txtArea.getText();
-		
-		String registDate = DateFomatUtil.formatToString("registDate", new Date());
-		String updateDate = DateFomatUtil.formatToString("updateDate", new Date());
-		
-		String updateStr = LibraryVOParser.addUpToString(isbn, bkNm, bkWtr, publisher, releaseDate, category, registDate, updateDate, booksub);
-		BookVO vo = LibraryVOParser.stringToBookVO(updateStr);
-		
-		if (manager.bookUpdated(vo) == 1) {
-			return 1;
-		}
-		return 0;
-	}
 
 	/**
 	 * 대출 기록을 insert하는 메서드.
 	 * @return 성공 = 1, 실패 = 0
 	 */
-	private int borrowBook() {
+	private void borrowBook() {
 		// borrowList에 대출 기록 추가
 		
 		BorrowVO vo = new BorrowVO();
@@ -411,7 +400,13 @@ public class BookUpdatePanel extends JPanel implements ActionListener{
 		vo.setStartDate(new Date());
 		vo.setEndDate(endDate);
 		
-		return manager.borrowAdded(vo);
+		try {
+			manager.borrowAdded(vo);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(updateBtn, e);			
+		}
+		JOptionPane.showMessageDialog(null, vo.getBookNm() + "대출 신청이 완료 되었습니다.", vo.getBookNm(), JOptionPane.INFORMATION_MESSAGE);
+		manager.addedBorrow(vo); //리스너 
 	}
 	
 

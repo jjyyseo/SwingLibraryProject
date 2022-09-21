@@ -5,6 +5,8 @@
     <typeAliases>
         <typeAlias alias="BookVO" type="net.mbiz.library.data.BookVO"/>        
         <typeAlias alias="BorrowVO" type="net.mbiz.library.data.BorrowVO"/>        
+        <typeAlias alias="CategoryParentVO" type="net.mbiz.library.data.CategoryParentVO"/>        
+        <typeAlias alias="CategoryChildVO" type="net.mbiz.library.data.CategoryChildVO"/>        
     </typeAliases>
  
     <environments default="development">

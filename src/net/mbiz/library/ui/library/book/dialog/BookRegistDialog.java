@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -59,6 +58,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 	private JTextField tfDate;
 	private JPanel pnReleaseDate;
 	private JButton calenderBtn;
+	private JPanel pnCal;
 
 	private JLabel lblBookNm;
 	private JLabel lblBookWtr;
@@ -176,18 +176,13 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 		tfDate.setFont(CommonConstants.FONT_BASE_17);
 		tfDate.setForeground(Color.black);
 
-		this.calImg = new ImageIcon("C:/Work/03.Workspace/Test/SwingLibrary/src/net/mbiz/library/ui/img/calendar-icon.png");
-		Image img = calImg.getImage();
-		Image changeImg = img.getScaledInstance(10, 10, Image.SCALE_SMOOTH);
-		ImageIcon chImg = new ImageIcon(changeImg);
 		
-		
-		JLabel lbl = new JLabel(chImg);
-		
-		this.calenderBtn = new JButton();
+		this.calenderBtn = new JButton("달력");
 		calenderBtn.setPreferredSize(new Dimension(45,35));
-		calenderBtn.add(lbl);
-		
+		this.pnCal = new JPanel();
+		pnCal.setLayout(new BorderLayout());
+		pnCal.setPreferredSize(new Dimension(65,0));
+		pnCal.add(calenderBtn, BorderLayout.CENTER);
 		
 		this.lblBookNm = new JLabel("도서명");
 		this.lblBookWtr = new JLabel("저자");
@@ -206,7 +201,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 		this.pnReleaseDate= new JPanel();
 		pnReleaseDate.setLayout(new BorderLayout());;
 		
-		pnReleaseDate.add(calenderBtn, BorderLayout.EAST);
+		pnReleaseDate.add(pnCal, BorderLayout.EAST);
 		pnReleaseDate.add(tfDate, BorderLayout.WEST);
 		
 		pnCntEast.add(tfBookNm);
@@ -300,18 +295,18 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 	 * 도서 정보 update 결과에 따른 다이어로그를 띄우는 메서드.
 	 */
 	private void openInsertDialog(){
-		if (insertBookVO() == 1) {
-			JOptionPane.showMessageDialog(null, tfBookNm.getText() + "(이)가 등록되었습니다.", tfBookNm.getText(), JOptionPane.INFORMATION_MESSAGE);
-			dispose();
-
-		} else if(insertBookVO() == 2) {
-			JOptionPane.showMessageDialog(null, "이미 추가된 도서입니다. isbn을 확인 해주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
-		} else {
-			JOptionPane.showMessageDialog(null, "도서 추가 실패", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
-		}
-			
+		checkIsbn();
+		insertBookVO();
+		JOptionPane.showMessageDialog(null, tfBookNm.getText() + "(이)가 등록되었습니다.", tfBookNm.getText(), JOptionPane.INFORMATION_MESSAGE);
+		dispose();
 	};
 	
+	
+	private void checkIsbn() {
+		//TODO 중복 isbn인지 체크
+		JOptionPane.showMessageDialog(null, "이미 추가된 도서입니다. isbn을 확인 해주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
+	}
+
 	private int validateTextField() {
 		if (category.equals("") || category.isEmpty() ) {
 			category = "소설" ;
@@ -336,7 +331,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 	/**
 	 * 입력된 정보로 BookVO를 생성하여 BookList에 add하는 데서드.
 	 */
-	private int insertBookVO(){
+	private void insertBookVO(){
 
 		BookVO vo = new BookVO();
 		
@@ -355,8 +350,13 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 		vo.setCategory(category);
 		vo.setBooksub(booksub);
 		
+		try {
+			manager.bookAdded(vo);
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(registBtn, e);
+		}
 		manager.addedBook(vo);
-		return manager.bookAdded(vo);
 	};
 	
 	

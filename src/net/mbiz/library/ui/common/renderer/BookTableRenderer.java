@@ -65,13 +65,19 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 		}
 		
 
-//		str = (str == null) ? "" : value.toString();
-		
-		if (row % 2 == 1) {
-			this.setBackground(fgColor);
+		if (isSelected) {
+			this.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		} else {
-			this.setBackground(bgColor);
+			if (row % 2 == 1) {
+				this.setBackground(fgColor);
+			} else {
+				this.setBackground(bgColor);
+			}	
 		}
+		
+		
+		
+		
 		this.setText(str);
 		
 //			if (this.getText().equals("대출중")) {

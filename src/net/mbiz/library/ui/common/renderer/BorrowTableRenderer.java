@@ -63,14 +63,16 @@ public class BorrowTableRenderer extends JLabel implements TableCellRenderer{
 
 		}
 
-		
-		
-		
-		if (row % 2 == 1) {
-			this.setBackground(fgColor);
+		if (isSelected) {
+			this.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		} else {
-			this.setBackground(bgColor);
+			if (row % 2 == 1) {
+				this.setBackground(fgColor);
+			} else {
+				this.setBackground(bgColor);
+			}	
 		}
+		
 		
 		
 		/*연체된 도서를 빨간 글씨로 표시.*/

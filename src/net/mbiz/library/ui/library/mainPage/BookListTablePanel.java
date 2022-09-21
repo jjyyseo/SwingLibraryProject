@@ -66,7 +66,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	
 	private BeanTableModel<BookVO> bkModel;
 	private HandlerManager manager = HandlerManager.getInstance();
-	private List<BookEventListener> listenerList = new ArrayList<>();
 
 	
 	public BookListTablePanel(MainPanel pn) {
@@ -80,11 +79,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		this.bkModel.fireTableDataChanged();	// 테이블에 변경된 데이터 반영
 	}
 	
-	
-	// 이벤트리스너를 impl한 핸들러를 handlerList에 추가한다.
-	public void addBookEventListener(BookEventListener listener) {
-		listenerList.add(listener);
-	}
 	
 
 
@@ -350,13 +344,11 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	public void bookAdded(BookVO vo) {
 		System.out.println("BookList : book Added~~");
 		repaintBookTable();
-		this.bkModel.fireTableDataChanged();
 	}
 
 	@Override
 	public void bookUpdated(BookVO vo) {
 		repaintBookTable();
-		this.bkModel.fireTableDataChanged();
 	}
 
 	@Override
@@ -366,15 +358,14 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 
 	@Override
 	public void borrowAdded(BorrowVO vo) {
-		repaintBookTable();
 		System.out.println("BookList : borrow Added!");
-		this.bkModel.fireTableDataChanged();
+		repaintBookTable();
 	}
 
 	@Override
 	public void borrowUpdated(BorrowVO vo) {
 		System.out.println("BookList : borrow updated!");
-		this.bkModel.fireTableDataChanged();
+		repaintBookTable();
 	}
 
 	@Override
@@ -403,7 +394,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			BookVO vo = new BookVO();
 			vo.setOption(cbb);
 			vo.setQuery(schFd.getText().toString());
-			System.out.println("vo? " + vo);
 			
 			this.bkModel.removeAll();
 			this.bkModel.addDataList((ArrayList) manager.searchBookList(vo));;	
@@ -428,23 +418,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	}
 	
 	
-	/**
-	 * 도서 데이터를 삭제하는 메서드.
-	 * @param vo BookVO
-	 * @return 삭제 성공 시 = 1, 실패 시 = 0 
-	 */
-	private int deleteBookVO(BookVO vo) {
-		/*대출 상태 체크 후 삭제 작업*/
-		if (vo.getIsBorrowed() == 1) {
-			return 0;
-			
-		} else {
-			
-			manager.bookDeleted(vo.getBookIsbn());
-			manager.deletedBook(vo.getBookIsbn());
-			return 1;
-		}
-	}
+
 
 	
 	/**
@@ -473,15 +447,36 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 				deleteBookVO(vo);
 			}	
 		} else {
+			checkedList.clear();
 			return 0;	
 		}
-		
+		checkedList.clear();
 		return 1;
 	}
 	
 	
 	
-	
+	/**
+	 * 도서 데이터를 삭제하는 메서드.
+	 * @param vo BookVO
+	 * @return 삭제 성공 시 = 1, 실패 시 = 0 
+	 */
+	private void deleteBookVO(BookVO vo) {
+		//대출 상태 체크 
+		if (vo.getIsBorrowed() == 1) {
+			JOptionPane.showMessageDialog(null, "대출 중인 도서가 있습니다. 삭제가 취소 되었습니다.");
+		} else {
+			
+			try {
+				manager.bookDeleted(vo.getBookIsbn());
+			} catch (Exception e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(deleteBtn, e);
+			}
+			manager.deletedBook(vo.getBookIsbn());
+			JOptionPane.showMessageDialog(null, vo.getBookNm()+" 이(가) 삭제 되었습니다.");
+		}
+	}
 	
 	
 
@@ -496,7 +491,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 				if (deleteCheckedList(checkedList) == 1) {
 					JOptionPane.showMessageDialog(null, "삭제 완료 되었습니다.");
 				} else {
-					JOptionPane.showMessageDialog(null, "대출 중인 도서가 있습니다. 삭제가 취소 되었습니다.");
+					
 				}
 				
 			} else {
@@ -504,24 +499,22 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			}
 			
 		} else {
-			//선택한 열이 있는 경우
-			if(bookTbl.getSelectedRow()>-1) { 
+			
+			if(bookTbl.getSelectedRow()>-1) { 			//선택한 열이 있는 경우
 				
 				BookVO delVO = this.bkModel.getRowAt(bookTbl.getSelectedRow());
-
 				int rslt = JOptionPane.showConfirmDialog(null, " '" + delVO.getBookNm()+ "' " +" 을(를) 삭제 하시겠습니까?", delVO.getBookNm(), JOptionPane.YES_NO_OPTION);
-				if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
+				
+				if (rslt == JOptionPane.YES_OPTION) { 
 					deleteBookVO(delVO);
-					JOptionPane.showMessageDialog(null, delVO.getBookNm()+" 이(가) 삭제 되었습니다.");
-					
 				} else { 
-					System.out.println(" '" + delVO.getBookNm() + " 도서 삭제를 취소합니다.");
 					JOptionPane.showMessageDialog(null," '" + delVO.getBookNm() + "' "+" 삭제를 취소합니다.", delVO.getBookNm(), JOptionPane.INFORMATION_MESSAGE);
 				}
 				
 			} else {
 				JOptionPane.showMessageDialog(null, "삭제할 도서를 선택하세요.","선택된 행 없음", JOptionPane.INFORMATION_MESSAGE);
 			}
+			
 		}
 		
 		
@@ -555,7 +548,5 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		initialize();
 		
 	}
-
-	
 
 }

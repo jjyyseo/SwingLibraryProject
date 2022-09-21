@@ -12,6 +12,7 @@ import javax.swing.table.TableCellRenderer;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.ui.common.CommonConstants;
 
 /**
  * 체크박스를 테이블에 그려주는 Renderer. 
@@ -33,14 +34,15 @@ public class CheckBoxRenderer extends JCheckBox implements TableCellRenderer{
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 			boolean hasFocus, int row, int column) {
 		
-		if (row % 2 == 1) {
-        	this.setBackground(fgColor);
-        }
-        else {
-        	this.setBackground(bgColor);
-        }
-		
-		
+		if (isSelected) {
+			this.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
+		} else {
+			if (row % 2 == 1) {
+				this.setBackground(fgColor);
+			} else {
+				this.setBackground(bgColor);
+			}	
+		}
 		
 		boolean isChecked = false;
 		if (value instanceof BookVO) {
