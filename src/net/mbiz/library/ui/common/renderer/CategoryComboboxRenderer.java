@@ -16,7 +16,9 @@ public class CategoryComboboxRenderer extends JComboBox implements Renderer{
 	@Override
 	public Component getComponent() { 	// 값을 렌더링 하기 위해서 사용되는 컴퍼넌트를 리턴합니다.
 		// 값 뿌려주는 곳
-		return null;
+		
+		
+		return this; // 콤보박스 리턴
 	}
-
+	
 }
