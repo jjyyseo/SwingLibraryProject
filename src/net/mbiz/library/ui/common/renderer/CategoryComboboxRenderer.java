@@ -10,7 +10,7 @@ public class CategoryComboboxRenderer extends JComboBox implements Renderer{
 	// 표시하는 값(aValue)을 설정함과 함께, 그 값이 「현재의 선택」(isSelected)으로서 렌더링 될지 어떨지를 설정합니다.
 	@Override
 	public void setValue(Object aValue, boolean isSelected) {
-		
+		// CategoryChildVO, CategoryParentVO
 	}
 
 	@Override
