@@ -7,8 +7,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.listener.BookEventListener;
-import net.mbiz.library.manager.HandlerManager;
+import net.mbiz.library.data.ChildCategoryVO;
+import net.mbiz.library.data.ParentCategoryVO;
 
 
 // 비즈니스 로직 처리
@@ -32,7 +32,7 @@ public class DBSqlHandler extends DataHandler {
 				
 				rslt = session.insert("BookMapper.insertBook", vo); // namespace.id , param
 			} else {
-				return 2;
+				return 2;	//중복되는 ISBN이 있음.
 			}
 
 		} finally {
@@ -41,11 +41,6 @@ public class DBSqlHandler extends DataHandler {
 		}
 		return rslt;
 	}
-
-	/**
-	 * 도서 정보를 수정하는 메서드
-	 * @return 삭제 성공 = 1, 삭제 실패 = 0, 대출 중인 도서 = 2. 
-	 */
 	public int updateBook(BookVO vo) {
 		int rslt = 0;
 		SqlSession session = sqlSessionFactory.openSession();
@@ -62,11 +57,6 @@ public class DBSqlHandler extends DataHandler {
 		}
 		return rslt;
 	}
-
-	/**
-	 * 도서 정보를 삭제하는 메서드
-	 * @return 삭제 성공 = 1, 삭제 실패 = 0, 대출 중인 도서 = 2. 
-	 */
 	public int deleteBook(String isbn) {
 		int rslt = 0;
 		SqlSession session = sqlSessionFactory.openSession();
@@ -85,7 +75,6 @@ public class DBSqlHandler extends DataHandler {
 		}
 		return rslt;
 	}
-
 	public BookVO selectBookOne(String isbn) {
 		BookVO vo = null;
 		SqlSession session = sqlSessionFactory.openSession();
@@ -97,7 +86,39 @@ public class DBSqlHandler extends DataHandler {
 		}
 		return vo;
 	}
-
+	public List<BookVO> selectBookList() {
+		List<BookVO> list = null;
+		SqlSession session = sqlSessionFactory.openSession();
+		
+		try {
+			list = session.selectList("BookMapper.selectBookList"); // namespace.id
+		} finally {
+			session.close();
+		}
+		return list;
+	}
+	public List<BookVO> searchBookList(BookVO vo) {
+		List<BookVO> list = null;
+		SqlSession session = sqlSessionFactory.openSession();
+		
+		try {
+			list = session.selectList("BookMapper.searchBookList", vo); // namespace.id
+		} finally {
+			session.close();
+		}
+		return list;
+	}
+	public List<BookVO> selectCategoryBookList(BookVO vo) {
+		List<BookVO> list = null;
+		SqlSession session = sqlSessionFactory.openSession();
+		
+		try {
+			list = session.selectList("BookMapper.selectCategoryBookList", vo); // namespace.id
+		} finally {
+			session.close();
+		}
+		return list;
+	}
 
 	public int borrowBook(BorrowVO vo) {
 		SqlSession session = sqlSessionFactory.openSession();
@@ -118,7 +139,6 @@ public class DBSqlHandler extends DataHandler {
 		}
 		return 1;
 	}
-	
 	public int returnBook(BorrowVO bwvo) {
 		SqlSession session = sqlSessionFactory.openSession();
 		
@@ -140,11 +160,6 @@ public class DBSqlHandler extends DataHandler {
 		}
 		return 1;
 	}
-	
-	/**
-	 * 대출 정보를 삭제하는 메서드
-	 * @return 삭제 성공 = 1, 삭제 실패 = 0, 대출 중인 도서 = 2. 
-	 */
 	public int deleteBorrow(int bwNo) {
 		int rslt = 0;
 		SqlSession session = sqlSessionFactory.openSession();
@@ -168,45 +183,17 @@ public class DBSqlHandler extends DataHandler {
 		}
 		return rslt;
 	}
-	
-	
-
-	public List<BookVO> selectBookList() {
-		List<BookVO> list = null;
-		SqlSession session = sqlSessionFactory.openSession();
-		
-		try {
-			list = session.selectList("BookMapper.selectBookList"); // namespace.id
-		} finally {
-			session.close();
-		}
-		return list;
-	}
-	
-	public List<BookVO> searchBookList(BookVO vo) {
-		List<BookVO> list = null;
-		SqlSession session = sqlSessionFactory.openSession();
-		
-		try {
-			list = session.selectList("BookMapper.searchBookList", vo); // namespace.id
-		} finally {
-			session.close();
-		}
-		return list;
-	}
-	
 	public List<BorrowVO> selectBorrowList() {
 		List<BorrowVO> list = null;
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
-			list = session.selectList("BorrowMapper.selectBorrowkList");
+			list = session.selectList("BorrowMapper.selectBorrowList");
 		} finally {
 			session.close();
 		}
 		return list;
 	}
-	
-	public List<BorrowVO> searchBorrowkList(BorrowVO vo) {
+	public List<BorrowVO> searchBorrowList(BorrowVO vo) {
 		List<BorrowVO> list = null;
 		SqlSession session = sqlSessionFactory.openSession();
 		
@@ -217,8 +204,81 @@ public class DBSqlHandler extends DataHandler {
 		}
 		return list;
 	}
+
+
 	
+	//------카테고리-----
+	public List<ParentCategoryVO> selectParentCategoryList() {
+		List<ParentCategoryVO> list = null;
+		SqlSession session = sqlSessionFactory.openSession();
+		
+		try {
+			list = session.selectList("ParentCategoryMapper.selectParentCategoryList"); 
+		} finally {
+			session.close();
+		}
+		return list;
+	}
 
 
+	public List<ChildCategoryVO> selectChildCategoryList(int pCtgIdx) {
+		List<ChildCategoryVO> list = null;
+		SqlSession session = sqlSessionFactory.openSession();
+		
+		try {
+			list = session.selectList("ChildCategoryMapper.selectChildCategoryList" , pCtgIdx); 
+		} finally {
+			session.close();
+		}
+		return list;
+	}
+	
+	public String selectChildCategoryNm(int cIdx){
+		String ctgNm = null;
+		SqlSession session = sqlSessionFactory.openSession();
+		
+		try {
+			ctgNm = session.selectOne("ChildCategoryMapper.selectChildCategoryNm" , cIdx); 
+		} finally {
+			session.close();
+		}
+		return ctgNm;
+	}
+	public int selectChildCategoryIdx(String cName){
+		int idx = 0;
+		SqlSession session = sqlSessionFactory.openSession();
+		System.out.println("디비핸들러 selectChildCategoryIdx : " + cName);
+		try {
+			idx = session.selectOne("ChildCategoryMapper.selectChildCategoryIdx" , cName); 
+		} finally {
+			session.close();
+		}
+		return idx;
+	}
+	public String selectParentCategoryNm(int pIdx){
+		String ctgNm = null;
+		SqlSession session = sqlSessionFactory.openSession();
+		
+		try {
+			ctgNm = session.selectOne("ParentCategoryMapper.selectParentCategoryNm" , pIdx); 
+		} finally {
+			session.close();
+		}
+		return ctgNm;
+	}
+	public int selectParentCategoryIdx(String pName){
+		int idx = 0;
+		SqlSession session = sqlSessionFactory.openSession();
+		System.out.println("디비핸들러 selectChildCategoryIdx : " + pName);
+		try {
+			idx = session.selectOne("ParentCategoryMapper.selectParentCategoryIdx" , pName); 
+		} finally {
+			session.close();
+		}
+		return idx;
+	}
+
+
+	
 
 }

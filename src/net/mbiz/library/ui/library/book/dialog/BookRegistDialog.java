@@ -68,7 +68,6 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 	private JLabel lblIsbn;
 	
 	private String category = "";
-	private ImageIcon calImg = null;
 	private HandlerManager manager = HandlerManager.getInstance();
 	
 	public BookRegistDialog(){
@@ -155,8 +154,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 		pnCnt.add(pnCntEast, BorderLayout.EAST);
 		pnCnt.add(pnCntWest, BorderLayout.WEST);
 		
-		
-		
+
 		this.cbbCategory = new JComboBox<>();
 		cbbCategory.setModel(new DefaultComboBoxModel<>(new String[] {"소설","어린이","경제경영","자기계발","자연과학"}));
 		cbbCategory.setFont(CommonConstants.FONT_BASE_15);

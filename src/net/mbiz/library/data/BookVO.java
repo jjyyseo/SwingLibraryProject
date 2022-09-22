@@ -17,12 +17,12 @@ public class BookVO implements Serializable{
 	private String bookWtr;         /* 저자*/
 	private String publisher;       /* 출판사*/
 	private Date releaseDate;		/* 출간일*/
-	private String category;        /* 카테고리*/
 	private int isBorrowed;         /* 대출가능=0 대출중=1*/
-	private String booksub;			/* 도서 소개글*/
-	
 	private Date registDate;		/* 등록일자*/
 	private Date updateDate;		/* 수정일자*/
+	private String booksub;			/* 도서 소개글*/
+	private int bkCtgC;				/* 자식 카테고리*/
+	private int bkCtgP;				/* 부모 카테고리*/
 	
 	private boolean isSelect;		/* 체크박스 선택 여부*/
 	private String query;			/* 검색어*/

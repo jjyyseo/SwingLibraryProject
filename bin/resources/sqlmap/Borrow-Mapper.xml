@@ -7,11 +7,11 @@
 		<result property="bookIsbn" column="BK_ISBN" />
 		<result property="bookNm" column="BK_NM" />
 		<result property="bookWtr" column="BK_WTR" />
-		<result property="startDate" column="BW_START" />
+		<result property="cCtgIdx" column="BK_CTG_C" />
+		<result property="startDate" column="BW_END" />
 		<result property="endDate" column="BW_END" />
 		<result property="returnDate" column="BW_RETURN" />
 		<result property="overdue" column="BW_OVERDUE" />
-		<result property="isBorrowed" column="ISBORROW" />
 		
 		<result property="isSelect" column="isSelect" />
 		<result property="query" column="query" />
@@ -21,38 +21,34 @@
 
 
 	
-	<select id="selectBorrowkList" resultMap="BorrowMap">
+	<select id="selectBorrowList" resultMap="BorrowMap">
 		SELECT 
-			   BW_NO             
-			 , BK_ISBN           
-			 , BK_NM             
-			 , BK_WTR            
-			 , BW_START          
-			 , BW_END            
-			 , BW_RETURN         
-			 , BW_OVERDUE        
-			       
-		FROM   BORROW
+				   BW_NO             
+				 , BW.BK_ISBN 
+				 , BK.BK_NM
+				 , BK.BK_WTR
+				 , BK.BK_CTG_C
+				 , BW_START          
+				 , BW_END            
+				 , BW_RETURN         
+				 , BW_OVERDUE        	       
+		FROM       TBL_BORROW AS BW
+		INNER JOIN TBL_BOOK AS BK
+		ON 		   BW.BK_ISBN = BK.BK_ISBN
 	</select>
 	
 	<insert id="insertBorrow" parameterType="BorrowVO">
-		INSERT INTO BORROW 
+		INSERT INTO TBL_BORROW 
 							(
-								       
 							    BK_ISBN       
-							  , BK_NM         
-							  , BK_WTR        
-							  
 							  ) VALUES (
-							  				 #{bookIsbn}
-							  			   , #{bookNm}
-							  			   , #{bookWtr}
+							  			 #{bookIsbn}
 							  			)
 	</insert>
 	
 	<!-- 반납라기 -->
 	<update id="updateBorrow" parameterType="BorrowVO">
-		UPDATE BORROW 
+		UPDATE TBL_BORROW 
 		SET	   BW_RETURN   = GETDATE()  
 			 , BW_OVERDUE  = #{overdue}    
 		WHERE  BW_NO       = #{borrowNo}  
@@ -60,38 +56,43 @@
 	
 	<delete id="deleteBorrow" parameterType="int">
 		DELETE 
-		FROM   BORROW
+		FROM   TBL_BORROW
 		WHERE  BW_NO = #{borrowNo}  
 	</delete>
 	
 		<!-- detail -->
 	<select id="selectBorrowOne" parameterType="int" resultMap="BorrowMap">
 		SELECT 
-			   BW_NO
-			 , BK_ISBN          
-			 , BK_NM            
-			 , BK_WTR           
-			 , BW_START         
-			 , BW_END            
-			 , BW_RETURN        
-			 , BW_OVERDUE       
-			 
-		FROM   BORROW
-		WHERE BW_NO = #{borrowNo} 
+				   BW_NO             
+				 , BW.BK_ISBN 
+				 , BK.BK_NM
+				 , BK.BK_WTR
+				 , BK.BK_CTG_C
+				 , BW_START          
+				 , BW_END            
+				 , BW_RETURN         
+				 , BW_OVERDUE        	       
+		FROM       TBL_BORROW AS BW
+		INNER JOIN TBL_BOOK AS BK
+		ON         BW.BK_ISBN = BK.BK_ISBN
+		WHERE      BW.BW_NO = #{borrowNo} 
 	</select>
 	
 	
 	<select id="searchBorrowList" parameterType="BorrowVO" resultMap="BorrowMap">
 		SELECT 
-				  BW_NO        
-				, BK_ISBN      
-				, BK_NM        
-				, BK_WTR       
-				, BW_START     
-				, BW_END       
-				, BW_RETURN    
-				, BW_OVERDUE   
-		FROM BORROW
+				   BW_NO             
+				 , BW.BK_ISBN 
+				 , BK.BK_NM
+				 , BK.BK_WTR
+				 , BK.BK_CTG_C
+				 , BW_START          
+				 , BW_END            
+				 , BW_RETURN         
+				 , BW_OVERDUE        	       
+		FROM       TBL_BORROW AS BW
+		INNER JOIN TBL_BOOK AS BK
+		ON 		   BW.BK_ISBN = BK.BK_ISBN
 		<where>
 		<if test="option == null or option =='all' ">
 		AND (

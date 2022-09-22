@@ -14,13 +14,13 @@ public class BorrowVO implements Comparable<BorrowVO>, Serializable{
 
 	private int borrowNo;          /* 대출 번호*/
 	private String bookIsbn;       /* 도서 isbn*/
-	private String bookNm;         /* 도서 명*/                          
-	private String bookWtr;        /* 저자*/                          
+	private String bookNm;         /* 도서 명*/            
+	private String bookWtr;        /* 저자*/
+	private int cCtgIdx;           /* 카테고리*/
 	private Date startDate;        /* 대출 시작 일자*/
 	private Date endDate;          /* 대출 마감 일자*/
 	private Date returnDate;       /* 반납 일자*/
 	private int overdue;           /* 연체일 수*/
-	private int isBorrowed;        /* 대출가능=0 대출중=1*/
 	
 	private boolean isSelect;	   /* 체크박스 선택 여부!*/
 	private String query;		   /* 검색어*/

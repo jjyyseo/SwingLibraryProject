@@ -13,6 +13,8 @@
 		<result property="booksub" column="BK_SUB" />
 		<result property="registDate" column="BK_REG" />
 		<result property="updateDate" column="BK_UDT" />
+		<result property="bkCtgC" column="BK_CTG_C" />
+		<result property="bkCtgP" column="BK_CTG_P" />
 		
 		<result property="isSelect" column="isSelect" />
 		<result property="query" column="query" />
@@ -24,29 +26,32 @@
 	
 	<select id="selectBookList" resultMap="BookMap">
 		SELECT 
-			   BK_ISBN          /* 도서 isbn*/   
-			 , BK_NM            /* 도서명*/           
-			 , BK_WTR           /* 저자*/            
-			 , BK_PBLSR         /* 출판사*/           
-			 , BK_RLS           /* 출간일*/           
-			 , CATEGORY         /* 카테고리*/          
-			 , ISBORROW         /* 대출가능=0 대출중=1*/  
-			 , BK_SUB           /* 도서 소개글*/        
-			 , BK_REG           /* 등록일자*/ 
-			 , BK_UDT           /* 수정일자*/ 
-		FROM   BOOK
+				  BK_ISBN  
+				, BK_NM    
+				, BK_WTR   
+				, BK_PBLSR 
+				, BK_RLS   
+				, ISBORROW 
+				, BK_REG   
+				, BK_UDT   
+				, BK_SUB   
+				, BK_CTG_C   
+				, BK_CTG_P   
+		FROM   TBL_BOOK
+		ORDER  BY BK_REG DESC 
 	</select>
 	
 	<insert id="insertBook" parameterType="BookVO">
-		INSERT INTO BOOK 
+		INSERT INTO TBL_BOOK 
 							(
-								BK_ISBN         /* 도서 isbn*/
-							  , BK_NM           /* 도서명*/   
-							  , BK_WTR          /* 저자*/    
-							  , BK_PBLSR        /* 출판사*/   
-							  , BK_RLS          /* 출간일*/   
-							  , CATEGORY        /* 카테고리*/  
-							  , BK_SUB          /* 도서 소개글*/
+								BK_ISBN         
+							  , BK_NM           
+							  , BK_WTR          
+							  , BK_PBLSR        
+							  , BK_RLS          
+							  , BK_SUB          
+							  , BK_CTG_C        
+							  , BK_CTG_P        
 							  
 							  ) VALUES (
 							  				 #{bookIsbn}
@@ -60,19 +65,20 @@
 	</insert>
 	
 	<update id="updateBook" parameterType="BookVO">
-		UPDATE BOOK 
+		UPDATE TBL_BOOK 
 		SET	   BK_NM    = #{bookNm}     
 			 , BK_WTR   = #{bookWtr}    
 			 , BK_PBLSR = #{publisher}  
 			 , BK_RLS   = #{releaseDate}
-			 , CATEGORY = #{category}   
 			 , BK_SUB   = #{booksub}    
+			 , BK_CTG_C = #{category}   
+			 , BK_CTG_P = #{category}   
 		WHERE  BK_ISBN  = #{bookIsbn}  
 	</update>
 	
 	<delete id="deleteBook" parameterType="String">
 		DELETE 
-		FROM   BOOK
+		FROM   TBL_BOOK
 		WHERE  BK_ISBN = #{bookIsbn}  
 	</delete>
 	
@@ -85,18 +91,19 @@
 			 , BK_WTR           
 			 , BK_PBLSR         
 			 , BK_RLS           
-			 , CATEGORY         
 			 , ISBORROW          
-			 , BK_SUB           
 			 , BK_REG           
 			 , BK_UDT           
-		FROM   BOOK
-		WHERE BK_ISBN = #{bookIsbn} 
+			 , BK_SUB           
+			 , BK_CTG_C           
+			 , BK_CTG_P           
+		FROM   TBL_BOOK
+		WHERE  BK_ISBN = #{bookIsbn} 
 	</select>
 	
 	<!-- 도서 대출하기. -->
 	<update id="updateBookState" parameterType="BookVO"> 
-		UPDATE BOOK 
+		UPDATE TBL_BOOK 
 			<if test="isBorrowed == 1">
 			SET	   ISBORROW = (0)
 			</if>  
@@ -113,12 +120,13 @@
 				, BK_WTR   
 				, BK_PBLSR 
 				, BK_RLS   
-				, CATEGORY 
 				, ISBORROW 
-				, BK_SUB   
 				, BK_REG   
 				, BK_UDT   
-		FROM BOOK
+				, BK_SUB   
+				, BK_CTG_C   
+				, BK_CTG_P   
+		FROM TBL_BOOK
 		<where>
 		<if test="option == null or option =='all' ">
 		AND (
@@ -139,5 +147,29 @@
 		</where> 
 	</select>
 	
+	<select id="selectCategoryBookList" parameterType="BookVO" resultMap="BookMap">
+		SELECT 
+				  BK_ISBN  
+				, BK_NM    
+				, BK_WTR   
+				, BK_PBLSR 
+				, BK_RLS   
+				, ISBORROW 
+				, BK_REG   
+				, BK_UDT   
+				, BK_SUB   
+				, BK_CTG_C   
+				, BK_CTG_P   
+		FROM TBL_BOOK
+		<where>
+		<if test="bkCtgP != null and bkCtgC != null ">
+		AND BK_CTG_P = #{bkCtgP}
+		AND BK_CTG_C = #{bkCtgC}
+		</if>
+		<if test="bkCtgP != null and bkCtgC == null ">
+		AND BK_CTG_P = #{bkCtgP}
+		</if>
+		</where> 
+	</select>
 	
 </mapper>

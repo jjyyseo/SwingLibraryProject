@@ -9,6 +9,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 import net.mbiz.library.data.BookVO;
+import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CommonConstants;
 import net.mbiz.library.util.DateFomatUtil;
 
@@ -20,6 +21,8 @@ import net.mbiz.library.util.DateFomatUtil;
  */
 public class BookTableRenderer extends JLabel implements TableCellRenderer {
 
+	private HandlerManager manager = HandlerManager.getInstance();
+	
 	public BookTableRenderer() {
 		setHorizontalAlignment(JLabel.CENTER);
 	}
@@ -32,7 +35,8 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 		
 		BookVO vo = (BookVO) value;
 		String str = "";
-		int num = 0;
+
+		
 		/*데이터  쪼개기*/
 		switch (col) {
 		case 1:
@@ -51,7 +55,7 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 			str = DateFomatUtil.formatToString("releaseDate", vo.getReleaseDate());
 			break;
 		case 6:
-			str = vo.getCategory();
+			str = manager.selectChildCategoryNm(vo.getBkCtgC());
 			break;
 		case 7:
 			if (vo.getIsBorrowed() == 0) {
@@ -75,20 +79,15 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 			}	
 		}
 		
-		
-		
-		
+//		if (col == 7) {
+//			if (str.equals("대출중")) {
+//				this.setForeground(Color.red);	
+//			} else {
+//				this.setForeground(Color.GREEN);
+//			}
+//		}
 		this.setText(str);
 		
-//			if (this.getText().equals("대출중")) {
-//				if (col==7) {
-//					this.setForeground(Color.red);
-//				}
-//			} else {
-//				this.setForeground(Color.black);
-//			}
-		
-
 		return this;
 	}
 

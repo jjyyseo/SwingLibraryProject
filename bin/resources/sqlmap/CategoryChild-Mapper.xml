@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ChildCategoryMapper">
+	
+	<resultMap id="ChildCategoryMap" type="ChildCategoryVO">
+		<result property="cCtgIdx" column="C_CTG_IDX" />
+		<result property="cCtgPnt" column="C_CTG_PNT" />
+		<result property="cCtgNm"  column="C_CTG_NM" />
+		<result property="cCtgReg" column="C_CTG_REG" />
+		<result property="cCtgMdf" column="C_CTG_MDF" />
+	</resultMap>
+
+	<!-- 상위 카테고리 인덱스(PK) 값을 파라미터로 받아 해당되는 하위 카테고리를 리턴한다.-->
+	<select id="selectChildCategoryList" parameterType="int" resultMap="ChildCategoryMap">
+		SELECT 
+				  C_CTG_IDX
+				, C_CTG_PNT
+				, C_CTG_NM
+				, C_CTG_REG
+				, C_CTG_MDF
+		FROM 	  TBL_CATEGORY_C
+		WHERE     C_CTG_PNT = #{cCtgPnt}
+		ORDER BY  C_CTG_IDX ASC
+	</select>
+	
+	<select id="selectChildCategoryNm" parameterType="int" resultType="String">
+		SELECT 	C_CTG_NM 
+		FROM 	TBL_CATEGORY_C 
+		WHERE	C_CTG_IDX = #{cCtgIdx}
+	</select>	
+	<select id="selectChildCategoryIdx" parameterType="String" resultType="int">
+		SELECT 	C_CTG_IDX 
+		FROM 	TBL_CATEGORY_C 
+		WHERE	C_CTG_NM = #{cCtgNm}
+	</select>	
+	
+</mapper>

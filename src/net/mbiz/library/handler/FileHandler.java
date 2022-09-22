@@ -15,8 +15,8 @@ import java.util.List;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
-import net.mbiz.library.listener.BookEventListener;
-import net.mbiz.library.manager.HandlerManager;
+import net.mbiz.library.data.ChildCategoryVO;
+import net.mbiz.library.data.ParentCategoryVO;
 import net.mbiz.library.util.FileLocationConstants;
 import net.mbiz.library.util.LibraryVOParser;
 
@@ -68,15 +68,6 @@ public class FileHandler extends DataHandler {
 		
 		return bookFileList;
 	}
-
-	
-	
-	/**
-	 * toStringfile(bookVO)의 리턴값 = String type.을 파라미터로 받아 파일에 write하는 메서드.
-	 * @param bkStr
-	 * @return 		 성공 시 = 1, 실패 시 = 0
-	 * @throws IOException
-	 */
 	public int insertBook(BookVO vo) {
 		System.err.println("여기는 FileHandler~~insertBook");
 		File file = new File(FileLocationConstants.BOOK_DATA_lOCATION);
@@ -103,9 +94,6 @@ public class FileHandler extends DataHandler {
 		
 		return 1;
 	}
-
-	
-	
 	/**
 	 * bookData.txt 파일을 update하는 메서드.
 	 * 원본 파일 삭제 후 새 파일 생성, update된 정보 추가
@@ -118,10 +106,6 @@ public class FileHandler extends DataHandler {
 		}
 		return 0;
 	}
-
-	
-	
-	
 	/**
 	 * 도서 정보를 삭제하는 메서드.
 	 * 해당 도서 정보를 제외한 대출 기혹으로 새 파일 생성 후 rename한다.
@@ -185,9 +169,6 @@ public class FileHandler extends DataHandler {
 		
 		return 1;
 	}
-
-	
-	
 	/**
 	 * borrowData.txt 파일을 읽는 메서드.  
 	 * List<BorrowVO>를 리턴한다.
@@ -231,9 +212,6 @@ public class FileHandler extends DataHandler {
 		return borrowFileList;
 	}
 
-
-
-	
 	/**
 	 * toStringfile(bookVO)의 리턴값 = String type.을 파라미터로 받아 파일에 write하는 메서드.
 	 * @param bkStr
@@ -260,10 +238,7 @@ public class FileHandler extends DataHandler {
 			pw.close();
 		}
 		return 1;
-	}
-
-	
-	
+	}	
 	/**
 	 * borrowData.txt 파일을 update하는 메서드.
 	 * 원본 파일 삭제 후 새 파일 생성, update된 정보 추가
@@ -275,10 +250,6 @@ public class FileHandler extends DataHandler {
 		insertBorrow(vo);
 		return 1;
 	}
-
-
-	
-	
 	/**
 	 * 대츌 정보를 삭제하는 메서드.
 	 * 해당 대출 정보를 제외한 대출 기혹으로 새 파일 생성 후 rename한다.
@@ -350,8 +321,6 @@ public class FileHandler extends DataHandler {
 		
 		return 1;
 	}
-
-	@Override
 	public BookVO selectBookOne(String isbn) {
 		Path path = Paths.get(FileLocationConstants.BOOK_DATA_lOCATION);
 		
@@ -375,9 +344,6 @@ public class FileHandler extends DataHandler {
 		}
 		return vo;
 	}
-	
-
-
 	/**
 	 * bookData.txt 파일을 update하는 메서드.
 	 * 원본 파일 삭제 후 새 파일 생성, update된 정보 추가
@@ -397,7 +363,6 @@ public class FileHandler extends DataHandler {
 		}
 		return 0;
 	}
-
 	/**
 	 * 도서 대출하기.
 	 * 도서 정보 update & 대출 정보 insert
@@ -409,8 +374,6 @@ public class FileHandler extends DataHandler {
 		}
 		return 0;
 	}
-	
-	
 	/**
 	 * 도서 반납하기.
 	 * 도서 정보 update & 대출 정보 update
@@ -424,16 +387,103 @@ public class FileHandler extends DataHandler {
 	}
 
 
+	//search
 	@Override
 	public List<BookVO> searchBookList(BookVO vo) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<BorrowVO> searchBorrowkList(BorrowVO vo) {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	
+	
+	@Override
+	public List<ParentCategoryVO> selectParentCategoryList() {
+		File file = new File(FileLocationConstants.PARENT_CATEGORY_lOCATION);
+		List<ParentCategoryVO> parentCategoryList = new ArrayList<>();
+		
+		BufferedReader br = null;
+		String str;
+		
+		
+		if(file.exists()){
+			
+			try {
+				FileReader fileReader = new FileReader(file);
+				br = new BufferedReader(fileReader);
+
+				while((str = br.readLine()) != null ) {
+					str.trim();
+					parentCategoryList.add( LibraryVOParser.stringToParentCategoryVO(str));
+				}			
+				
+			} catch (IOException e) {
+				System.err.println("부모 카테고리 조회 중 에러 발생!");
+			} finally {
+				
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			
+		} else {
+			System.out.println("parentCategoryData.txt 파일이 존재하지 않음.");
+		}
+		
+		return parentCategoryList;
+	}
+
+
+	public List<ChildCategoryVO> selectChildCategoryList(int pCtgIdx) {
+		File file = new File(FileLocationConstants.CHILD_CATEGORY_lOCATION);
+
+		List<ChildCategoryVO> childCategoryList = new ArrayList<>();
+		List<String> list = new ArrayList<>();
+		BufferedReader br = null;
+		ChildCategoryVO vo = null;
+		String str;
+
+		if(file.exists()){	
+			try {
+				FileReader fileReader = new FileReader(file);
+				br = new BufferedReader(fileReader);
+
+				while((str = br.readLine()) != null ) {
+					list.add(str);
+				}			
+				
+			} catch (IOException e) {
+				System.err.println("자식 카테고리 전체조회 중 에러 발생!");
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			for (String line : list) {
+				line.trim();
+				String[] arr = line.split("@");
+				
+				if (arr[1].toString().equals(Integer.toString(pCtgIdx))) { 
+					vo = LibraryVOParser.stringToChildCategoryVO(line);
+					childCategoryList.add(vo);
+				} 
+			}
+			
+		} else {
+			System.out.println("childCategoryData.txt 파일이 존재하지 않음.");
+		}
+		
+		return childCategoryList;
+
 	}
 
 

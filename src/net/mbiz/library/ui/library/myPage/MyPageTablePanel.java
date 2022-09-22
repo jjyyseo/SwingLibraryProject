@@ -226,8 +226,8 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	 * 대출 기록 테이블을 출력하는 메서드.
 	 * */
 	private void initTable() {
-		String topHeader[] = {"check", "no", "도서명", "저자", "대출일", "반납예정일", "반납일", "연체일"};	
-		int[] col = {60, 60, 600, 296, 200, 180, 180, 180 };
+		String topHeader[] = {"check", "no", "도서명", "저자", "카테고리", "대출일", "반납예정일", "반납일", "연체일"};	
+		int[] col = {60, 60, 560, 276, 180, 180, 180, 180, 100 };
 		
 		this.bwModel = new BeanTableModel<BorrowVO>(topHeader, col) {
 			@Override
@@ -240,8 +240,6 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			public void setValueByColumIndex(int row, int col, Object obj) {
 				// 체크박스 선택 시 --> row, 0, true(선택 여부)
 				
-				
-				
 				if ((Boolean)obj == true) {
 					System.out.println("선택한 열은?? ===> " + row);
 					BorrowVO vo = getRowAt(row);
@@ -249,8 +247,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 					if (vo.isSelect()) {
 						vo.setSelect(false);
 						checkedList.remove(vo);
-					}
-					else {
+					} else {
 						vo.setSelect(true);
 						checkedList.add(vo);
 					}

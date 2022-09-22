@@ -23,12 +23,17 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.EventListenerList;
 
+import org.apache.ibatis.session.RowBounds;
+
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.data.ChildCategoryVO;
+import net.mbiz.library.data.ParentCategoryVO;
 import net.mbiz.library.listener.BookEventListener;
 import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CommonConstants;
+import net.mbiz.library.ui.common.ParentCategoryCombobox;
 import net.mbiz.library.ui.library.book.dialog.BookRegistDialog;
 import net.mbiz.library.ui.library.book.dialog.BookUpdateDialog;
 
@@ -46,7 +51,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	private JPanel pnEast;
 	
 	private JPanel pnCbb;
-	
+	private JPanel pnCategory;
 	private JPanel pnEastBtn;
 	private JPanel pnWestBtn;
 	
@@ -62,6 +67,10 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	private JTextField schFd;
 
 	private JComboBox<String> cbbSearch;
+	private JComboBox<ParentCategoryVO> cbbCategoryP;
+	private JComboBox<ChildCategoryVO> cbbCategoryC;
+	private int parentIdx = 0;
+	private int childIdx = 0;
 	private List<BookVO> checkedList = new ArrayList<>(); 
 	
 	private BeanTableModel<BookVO> bkModel;
@@ -80,7 +89,6 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	}
 	
 	
-
 
 	private void jbInit() {
 		this.setLayout(new BorderLayout());
@@ -172,15 +180,28 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		pnWest.setBorder(BorderFactory.createEmptyBorder(33, 0, 0, 0));
 		pnWest.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 	
+		
+		this.pnCategory = new JPanel();
+		pnCategory.setLayout(new BorderLayout());
+		
+		this.cbbCategoryP = new JComboBox<>();
+		cbbCategoryP.setModel(new DefaultComboBoxModel<>());
+		cbbCategoryP.setFont(CommonConstants.FONT_BASE_15);
+		cbbCategoryP.setPreferredSize(new Dimension(100,60));
+		setParentValues();
+
+		this.cbbCategoryC = new JComboBox<>();
+		
+		cbbCategoryC.setFont(CommonConstants.FONT_BASE_15);
+		cbbCategoryC.setPreferredSize(new Dimension(100,60));
+
+		pnCategory.add(cbbCategoryP, BorderLayout.WEST);
+		pnCategory.add(cbbCategoryC, BorderLayout.EAST);
+		
 		this.pvsBtn = new JButton("전체보기");
 		pvsBtn.setPreferredSize(new Dimension(100, 30));
 		pvsBtn.setBackground(CommonConstants.COLOR_CONTENT_BACKGROUND);
 		pvsBtn.setForeground(CommonConstants.COLOR_MENU_FONT2);
-
-
-		
-		
-		
 
 	
 		
@@ -223,7 +244,7 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		pnEast.add(pnCbb, BorderLayout.WEST);
 		pnEast.add(schBtn, BorderLayout.EAST);
 
-		pnWest.add(pvsBtn, BorderLayout.WEST);
+		pnWest.add(pnCategory, BorderLayout.WEST);
 		pnTitle.add(title, BorderLayout.WEST);
 
 		pnHeader.add(pnTitle, BorderLayout.NORTH);
@@ -242,12 +263,14 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 		pvsBtn.addActionListener(this);      /*전체 보기*/  
 		registBtn.addActionListener(this);   /*도서 등록하기*/  
 		deleteBtn.addActionListener(this);   /*도서 삭제하기*/  
+		cbbCategoryP.addActionListener(this);
 		bookTbl.addMouseListener(this);		 /*도서 상세정보 창 띄우기*/
 		manager.addBookEventListener(this);
 	}
 	
 	
 	
+
 
 	/**
 	 * 테이블 생성 메서드
@@ -310,6 +333,11 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 			getRegistBookDialog();
 		} else if(e.getSource().equals(deleteBtn)) {
 			getDeleteMessege();
+		} else if(e.getSource().equals(cbbCategoryP)) {
+			initChildComboBox();
+			getCategoryBookList();
+		} else if(e.getSource().equals(cbbCategoryC)) {
+			getCategoryBookList();
 		}
 		
 	}
@@ -406,6 +434,44 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 	}
 	
 	
+	
+	/**
+	 * 도서 검색 메서드
+	 */
+	private void getCategoryBookList() {
+		BookVO vo = new BookVO();
+		
+		vo.setBkCtgP(parentIdx);
+		if (childIdx != 0) {
+			vo.setBkCtgC(childIdx);
+		}
+		
+		System.out.println("UI bookListTable" + "pIdx---> " + parentIdx + "cIdx---> " + childIdx);
+		
+		this.bkModel.removeAll();
+		this.bkModel.addDataList((ArrayList) manager.selectCategoryBookList(vo));
+		this.bookTbl.setModel(this.bkModel);
+	}
+	
+//	private void settingParentCategoryIdx() {
+//		 pCbb = (String) cbbCategoryP.getSelectedItem();
+//		if (pCbb.equals("") || pCbb.isEmpty() ) {
+//			pCbb = "전체" ;
+//		} else {
+//			parentIdx = manager.selectParentCategoryIdx(pCbb);
+//		}
+//		BookVO vo = new BookVO();
+//		vo.setBkCtgP(parentIdx);
+//	}
+//	private void settingChildCategoryIdx() {
+//		String cCbb = (String) cbbCategoryP.getSelectedItem();
+//		if (cCbb.equals("") || cCbb.isEmpty() ) {
+//			cCbb = "전체" ;
+//		} else {
+//			childIdx = manager.selectChildCategoryIdx(cCbb);
+//		}
+//	}
+
 	/**
 	 * 도서 정보를 등록하는 Dialog를 띄우고 테이블을 새로고침하는 메서드.
 	 */
@@ -537,6 +603,32 @@ public class BookListTablePanel extends JPanel implements ActionListener, MouseL
 //		detail.setLocationCenter();
 //		manager.selectBorrowList();
 		
+	}
+	
+	
+
+
+
+	private void setParentValues() {
+		List<ParentCategoryVO> list= manager.selectParentCategoryList();
+		ParentCategoryVO vo = new ParentCategoryVO();
+		cbbCategoryP.addItem(vo);
+		
+		for (ParentCategoryVO parentVO : list) {
+			cbbCategoryP.addItem(parentVO);
+		}
+	}
+
+	private void setChildValues() {
+		List<ChildCategoryVO> list= manager.selectChildCategoryList(parentIdx);
+		for (ChildCategoryVO vo : list) {
+			cbbCategoryC.addItem(vo);
+		}
+	}
+	
+	private void initChildComboBox() {
+		parentIdx = cbbCategoryP.getSelectedIndex();
+		setChildValues();
 	}
 	
 	/**

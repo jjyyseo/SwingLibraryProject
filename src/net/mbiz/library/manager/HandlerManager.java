@@ -9,6 +9,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.data.ChildCategoryVO;
+import net.mbiz.library.data.ParentCategoryVO;
 import net.mbiz.library.handler.DBSqlHandler;
 import net.mbiz.library.handler.DataHandler;
 import net.mbiz.library.handler.FileHandler;
@@ -128,6 +130,16 @@ public class HandlerManager {
 
 		return null;
 	}
+	public List<BookVO> selectCategoryBookList(BookVO vo) {
+		for (int i = 0; i < handlerList.size(); i++) {
+			if (handlerList.get(i) instanceof DBSqlHandler) {
+				return handlerList.get(i).selectCategoryBookList(vo);
+				System.out.println("");
+			}
+		}
+
+		return null;
+	}
 
 	public BookVO selectBookOne(String isbn) {
 		for (int i = 0; i < handlerList.size(); i++) {
@@ -167,6 +179,7 @@ public class HandlerManager {
 		}
 
 	}
+
 
 	public void borrowDeleted(int bwNo) throws Exception {
 		try {
@@ -213,12 +226,76 @@ public class HandlerManager {
 	public List<BorrowVO> searchBorrowList(BorrowVO vo) {
 		for (int i = 0; i < handlerList.size(); i++) {
 			if (handlerList.get(i) instanceof DBSqlHandler) {
-				return handlerList.get(i).searchBorrowkList(vo);
+				return handlerList.get(i).searchBorrowList(vo);
 			}
 		}
 		return null;
 	}
 
+	
+	
+	
+	
+	//카테고리
+	public List<ParentCategoryVO> selectParentCategoryList(){
+		for (int i = 0; i < handlerList.size(); i++) {
+			if (handlerList.get(i) instanceof DBSqlHandler) {
+				return handlerList.get(i).selectParentCategoryList();
+			}
+		}
+		return null;
+	}
+	public List<ChildCategoryVO> selectChildCategoryList(int pCtgIdx){
+		for (int i = 0; i < handlerList.size(); i++) {
+			if (handlerList.get(i) instanceof DBSqlHandler) {
+				return handlerList.get(i).selectChildCategoryList(pCtgIdx);
+			}
+		}
+		return null;
+	}
+	public String selectChildCategoryNm(int cIdx){
+		for (int i = 0; i < handlerList.size(); i++) {
+			if (handlerList.get(i) instanceof DBSqlHandler) {
+				return handlerList.get(i).selectChildCategoryNm(cIdx);
+			}
+		}
+		return null;
+	}
+	public String selectParentCategoryNm(int pIdx){
+		for (int i = 0; i < handlerList.size(); i++) {
+			if (handlerList.get(i) instanceof DBSqlHandler) {
+				return handlerList.get(i).selectParentCategoryNm(pIdx);
+			}
+		}
+		return null;
+	}
+	public int selectChildCategoryIdx(String cName){
+		for (int i = 0; i < handlerList.size(); i++) {
+			if (handlerList.get(i) instanceof DBSqlHandler) {
+				return handlerList.get(i).selectChildCategoryIdx(cName);
+			}
+		}
+		return 0;
+	}
+	public int selectParentCategoryIdx(String pName){
+		for (int i = 0; i < handlerList.size(); i++) {
+			if (handlerList.get(i) instanceof DBSqlHandler) {
+				return handlerList.get(i).selectParentCategoryIdx(pName);
+			}
+		}
+		return 0;
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	private boolean isDBConnection() {
 		try {
 			return sqlSessionFactory.openSession().getConnection().isClosed();

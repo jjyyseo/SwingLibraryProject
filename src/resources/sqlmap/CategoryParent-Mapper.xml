@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ParentCategoryMapper">
+	
+	<resultMap id="ParentCategoryMap" type="ParentCategoryVO">
+		<result property="pCtgIdx" column="P_CTG_IDX" />
+		<result property="pCtgNm"  column="P_CTG_NM" />
+		<result property="pCtgReg" column="P_CTG_REG" />
+		<result property="pCtgMdf" column="P_CTG_MDF" />
+	</resultMap>
+
+	<select id="selectParentCategoryList" resultMap="ParentCategoryMap">
+		SELECT 
+				  P_CTG_IDX
+				, P_CTG_NM
+				, P_CTG_REG
+				, P_CTG_MDF
+		FROM TBL_CATEGORY_P
+		ORDER BY P_CTG_IDX ASC
+	</select>
+	
+	<select id="selectParentCategoryNm" parameterType="int" resultType="String">
+		SELECT 	P_CTG_NM 
+		FROM 	TBL_CATEGORY_P 
+		WHERE	P_CTG_IDX = #{pCtgIdx}
+	</select>	
+	<select id="selectParentCategoryIdx" parameterType="String" resultType="int">
+		SELECT 	P_CTG_IDX 
+		FROM 	TBL_CATEGORY_P 
+		WHERE	P_CTG_NM = #{pCtgNm}
+	</select>	
+	
+</mapper>

@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CategoryParentVO {
+public class ParentCategoryVO {
 	
 	private int pCtgIdx;          /*idx*/
 	private String pCtgNm;        /*부모 카테고리 명*/

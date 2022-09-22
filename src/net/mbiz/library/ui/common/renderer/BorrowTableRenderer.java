@@ -9,11 +9,12 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CommonConstants;
 
 public class BorrowTableRenderer extends JLabel implements TableCellRenderer{
 	
-	
+	private HandlerManager manager = HandlerManager.getInstance();
 	public BorrowTableRenderer() {
 		setHorizontalAlignment(JLabel.CENTER);
 	}
@@ -27,6 +28,7 @@ public class BorrowTableRenderer extends JLabel implements TableCellRenderer{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 		BorrowVO vo = (BorrowVO) value;
 		String str = "";
+		System.out.println("BorrowTableRenderer: "+vo.toString());
 		
 		/*데이터  쪼개기*/
 		switch (col) {
@@ -41,19 +43,22 @@ public class BorrowTableRenderer extends JLabel implements TableCellRenderer{
 			str = vo.getBookWtr();
 			break;
 		case 4:
-			str = sdf.format(vo.getStartDate());
+			str = manager.selectCategoryName(vo.getCCtgIdx());
 			break;
 		case 5:
-			str = sdf.format(vo.getEndDate());
+			str = sdf.format(vo.getStartDate());
 			break;
 		case 6:
+			str = sdf.format(vo.getEndDate());
+			break;
+		case 7:
 			if (vo.getReturnDate()!=null) {
 				str = sdf.format(vo.getReturnDate());
 			} else {
 				str = "-";
 			}
 			break;
-		case 7:
+		case 8:
 			if (vo.getOverdue()== 0) {
 				str = "-";
 			} else {
@@ -83,9 +88,6 @@ public class BorrowTableRenderer extends JLabel implements TableCellRenderer{
 		} else {
 			this.setForeground(Color.black);
 		}
-		
-//		table.getSelectedRow() > -1
-		
 		
 		
 		
