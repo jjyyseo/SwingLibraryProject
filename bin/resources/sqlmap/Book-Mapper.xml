@@ -13,8 +13,9 @@
 		<result property="booksub" column="BK_SUB" />
 		<result property="registDate" column="BK_REG" />
 		<result property="updateDate" column="BK_UDT" />
-		<result property="bkCtgC" column="BK_CTG_C" />
-		<result property="bkCtgP" column="BK_CTG_P" />
+		<result property="cCtgNm" column="C_CTG_NM" />
+		<result property="cCtgIdx" column="C_CTG_IDX" />
+		<result property="cCtgPnt" column="C_CTG_PNT" />
 		
 		<result property="isSelect" column="isSelect" />
 		<result property="query" column="query" />
@@ -22,23 +23,25 @@
 	</resultMap>
 	
 
-
 	
 	<select id="selectBookList" resultMap="BookMap">
 		SELECT 
-				  BK_ISBN  
-				, BK_NM    
-				, BK_WTR   
-				, BK_PBLSR 
-				, BK_RLS   
-				, ISBORROW 
-				, BK_REG   
-				, BK_UDT   
-				, BK_SUB   
-				, BK_CTG_C   
-				, BK_CTG_P   
-		FROM   TBL_BOOK
-		ORDER  BY BK_REG DESC 
+				  BK.BK_ISBN  
+				, BK.BK_NM    
+				, BK.BK_WTR   
+				, BK.BK_PBLSR 
+				, BK.BK_RLS   
+				, BK.ISBORROW 
+				, BK.BK_REG   
+				, BK.BK_UDT   
+				, BK.BK_SUB   
+				, C.C_CTG_NM
+				, C.C_CTG_IDX          
+				, C.C_CTG_PNT    
+		FROM 	    TBL_BOOK AS BK
+		INNER JOIN  TBL_CATEGORY_C AS C
+			ON 		BK.BK_CTG_C = C.C_CTG_IDX
+		ORDER  BY BK.BK_REG DESC 
 	</select>
 	
 	<insert id="insertBook" parameterType="BookVO">
@@ -59,8 +62,9 @@
 							  			   , #{bookWtr}
 							  			   , #{publisher}
 							  			   , #{releaseDate}
-							  			   , #{category}
 							  			   , #{booksub}
+							  			   , #{cCtgIdx}
+							  			   , #{cCtgPnt}
 							  			)
 	</insert>
 	
@@ -71,8 +75,8 @@
 			 , BK_PBLSR = #{publisher}  
 			 , BK_RLS   = #{releaseDate}
 			 , BK_SUB   = #{booksub}    
-			 , BK_CTG_C = #{category}   
-			 , BK_CTG_P = #{category}   
+			 , BK_CTG_C = #{cCtgIdx}   
+			 , BK_CTG_P = #{cCtgPnt}   
 		WHERE  BK_ISBN  = #{bookIsbn}  
 	</update>
 	
@@ -86,19 +90,21 @@
 	<!-- detail -->
 	<select id="selectBookOne" parameterType="java.lang.String" resultMap="BookMap">
 		SELECT 
-			   BK_ISBN
-			 , BK_NM            
-			 , BK_WTR           
-			 , BK_PBLSR         
-			 , BK_RLS           
-			 , ISBORROW          
-			 , BK_REG           
-			 , BK_UDT           
-			 , BK_SUB           
-			 , BK_CTG_C           
-			 , BK_CTG_P           
-		FROM   TBL_BOOK
-		WHERE  BK_ISBN = #{bookIsbn} 
+				    BK.BK_ISBN
+				  , BK.BK_NM            
+				  , BK.BK_WTR           
+				  , BK.BK_PBLSR         
+				  , BK.BK_RLS           
+				  , BK.ISBORROW          
+				  , BK.BK_REG           
+				  , BK.BK_UDT           
+				  , BK.BK_SUB           
+				  , C.C_CTG_IDX          
+				  , C.C_CTG_PNT          
+		FROM 	    TBL_BOOK AS BK
+		INNER JOIN  TBL_CATEGORY_C AS C
+			ON 		BK.BK_CTG_C = C.C_CTG_IDX
+		WHERE		BK_ISBN = #{bookIsbn} 
 	</select>
 	
 	<!-- 도서 대출하기. -->
@@ -115,61 +121,47 @@
 	
 	<select id="searchBookList" parameterType="BookVO" resultMap="BookMap">
 		SELECT 
-				  BK_ISBN  
-				, BK_NM    
-				, BK_WTR   
-				, BK_PBLSR 
-				, BK_RLS   
-				, ISBORROW 
-				, BK_REG   
-				, BK_UDT   
-				, BK_SUB   
-				, BK_CTG_C   
-				, BK_CTG_P   
-		FROM TBL_BOOK
+				  BK.BK_ISBN  
+				, BK.BK_NM    
+				, BK.BK_WTR   
+				, BK.BK_PBLSR 
+				, BK.BK_RLS   
+				, BK.ISBORROW 
+				, BK.BK_REG   
+				, BK.BK_UDT   
+				, BK.BK_SUB   
+				, C.C_CTG_NM   
+		FROM 	    TBL_BOOK AS BK
+		INNER JOIN  TBL_CATEGORY_C AS C
+			ON 		BK.BK_CTG_C = C.C_CTG_IDX
+		INNER JOIN  TBL_CATEGORY_P AS P
+			ON 		C.C_CTG_PNT = P.P_CTG_IDX
 		<where>
+		<if test="cCtgPnt != 0 and cCtgPnt == 0 ">
+		AND C.C_CTG_PNT = #{cCtgPnt}
+		</if>
+		<if test="cCtgPnt != 0 and cCtgPnt != 0 ">
+		AND C.C_CTG_PNT = #{cCtgPnt}
+		AND C.C_CTG_IDX = #{cCtgIdx}
+		</if>
 		<if test="option == null or option =='all' ">
 		AND (
-				BK_NM like '%' + #{query} + '%'
-		OR		BK_WTR like '%' + #{query} + '%'
-		OR		BK_PBLSR like '%' + #{query} + '%'
+				BK.BK_NM like '%' + #{query} + '%'
+		OR		BK.BK_WTR like '%' + #{query} + '%'
+		OR		BK.BK_PBLSR like '%' + #{query} + '%'
 		) 
 		</if> 
 		<if test="option != null and option =='bookNm' ">
-		AND  BK_NM like '%' + #{query} + '%'
+		AND 	BK.BK_NM like '%' + #{query} + '%'
 		</if> 
 		<if test="option != null and option =='bookWtr' ">
-		AND  BK_WTR like '%' + #{query} + '%'
+		AND  	BK.BK_WTR like '%' + #{query} + '%'
 		</if> 
 		<if test="option != null and option =='publisher' ">
-		AND  BK_PBLSR like '%' + #{query} + '%'
+		AND  	BK.BK_PBLSR like '%' + #{query} + '%'
 		</if>
 		</where> 
 	</select>
 	
-	<select id="selectCategoryBookList" parameterType="BookVO" resultMap="BookMap">
-		SELECT 
-				  BK_ISBN  
-				, BK_NM    
-				, BK_WTR   
-				, BK_PBLSR 
-				, BK_RLS   
-				, ISBORROW 
-				, BK_REG   
-				, BK_UDT   
-				, BK_SUB   
-				, BK_CTG_C   
-				, BK_CTG_P   
-		FROM TBL_BOOK
-		<where>
-		<if test="bkCtgP != null and bkCtgC != null ">
-		AND BK_CTG_P = #{bkCtgP}
-		AND BK_CTG_C = #{bkCtgC}
-		</if>
-		<if test="bkCtgP != null and bkCtgC == null ">
-		AND BK_CTG_P = #{bkCtgP}
-		</if>
-		</where> 
-	</select>
 	
 </mapper>

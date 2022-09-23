@@ -69,7 +69,6 @@ public class FileHandler extends DataHandler {
 		return bookFileList;
 	}
 	public int insertBook(BookVO vo) {
-		System.err.println("여기는 FileHandler~~insertBook");
 		File file = new File(FileLocationConstants.BOOK_DATA_lOCATION);
 		String bkStr = LibraryVOParser.bookVOToString(vo);
 
@@ -85,7 +84,6 @@ public class FileHandler extends DataHandler {
 			pw.flush();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
 			System.err.println("net.mbiz.library.handler.FileHandler.writeBookFile : 도서 정보 파일에 write 도중 에러 발생!");
 			return 0;
 		} finally {
@@ -275,7 +273,6 @@ public class FileHandler extends DataHandler {
 			System.err.println("net.mbiz.library.handler.FileHandler.deleteBorrowOne : 기존 파일 읽는 중 에러 발생!");
 			return 0;
 		}
-		System.err.println("전체" + list);
 		
 		for (String line : list) {
 			//해당 도서 정보를 제외한 도서 정보 새 리스트에 모두 추가하기.
@@ -324,7 +321,6 @@ public class FileHandler extends DataHandler {
 	public BookVO selectBookOne(String isbn) {
 		Path path = Paths.get(FileLocationConstants.BOOK_DATA_lOCATION);
 		
-		String str;
 		List<String> list = new ArrayList<>();
 		BookVO vo =null;
 		
@@ -386,19 +382,6 @@ public class FileHandler extends DataHandler {
 		return 0;
 	}
 
-
-	//search
-	@Override
-	public List<BookVO> searchBookList(BookVO vo) {
-		return null;
-	}
-
-	@Override
-	public List<BorrowVO> searchBorrowkList(BorrowVO vo) {
-		return null;
-	}
-
-	
 	
 	@Override
 	public List<ParentCategoryVO> selectParentCategoryList() {
@@ -438,8 +421,6 @@ public class FileHandler extends DataHandler {
 		
 		return parentCategoryList;
 	}
-
-
 	public List<ChildCategoryVO> selectChildCategoryList(int pCtgIdx) {
 		File file = new File(FileLocationConstants.CHILD_CATEGORY_lOCATION);
 
@@ -485,6 +466,81 @@ public class FileHandler extends DataHandler {
 		return childCategoryList;
 
 	}
+	
+	//search
+	@Override
+	public List<BookVO> searchBookList(BookVO p_vo) {
+		Path path = Paths.get(FileLocationConstants.BOOK_DATA_lOCATION);
+		List<String> list = new ArrayList<>();
+		List<BookVO> schList = new ArrayList<>();
+		
+		try {
+			list = Files.readAllLines(path);
+		} catch (IOException e) {
+			System.out.println("searchBookList : 파일을 읽을 수 없음");
+			return null;
+		}
+		for (String line : list) {
+			if (line.contains(p_vo.getQuery())) {
+				line.trim();
+				String[] arr = line.split("@");
+				int childIdx = Integer.parseInt(arr[10]);
+				int parentIdx = Integer.parseInt(arr[11]);
+
+				if(p_vo.getCCtgPnt() != 0) {
+					if (parentIdx == p_vo.getCCtgPnt()) {
+						BookVO vo = LibraryVOParser.stringToBookVO(line);
+						schList.add(vo);
+					}
+				}
+				if(p_vo.getCCtgIdx()!= 0) {
+					if (childIdx == p_vo.getCCtgIdx()) {
+						BookVO vo = LibraryVOParser.stringToBookVO(line);
+						schList.add(vo);
+					}
+				}
+				
+			}
+		}
+		return schList;
+	}
+	@Override
+	public List<BorrowVO> searchBorrowList(BorrowVO p_vo) {
+		Path path = Paths.get(FileLocationConstants.BORROW_DATA_lOCATION);
+		List<String> list = new ArrayList<>();
+		List<BorrowVO> schList = new ArrayList<>();
+		
+		try {
+			list = Files.readAllLines(path);
+		} catch (IOException e) {
+			System.out.println("searchBookList : 파일을 읽을 수 없음");
+			return null;
+		}
+		for (String line : list) {
+			if (line.contains(p_vo.getQuery())) {
+				line.trim();
+				String[] arr = line.split("@");
+				int childIdx = Integer.parseInt(arr[6]);
+				int parentIdx = Integer.parseInt(arr[7]);
+
+				if(p_vo.getCCtgPnt() != 0) {
+					if (parentIdx == p_vo.getCCtgPnt()) {
+						BorrowVO vo = LibraryVOParser.stringToBorrowVO(line);
+						schList.add(vo);
+					}
+				}
+				if(p_vo.getCCtgIdx()!= 0) {
+					if (childIdx == p_vo.getCCtgIdx()) {
+						BorrowVO vo = LibraryVOParser.stringToBorrowVO(line);
+						schList.add(vo);
+					}
+				}
+				
+			}
+		}
+		return schList;
+	}
+
 
 
 

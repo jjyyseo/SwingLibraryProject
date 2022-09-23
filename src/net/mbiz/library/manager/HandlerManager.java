@@ -114,28 +114,14 @@ public class HandlerManager {
 
 	public List<BookVO> selectBookList() {
 		for (int i = 0; i < handlerList.size(); i++) {
-			if (handlerList.get(i) instanceof DBSqlHandler) {
-				return handlerList.get(i).selectBookList();
-			}
+			return handlerList.get(i).selectBookList();
 		}
 		return null;
 	}
 
 	public List<BorrowVO> selectBorrowList() {
 		for (int i = 0; i < handlerList.size(); i++) {
-			if (handlerList.get(i) instanceof DBSqlHandler) {
-				return handlerList.get(i).selectBorrowList();
-			}
-		}
-
-		return null;
-	}
-	public List<BookVO> selectCategoryBookList(BookVO vo) {
-		for (int i = 0; i < handlerList.size(); i++) {
-			if (handlerList.get(i) instanceof DBSqlHandler) {
-				return handlerList.get(i).selectCategoryBookList(vo);
-				System.out.println("");
-			}
+			return handlerList.get(i).selectBorrowList();
 		}
 
 		return null;
@@ -143,9 +129,7 @@ public class HandlerManager {
 
 	public BookVO selectBookOne(String isbn) {
 		for (int i = 0; i < handlerList.size(); i++) {
-			if (handlerList.get(i) instanceof DBSqlHandler) {
-				return handlerList.get(i).selectBookOne(isbn);
-			}
+			return handlerList.get(i).selectBookOne(isbn);
 		}
 		return null;
 	}
@@ -212,12 +196,11 @@ public class HandlerManager {
 		}
 	}
 
+
 	/* 도서 리스트에서 검색하기 */
 	public List<BookVO> searchBookList(BookVO vo) {
 		for (int i = 0; i < handlerList.size(); i++) {
-			if (handlerList.get(i) instanceof DBSqlHandler) {
-				return handlerList.get(i).searchBookList(vo);
-			}
+			return handlerList.get(i).searchBookList(vo);
 		}
 		return null;
 	}
@@ -225,73 +208,28 @@ public class HandlerManager {
 	/* 대출 리스트에서 검색하기 */
 	public List<BorrowVO> searchBorrowList(BorrowVO vo) {
 		for (int i = 0; i < handlerList.size(); i++) {
-			if (handlerList.get(i) instanceof DBSqlHandler) {
-				return handlerList.get(i).searchBorrowList(vo);
-			}
+			return handlerList.get(i).searchBorrowList(vo);
 		}
 		return null;
 	}
 
-	
-	
 	
 	
 	//카테고리
 	public List<ParentCategoryVO> selectParentCategoryList(){
 		for (int i = 0; i < handlerList.size(); i++) {
-			if (handlerList.get(i) instanceof DBSqlHandler) {
 				return handlerList.get(i).selectParentCategoryList();
-			}
 		}
 		return null;
 	}
 	public List<ChildCategoryVO> selectChildCategoryList(int pCtgIdx){
 		for (int i = 0; i < handlerList.size(); i++) {
-			if (handlerList.get(i) instanceof DBSqlHandler) {
-				return handlerList.get(i).selectChildCategoryList(pCtgIdx);
-			}
+			return handlerList.get(i).selectChildCategoryList(pCtgIdx);
 		}
 		return null;
-	}
-	public String selectChildCategoryNm(int cIdx){
-		for (int i = 0; i < handlerList.size(); i++) {
-			if (handlerList.get(i) instanceof DBSqlHandler) {
-				return handlerList.get(i).selectChildCategoryNm(cIdx);
-			}
-		}
-		return null;
-	}
-	public String selectParentCategoryNm(int pIdx){
-		for (int i = 0; i < handlerList.size(); i++) {
-			if (handlerList.get(i) instanceof DBSqlHandler) {
-				return handlerList.get(i).selectParentCategoryNm(pIdx);
-			}
-		}
-		return null;
-	}
-	public int selectChildCategoryIdx(String cName){
-		for (int i = 0; i < handlerList.size(); i++) {
-			if (handlerList.get(i) instanceof DBSqlHandler) {
-				return handlerList.get(i).selectChildCategoryIdx(cName);
-			}
-		}
-		return 0;
-	}
-	public int selectParentCategoryIdx(String pName){
-		for (int i = 0; i < handlerList.size(); i++) {
-			if (handlerList.get(i) instanceof DBSqlHandler) {
-				return handlerList.get(i).selectParentCategoryIdx(pName);
-			}
-		}
-		return 0;
 	}
 
-	
-	
-	
-	
-	
-	
+
 	
 	
 	

@@ -28,7 +28,6 @@ public class BorrowTableRenderer extends JLabel implements TableCellRenderer{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 		BorrowVO vo = (BorrowVO) value;
 		String str = "";
-		System.out.println("BorrowTableRenderer: "+vo.toString());
 		
 		/*데이터  쪼개기*/
 		switch (col) {
@@ -43,7 +42,7 @@ public class BorrowTableRenderer extends JLabel implements TableCellRenderer{
 			str = vo.getBookWtr();
 			break;
 		case 4:
-			str = manager.selectCategoryName(vo.getCCtgIdx());
+			str = vo.getCCtgNm();
 			break;
 		case 5:
 			str = sdf.format(vo.getStartDate());

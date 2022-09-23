@@ -23,15 +23,4 @@
 		ORDER BY  C_CTG_IDX ASC
 	</select>
 	
-	<select id="selectChildCategoryNm" parameterType="int" resultType="String">
-		SELECT 	C_CTG_NM 
-		FROM 	TBL_CATEGORY_C 
-		WHERE	C_CTG_IDX = #{cCtgIdx}
-	</select>	
-	<select id="selectChildCategoryIdx" parameterType="String" resultType="int">
-		SELECT 	C_CTG_IDX 
-		FROM 	TBL_CATEGORY_C 
-		WHERE	C_CTG_NM = #{cCtgNm}
-	</select>	
-	
 </mapper>

@@ -7,7 +7,6 @@ import net.mbiz.library.data.ParentCategoryVO;
 
 public class LibraryVOParser {
 	
-
 	
 	public static BookVO stringToBookVO(String str) {
 		BookVO vo = new BookVO();
@@ -28,25 +27,28 @@ public class LibraryVOParser {
 		vo.setRegistDate( DateFomatUtil.formatToDate(arr[idx++]) );
 		vo.setUpdateDate( DateFomatUtil.formatToDate(arr[idx++]) );
 		vo.setBooksub(arr[idx++]);
-		vo.setBkCtgC(Integer.parseInt(arr[idx++]));
-		vo.setBkCtgP(Integer.parseInt(arr[idx++]));
+		vo.setCCtgNm(arr[idx++]);
+		vo.setCCtgIdx(Integer.parseInt(arr[idx++]));
+		vo.setCCtgPnt(Integer.parseInt(arr[idx++]));
 		
 		return vo;
 	}
 	public static BorrowVO stringToBorrowVO(String str) {
 		BorrowVO vo = new BorrowVO();
 		String[] arr = str.split("@"); 
-		
 		// 공백 제거
 		for (int i = 0; i < arr.length; i++) {
 			arr[i] = arr[i].trim();
 		} 
-		
-		int idx = 0;
+		System.out.println("stringToBorrowVO: " + str);
+		int idx = 1;
 		vo.setBorrowNo(Integer.parseInt(arr[idx++]) );
 		vo.setBookIsbn(arr[idx++]);
 		vo.setBookNm(arr[idx++]);
 		vo.setBookWtr(arr[idx++]);
+		vo.setCCtgNm(arr[idx++]);
+		vo.setCCtgIdx( Integer.parseInt(arr[idx++]) );
+		vo.setCCtgPnt( Integer.parseInt(arr[idx++]) );
 		vo.setStartDate( DateFomatUtil.formatToDate(arr[idx++]) );
 		vo.setEndDate( DateFomatUtil.formatToDate(arr[idx++]) );
 		vo.setReturnDate( DateFomatUtil.formatToDate(arr[idx++]) );
@@ -56,9 +58,9 @@ public class LibraryVOParser {
 	}
 	public static ParentCategoryVO stringToParentCategoryVO(String str) {
 		ParentCategoryVO vo = new ParentCategoryVO();
-		System.out.println("stringToParentCategoryVO:  ---> str? " + str);
+		
 		String[] arr = str.split("@"); 
-		System.out.println("stringToParentCategoryVO:  ---> arr? " + arr[1]);
+		
 		for (int i = 0; i < arr.length; i++) {
 			arr[i] = arr[i].trim();
 			System.out.println(arr[i]);
@@ -78,7 +80,6 @@ public class LibraryVOParser {
 		for (int i = 0; i < arr.length; i++) {
 			arr[i] = arr[i].trim();
 		} 
-		
 		int idx = 0;
 		vo.setCCtgIdx(Integer.parseInt(arr[idx++]));
 		vo.setCCtgPnt(Integer.parseInt(arr[idx++]));
@@ -96,16 +97,16 @@ public class LibraryVOParser {
 		
 		return  vo.getBookIsbn() + "@" + vo.getBookNm() + "@" + vo.getBookWtr() + "@" + vo.getPublisher() 
 				+ "@" + releaseDate + "@" + vo.getIsBorrowed() + "@" + registDate
-				+ "@" + updateDate + "@" + vo.getBooksub() + "@" + vo.getBkCtgC() + "@" + vo.getBkCtgP();
+				+ "@" + updateDate + "@" + vo.getBooksub() + "@" + vo.getCCtgNm() +"@"+ vo.getCCtgIdx() + "@" + vo.getCCtgPnt();
 	}
 	public static String borrowVOToString(BorrowVO vo) {
 		String startDate = DateFomatUtil.formatToString("startDate", vo.getStartDate());
 		String endDate = DateFomatUtil.formatToString("endDate", vo.getEndDate());
 		String returnDate = DateFomatUtil.formatToString("returnDate", vo.getReturnDate());
 		
-		return  vo.getBorrowNo() + "@" + vo.getBookIsbn() + "@" + vo.getBookNm() + "@" + vo.getBookWtr() 
-				+ "@" + startDate + "@" + endDate + "@" + returnDate
-				+ "@" + vo.getOverdue();
+		return    "@" + vo.getBorrowNo() + "@" + vo.getBookIsbn() + "@" + vo.getBookNm() + "@" + vo.getBookWtr()
+				+ "@" + vo.getCCtgNm() + "@"  + vo.getCCtgIdx() + "@" + vo.getCCtgPnt()
+ 				+ "@" + startDate + "@" + endDate + "@" + returnDate + "@" + vo.getOverdue();
 	}
 	public static String parentCategoryVOToString(ParentCategoryVO vo) {
 		String regDate = DateFomatUtil.formatToString("returnDate", vo.getPCtgReg());
@@ -125,11 +126,11 @@ public class LibraryVOParser {
 	
 	
 	public static String addUpToString(String isbn, String bkNm, String bkWtr, String publisher, String releaseDate
-				, String category, String registDate, String updateDate, String booksub) {
+				, String cCtgNm, String cCtgIdx, String cCtgPnt, String registDate, String updateDate, String booksub) {
 		
 		return  isbn + "@" + bkNm + "@" + bkWtr + "@" + publisher 
-				+ "@" + releaseDate+ "@" + category + "@" + "0" + "@" + registDate
-				+ "@" + updateDate + "@" + booksub;
+				+ "@" + releaseDate + "@" + "0" + "@" + registDate
+				+ "@" + updateDate + "@" + booksub+ "@" + cCtgNm + "@" +cCtgIdx + "@" +cCtgPnt ;
 	}
 	
 }

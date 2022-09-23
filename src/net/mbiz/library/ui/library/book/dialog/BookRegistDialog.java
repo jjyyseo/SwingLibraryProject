@@ -7,11 +7,11 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -23,6 +23,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import net.mbiz.library.data.BookVO;
+import net.mbiz.library.data.ChildCategoryVO;
+import net.mbiz.library.data.ParentCategoryVO;
 import net.mbiz.library.manager.HandlerManager;
 import net.mbiz.library.ui.common.CalenderDialog;
 import net.mbiz.library.ui.common.CommonConstants;
@@ -32,17 +34,26 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 
 	
 	private JPanel pnMain;        
-	private JPanel pnTop;		  // in pnMain
-	private JPanel pnBottom;      // in pnMain
-	private JPanel pnWest;        // in pnTop
-	private JPanel pnEast;        // in pnTop
-	private JPanel pnImg;         // in pnWest
-	private JPanel pnAttach;      // in pnWest
-	private JPanel pnCnt;         // in pnEast
-	private JPanel pnCntWest;     // in pnEast
-	private JPanel pnCntEast;     // in pnEast
-	private JPanel pnIntro;       // in pnBottom
-	private JPanel pnFooter;      // in pnBottom
+	//pnMain
+	private JPanel pnTop;		  
+	private JPanel pnBottom;      
+	//pnTop
+	private JPanel pnWest;        
+	private JPanel pnEast;        
+	//pnWest
+	private JPanel pnImg;         
+	private JPanel pnAttach;      
+	//pnEast
+	private JPanel pnCnt;        
+	private JPanel pnCntWest;     
+	private JPanel pnCntEast;     
+	
+	private JPanel pnCbb;		  // pnCntEast     
+	 
+	//pnBottom
+	private JPanel pnIntro;       
+	private JPanel pnFooter;      
+	
 	
 	private JButton attachBtn;	  // in pnAttach
 	private JButton registBtn;	  // in pnFooter
@@ -53,7 +64,8 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 	private JTextField tfBookNm;
 	private JTextField tfBookWtr;
 	private JTextField tfPublisher;
-	private JComboBox<String> cbbCategory;
+	private JComboBox<ParentCategoryVO> cbbCategoryP;
+	private JComboBox<ChildCategoryVO> cbbCategoryC;
 	private JTextField tfIsbn;
 	private JTextField tfDate;
 	private JPanel pnReleaseDate;
@@ -67,7 +79,6 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 	private JLabel lblReleaseDate;
 	private JLabel lblIsbn;
 	
-	private String category = "";
 	private HandlerManager manager = HandlerManager.getInstance();
 	
 	public BookRegistDialog(){
@@ -153,18 +164,30 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 
 		pnCnt.add(pnCntEast, BorderLayout.EAST);
 		pnCnt.add(pnCntWest, BorderLayout.WEST);
-		
 
-		this.cbbCategory = new JComboBox<>();
-		cbbCategory.setModel(new DefaultComboBoxModel<>(new String[] {"소설","어린이","경제경영","자기계발","자연과학"}));
-		cbbCategory.setFont(CommonConstants.FONT_BASE_15);
+		this.pnCbb = new JPanel();
+		pnCbb.setLayout(new BorderLayout());
+		this.cbbCategoryP = new JComboBox<>();
+		cbbCategoryP.setModel(new DefaultComboBoxModel<>());
+		cbbCategoryP.setFont(CommonConstants.FONT_BASE_15);
+		cbbCategoryP.setPreferredSize(new Dimension(127,60));
+		
+		setParentValues();
+
+		this.cbbCategoryC = new JComboBox<>();
+		cbbCategoryC.setFont(CommonConstants.FONT_BASE_15);
+		cbbCategoryC.setPreferredSize(new Dimension(127,60));
+
+		pnCbb.add(cbbCategoryP, BorderLayout.WEST);
+		pnCbb.add(cbbCategoryC, BorderLayout.EAST);
+		
 		
 		this.tfBookNm = new JTextField();
 		this.tfBookWtr = new JTextField();
 		this.tfPublisher = new JTextField();
 		this.tfIsbn = new JTextField(14);
 		this.tfDate = new JTextField();
-		tfDate.setPreferredSize(new Dimension(215,0));
+		tfDate.setPreferredSize(new Dimension(190,0));
 		tfDate.setEditable(false);
 		
 		tfBookNm.setFont(CommonConstants.FONT_BASE_17);
@@ -206,7 +229,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 		pnCntEast.add(tfBookWtr);
 		pnCntEast.add(tfPublisher);
 		pnCntEast.add(tfIsbn);
-		pnCntEast.add(cbbCategory);
+		pnCntEast.add(pnCbb);
 		pnCntEast.add(pnReleaseDate);
 		
 		pnCntWest.add(lblBookNm);
@@ -257,13 +280,10 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 		getContentPane().add(pnMain, BorderLayout.CENTER);
 		
 		
-		
-		category = cbbCategory.getSelectedItem().toString();
-		
-		
 		registBtn.addActionListener(this);			/*도서 정보 추가하기*/
 		calenderBtn.addActionListener(this);		/*달력 Dialog open*/
 		attachBtn.addActionListener(this);			/*사진 첨부(준비중)*/
+		cbbCategoryP.addActionListener(this);
 		
 	}
 	
@@ -279,7 +299,9 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 			openCalenderDialog();
 		} else if (e.getSource().equals(attachBtn)) {
 			JOptionPane.showMessageDialog(null, "서비스 준비 중입니다.", "도서 사진 첨부하기", JOptionPane.INFORMATION_MESSAGE);
-		}
+		} else if(e.getSource().equals(cbbCategoryP)) {
+			initParentCbbIdx();
+		} 
 	}
 	
 	
@@ -293,31 +315,31 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 	 * 도서 정보 update 결과에 따른 다이어로그를 띄우는 메서드.
 	 */
 	private void openInsertDialog(){
-		checkIsbn();
-		insertBookVO();
-		JOptionPane.showMessageDialog(null, tfBookNm.getText() + "(이)가 등록되었습니다.", tfBookNm.getText(), JOptionPane.INFORMATION_MESSAGE);
+		if(checkIsbn() == 1) insertBookVO();
 		dispose();
 	};
 	
 	
-	private void checkIsbn() {
-		//TODO 중복 isbn인지 체크
-		JOptionPane.showMessageDialog(null, "이미 추가된 도서입니다. isbn을 확인 해주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
+	private int checkIsbn() {
+		BookVO vo =  manager.selectBookOne(tfIsbn.getText());
+		if (vo != null) {
+			JOptionPane.showMessageDialog(null, "이미 추가된 도서입니다. isbn을 확인 해주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
+			return 0;
+		}
+		return 1;
 	}
 
 	private int validateTextField() {
-		if (category.equals("") || category.isEmpty() ) {
-			category = "소설" ;
-		}
-		System.out.println("카테고리 선택 : " + category);
+		if (cbbCategoryP.getSelectedIndex() == 0 || cbbCategoryC.getSelectedIndex() == 0 ) {
+			JOptionPane.showMessageDialog(null, "도서 카테고리가 선택되지 않았습니다.", "카테고리 미선택", JOptionPane.INFORMATION_MESSAGE);
+		} 
 		// 어느 하나 빈칸이 있는 경우
 		if ( tfBookNm.getText().isEmpty() || tfBookWtr.getText().isEmpty()
-				|| tfPublisher.getText().isEmpty() || category.equals("") || category.isEmpty()
-				|| tfDate.getText().isEmpty() || tfIsbn.getText().isEmpty()
-				|| txtArea.getText().isEmpty() ) {
-			
+				|| tfPublisher.getText().isEmpty() || tfDate.getText().isEmpty() 
+				|| tfIsbn.getText().isEmpty() || txtArea.getText().isEmpty() ) {
 			JOptionPane.showMessageDialog(null, "정보가 모두 입력되지 않았습니다. 모두 입력해 주세요.", "도서 추가 실패", JOptionPane.INFORMATION_MESSAGE);
 			return 0;
+			
 		} else if (tfIsbn.getText().length() != 13) {	// isbn이 13자리가 아닌 경우  
 			JOptionPane.showMessageDialog(null, "도서 isbn은 13자리 숫자로 입력해 주세요.", "isbn이 유효하지 않습니다. ", JOptionPane.INFORMATION_MESSAGE);
 			return 0;
@@ -330,6 +352,7 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 	 * 입력된 정보로 BookVO를 생성하여 BookList에 add하는 데서드.
 	 */
 	private void insertBookVO(){
+		ChildCategoryVO ctgVO = (ChildCategoryVO) cbbCategoryC.getSelectedItem();
 
 		BookVO vo = new BookVO();
 		
@@ -345,7 +368,9 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 		vo.setPublisher(publisher);
 		vo.setBookIsbn(bookIsbn);
 		vo.setReleaseDate( DateFomatUtil.formatToDate(releaseDate));
-		vo.setCategory(category);
+		vo.setCCtgIdx(ctgVO.getCCtgIdx());
+		vo.setCCtgPnt(cbbCategoryP.getSelectedIndex());
+		vo.setCCtgNm(cbbCategoryC.getSelectedItem().toString());
 		vo.setBooksub(booksub);
 		
 		try {
@@ -355,7 +380,40 @@ public class BookRegistDialog extends JDialog implements ActionListener{
 			JOptionPane.showMessageDialog(registBtn, e);
 		}
 		manager.addedBook(vo);
+		JOptionPane.showMessageDialog(null, tfBookNm.getText() + "(이)가 등록되었습니다.", tfBookNm.getText(), JOptionPane.INFORMATION_MESSAGE);
 	};
+	
+	
+	
+	
+	
+	private void setParentValues() {
+		List<ParentCategoryVO> list= manager.selectParentCategoryList();
+		ParentCategoryVO vo = new ParentCategoryVO();
+		vo.setPCtgNm("전체 카테고리");
+		cbbCategoryP.addItem(vo);
+		
+		for (ParentCategoryVO parentVO : list) {
+			cbbCategoryP.addItem(parentVO);
+		}
+	}
+
+	private void setChildValues(int pIdx) {
+		List<ChildCategoryVO> list= manager.selectChildCategoryList(pIdx);
+		for (ChildCategoryVO vo : list) {
+			cbbCategoryC.addItem(vo);
+		}
+	}
+	
+	private void initParentCbbIdx() {
+		cbbCategoryC.removeAllItems();
+		int parentIdx = cbbCategoryP.getSelectedIndex();
+		setChildValues(parentIdx);
+		cbbCategoryC.repaint();
+	}
+	
+	
+	
 	
 	
 	public void setLocationCenter() {

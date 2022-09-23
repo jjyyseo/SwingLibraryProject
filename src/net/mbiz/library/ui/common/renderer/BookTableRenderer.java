@@ -36,28 +36,24 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 		BookVO vo = (BookVO) value;
 		String str = "";
 
-		
 		/*데이터  쪼개기*/
 		switch (col) {
 		case 1:
-
-			break;
-		case 2:
 			str = vo.getBookNm();
 			break;
-		case 3:
+		case 2:
 			str = vo.getBookWtr();
 			break;
-		case 4:
+		case 3:
 			str = vo.getPublisher();
 			break;
-		case 5:
+		case 4:
 			str = DateFomatUtil.formatToString("releaseDate", vo.getReleaseDate());
 			break;
-		case 6:
-			str = manager.selectChildCategoryNm(vo.getBkCtgC());
+		case 5:
+			str = vo.getCCtgNm();
 			break;
-		case 7:
+		case 6:
 			if (vo.getIsBorrowed() == 0) {
 				str = "대출가능";
 			} else if (vo.getIsBorrowed() == 1) {
@@ -79,13 +75,6 @@ public class BookTableRenderer extends JLabel implements TableCellRenderer {
 			}	
 		}
 		
-//		if (col == 7) {
-//			if (str.equals("대출중")) {
-//				this.setForeground(Color.red);	
-//			} else {
-//				this.setForeground(Color.GREEN);
-//			}
-//		}
 		this.setText(str);
 		
 		return this;

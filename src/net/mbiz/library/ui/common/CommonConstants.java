@@ -58,6 +58,7 @@ public class CommonConstants {
 	public static <T> void setTableModelColumnWithCommonTableRenderer(JTable table, BeanTableModel<T> model, String type) {
 
 		model.setSorting(false);
+		
 		setDefaultTable(table);		// default 테이블 설정.
 		table.setModel(model);		// 모델 정보 setting
 		
@@ -76,6 +77,7 @@ public class CommonConstants {
 				table.addColumn(column);
 			}
 		}
+		
 		setTableCheckBox(table, model);
 	}
 

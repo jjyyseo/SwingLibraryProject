@@ -28,6 +28,8 @@ import javax.swing.JTextField;
 import net.mbiz.edt.barcode.ag.ui.common.table.BeanTableModel;
 import net.mbiz.library.data.BookVO;
 import net.mbiz.library.data.BorrowVO;
+import net.mbiz.library.data.ChildCategoryVO;
+import net.mbiz.library.data.ParentCategoryVO;
 import net.mbiz.library.listener.BookEventListener;
 import net.mbiz.library.main.LibraryMain;
 import net.mbiz.library.manager.HandlerManager;
@@ -60,6 +62,8 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	private JTable borrowTbl;
 	
 	private JComboBox<String> cbbSearch;
+	private JComboBox<ParentCategoryVO> cbbCategoryP;
+	private JComboBox<ChildCategoryVO> cbbCategoryC;
 	private List<BorrowVO> checkedList = new ArrayList<>(); 
 	
 	private BeanTableModel<BorrowVO> bwModel;
@@ -172,8 +176,20 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		cbbSearch.setModel(new DefaultComboBoxModel<>(new String[] {"전체","도서명","저자"}));
 		cbbSearch.setFont(CommonConstants.FONT_BASE_15);
 		cbbSearch.setPreferredSize(new Dimension(100,50));
+		this.cbbCategoryP = new JComboBox<>();
+		cbbCategoryP.setModel(new DefaultComboBoxModel<>());
+		cbbCategoryP.setFont(CommonConstants.FONT_BASE_15);
+		cbbCategoryP.setPreferredSize(new Dimension(140,60));
+		
+		setParentValues();
+		this.cbbCategoryC = new JComboBox<>();
+		cbbCategoryC.setFont(CommonConstants.FONT_BASE_15);
+		cbbCategoryC.setPreferredSize(new Dimension(140,60));
 
-		pnCbb.add(cbbSearch);
+		pnCbb.add(cbbCategoryP, BorderLayout.WEST);
+		pnCbb.add(cbbCategoryC, BorderLayout.CENTER);
+		pnCbb.add(cbbSearch, BorderLayout.EAST);
+		
 		pnEast.add(schFd, BorderLayout.CENTER);
 		pnEast.add(pnCbb, BorderLayout.WEST);
 		pnEast.add(schBtn, BorderLayout.EAST);
@@ -218,6 +234,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 		pvsBtn.addActionListener(this);        /*대출 기록 전체보기*/ 
 		returnBtn.addActionListener(this);     /*도서 반납하기*/
 		deleteBtn.addActionListener(this);     /*대출 기록 삭제 Event*/ 
+		cbbCategoryP.addActionListener(this);
 		manager.addBookEventListener(this);
 	}
 	
@@ -227,7 +244,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	 * */
 	private void initTable() {
 		String topHeader[] = {"check", "no", "도서명", "저자", "카테고리", "대출일", "반납예정일", "반납일", "연체일"};	
-		int[] col = {60, 60, 560, 276, 180, 180, 180, 180, 100 };
+		int[] col = {60, 60, 560, 276, 180, 170, 170, 170, 80 };
 		
 		this.bwModel = new BeanTableModel<BorrowVO>(topHeader, col) {
 			@Override
@@ -252,6 +269,8 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 						checkedList.add(vo);
 					}
 					
+					
+					
 				}
 				else {
 					BorrowVO vo = getRowAt(row);
@@ -274,11 +293,14 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			repaintBorrowTable();
 		} else if (e.getSource().equals(schBtn)) {
 			getSearchBorrowList();
+			resetSearchField();
 		} else if (e.getSource().equals(returnBtn)) {
 			getReturnMessege();
 		} else if (e.getSource().equals(deleteBtn)) {
 			getDeleteMessege();
-		}
+		} else if(e.getSource().equals(cbbCategoryP)) {
+			initParentCbbIdx();
+		} 
 		
 	}
 	
@@ -324,6 +346,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	@Override
 	public void borrowUpdated(BorrowVO vo) {
 		System.out.println("mypage : borrow updated!");
+		vo.setSelect(false);
 		this.bwModel.fireTableDataChanged();	
 	}
 	@Override
@@ -341,14 +364,7 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 			int rslt = JOptionPane.showConfirmDialog(null,  checkedList.size() + "개의" + " 대출 기록을 삭제 하시겠습니까?", "대출 기록을 삭제합니다.", JOptionPane.YES_NO_OPTION);
 			if (rslt == JOptionPane.YES_OPTION) { // '예' 선택
 				deleteCheckedList(checkedList);
-				//TODO 로직 체크
-//				if (deleteCheckedList(checkedList)==1) {
-					JOptionPane.showMessageDialog(null,"삭제 완료 되었습니다.");
-//				} else if (deleteCheckedList(checkedList) == 2) {
-//					JOptionPane.showMessageDialog(null,"대출 중인 도서가 있습니다.");
-//				} else {
-//					JOptionPane.showMessageDialog(null,"삭제에 실패 하였습니다.");
-//				}
+				JOptionPane.showMessageDialog(null,"삭제 완료 되었습니다.");
 				checkedList.clear();
 			} else { 
 				JOptionPane.showMessageDialog(null, "삭제 취소 되었습니다.");
@@ -421,29 +437,29 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	 */
 	private void getSearchBorrowList() {
 		
-		if (!schFd.getText().isEmpty() && !schFd.getText().equals("")) {
-			
-			String cbb = (String) cbbSearch.getSelectedItem();
-			if (cbb.equals("") || cbb.isEmpty() ) {
-				cbb = "전체" ;
-			}
-			
-			if	(cbb.equals("전체")) cbb = "all";
-			else if(cbb.equals("도서명")) cbb = "bookNm";
-			else if(cbb.equals("저자")) cbb = "bookWtr";
-			
-			BorrowVO vo = new BorrowVO();
-			vo.setOption(cbb);
-			vo.setQuery(schFd.getText().toString());
-			System.out.println("vo? " + vo);
-			
-			this.bwModel.removeAll();
-			this.bwModel.addDataList((ArrayList) manager.searchBorrowList(vo));;	
-			this.borrowTbl.setModel(this.bwModel);
-		} else {
-			// 검색어 없을 시, 새로고침.
-			repaintBorrowTable();
+		String option = (String) cbbSearch.getSelectedItem();
+		if (option.equals("") || option.isEmpty() ) {
+			option = "전체" ;
 		}
+			
+		if	(option.equals("전체")) option = "all";
+		else if(option.equals("도서명")) option = "bookNm";
+		else if(option.equals("저자")) option = "bookWtr";
+		ChildCategoryVO childVO = (ChildCategoryVO) cbbCategoryC.getSelectedItem();
+	
+		BorrowVO vo = new BorrowVO();
+		vo.setOption(option);
+		vo.setCCtgPnt(cbbCategoryP.getSelectedIndex());
+		if (childVO != null) {
+			vo.setCCtgIdx(childVO.getCCtgIdx());
+		} else {
+			vo.setCCtgIdx(0);
+		}
+		vo.setQuery(schFd.getText().toString());
+		
+		this.bwModel.removeAll();
+		this.bwModel.addDataList((ArrayList) manager.searchBorrowList(vo));
+		this.borrowTbl.setModel(this.bwModel);
 	}
 	
 	
@@ -572,13 +588,42 @@ public class MyPageTablePanel extends JPanel implements ActionListener, MouseLis
 	}
 	
 	
+	private void setParentValues() {
+		List<ParentCategoryVO> list= manager.selectParentCategoryList();
+		ParentCategoryVO vo = new ParentCategoryVO();
+		vo.setPCtgNm("전체 카테고리");
+		cbbCategoryP.addItem(vo);
+		
+		for (ParentCategoryVO parentVO : list) {
+			cbbCategoryP.addItem(parentVO);
+		}
+	}
 
+	private void setChildValues(int pIdx) {
+		List<ChildCategoryVO> list= manager.selectChildCategoryList(pIdx);
+		for (ChildCategoryVO vo : list) {
+			cbbCategoryC.addItem(vo);
+		}
+	}
+	
+	private void initParentCbbIdx() {
+		cbbCategoryC.removeAllItems();
+		int parentIdx = cbbCategoryP.getSelectedIndex();
+		setChildValues(parentIdx);
+		cbbCategoryC.repaint();
+	}
 	
 	private void repaintBorrowTable() {
 		this.bwModel.removeAll();
 		initialize();
 	}
-
+	
+	private void resetSearchField() {
+		cbbCategoryP.removeAllItems();
+		cbbCategoryC.removeAllItems();
+		setParentValues();
+		schFd.setText("");
+	}
 	
 
 

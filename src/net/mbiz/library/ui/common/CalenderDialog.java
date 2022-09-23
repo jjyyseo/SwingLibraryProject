@@ -190,8 +190,7 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 		dayPrint(year, month);
 		
 		
-		selectMonth = cbbMonth.getSelectedItem().toString().trim();
-		selectYear = cbbYear.getSelectedItem().toString().trim();
+
 
 		prevBtn.addActionListener(this);
 		nextBtn.addActionListener(this);
@@ -401,6 +400,8 @@ public class CalenderDialog extends JDialog implements ActionListener, MouseList
 	 * @return
 	 */
 	private String addStrDate(String day) {
+		selectMonth = cbbMonth.getSelectedItem().toString().trim();
+		selectYear = cbbYear.getSelectedItem().toString().trim();
 		
 		if (selectMonth.equals(Integer.toString(month))) {
 			if (selectMonth.length() < 2) {

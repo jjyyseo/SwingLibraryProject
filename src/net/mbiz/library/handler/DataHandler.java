@@ -19,7 +19,6 @@ public abstract class DataHandler{
 	public abstract int returnBook(BorrowVO bwvo);                        /*도서 반납하기*/  
 	public abstract List<BookVO> selectBookList();                        /*도서리스트 select*/ 
 	public abstract List<BookVO> searchBookList(BookVO vo);               /*도서 리스트 검색*/  
-	public abstract List<BookVO> selectCategoryBookList(BookVO vo);       /*카테고리로 조회*/  
 
 	
 	public abstract int deleteBorrow(int bwNo);                           /*대출 기록 delete*/    
@@ -29,9 +28,6 @@ public abstract class DataHandler{
 	
 	public abstract List<ParentCategoryVO> selectParentCategoryList();	  		/*부모 카테고리 select*/
 	public abstract List<ChildCategoryVO> selectChildCategoryList(int pCtgIdx); /*자식 카테고리 select*/
-	public abstract String selectChildCategoryNm(int cIdx);					    /*자식 카테고리 이름 select*/
-	public abstract int selectChildCategoryIdx(String cName);					/*자식 카테고리 인덱스 select*/
-	public abstract String selectParentCategoryNm(int pIdx);					/*부모 카테고리 이름 select*/
-	public abstract int selectParentCategoryIdx(String pName);					/*부모 카테고리 인덱스 select*/
+
 	
 }

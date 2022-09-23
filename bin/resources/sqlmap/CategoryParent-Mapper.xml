@@ -19,15 +19,4 @@
 		ORDER BY P_CTG_IDX ASC
 	</select>
 	
-	<select id="selectParentCategoryNm" parameterType="int" resultType="String">
-		SELECT 	P_CTG_NM 
-		FROM 	TBL_CATEGORY_P 
-		WHERE	P_CTG_IDX = #{pCtgIdx}
-	</select>	
-	<select id="selectParentCategoryIdx" parameterType="String" resultType="int">
-		SELECT 	P_CTG_IDX 
-		FROM 	TBL_CATEGORY_P 
-		WHERE	P_CTG_NM = #{pCtgNm}
-	</select>	
-	
 </mapper>

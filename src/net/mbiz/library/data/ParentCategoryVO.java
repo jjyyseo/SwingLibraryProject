@@ -8,7 +8,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 public class ParentCategoryVO {
 	
 	private int pCtgIdx;          /*idx*/
@@ -16,4 +15,8 @@ public class ParentCategoryVO {
 	private Date pCtgReg;         /*카테고리 등록 일자*/
 	private Date pCtgMdf;         /*카테고리 수정 일자*/
 
+	@Override
+	public String toString() {
+		return pCtgNm;
+	}
 }

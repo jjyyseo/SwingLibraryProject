@@ -11,7 +11,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class BookVO implements Serializable{
-	
 	private String bookIsbn;		/* 도서 isbn*/   //PK
 	private String bookNm;          /* 도서명*/
 	private String bookWtr;         /* 저자*/
@@ -21,8 +20,9 @@ public class BookVO implements Serializable{
 	private Date registDate;		/* 등록일자*/
 	private Date updateDate;		/* 수정일자*/
 	private String booksub;			/* 도서 소개글*/
-	private int bkCtgC;				/* 자식 카테고리*/
-	private int bkCtgP;				/* 부모 카테고리*/
+	private String cCtgNm;			/* 자식 카테고리 명*/
+	private int cCtgIdx;			/* 자식 카테고리 idx*/
+	private int cCtgPnt;			/* 부모 카테고리 idx*/
 	
 	private boolean isSelect;		/* 체크박스 선택 여부*/
 	private String query;			/* 검색어*/

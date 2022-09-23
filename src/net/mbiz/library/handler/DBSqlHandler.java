@@ -100,7 +100,7 @@ public class DBSqlHandler extends DataHandler {
 	public List<BookVO> searchBookList(BookVO vo) {
 		List<BookVO> list = null;
 		SqlSession session = sqlSessionFactory.openSession();
-		
+		System.out.println("DB핸들러 searchBookList~ vo?---> " + vo);
 		try {
 			list = session.selectList("BookMapper.searchBookList", vo); // namespace.id
 		} finally {
@@ -108,7 +108,7 @@ public class DBSqlHandler extends DataHandler {
 		}
 		return list;
 	}
-	public List<BookVO> selectCategoryBookList(BookVO vo) {
+	public List<BookVO> selectCategoryBookList(ChildCategoryVO vo) {
 		List<BookVO> list = null;
 		SqlSession session = sqlSessionFactory.openSession();
 		
@@ -220,7 +220,6 @@ public class DBSqlHandler extends DataHandler {
 		return list;
 	}
 
-
 	public List<ChildCategoryVO> selectChildCategoryList(int pCtgIdx) {
 		List<ChildCategoryVO> list = null;
 		SqlSession session = sqlSessionFactory.openSession();
@@ -233,50 +232,7 @@ public class DBSqlHandler extends DataHandler {
 		return list;
 	}
 	
-	public String selectChildCategoryNm(int cIdx){
-		String ctgNm = null;
-		SqlSession session = sqlSessionFactory.openSession();
-		
-		try {
-			ctgNm = session.selectOne("ChildCategoryMapper.selectChildCategoryNm" , cIdx); 
-		} finally {
-			session.close();
-		}
-		return ctgNm;
-	}
-	public int selectChildCategoryIdx(String cName){
-		int idx = 0;
-		SqlSession session = sqlSessionFactory.openSession();
-		System.out.println("디비핸들러 selectChildCategoryIdx : " + cName);
-		try {
-			idx = session.selectOne("ChildCategoryMapper.selectChildCategoryIdx" , cName); 
-		} finally {
-			session.close();
-		}
-		return idx;
-	}
-	public String selectParentCategoryNm(int pIdx){
-		String ctgNm = null;
-		SqlSession session = sqlSessionFactory.openSession();
-		
-		try {
-			ctgNm = session.selectOne("ParentCategoryMapper.selectParentCategoryNm" , pIdx); 
-		} finally {
-			session.close();
-		}
-		return ctgNm;
-	}
-	public int selectParentCategoryIdx(String pName){
-		int idx = 0;
-		SqlSession session = sqlSessionFactory.openSession();
-		System.out.println("디비핸들러 selectChildCategoryIdx : " + pName);
-		try {
-			idx = session.selectOne("ParentCategoryMapper.selectParentCategoryIdx" , pName); 
-		} finally {
-			session.close();
-		}
-		return idx;
-	}
+	
 
 
 	

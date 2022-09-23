@@ -7,11 +7,13 @@
 		<result property="bookIsbn" column="BK_ISBN" />
 		<result property="bookNm" column="BK_NM" />
 		<result property="bookWtr" column="BK_WTR" />
-		<result property="cCtgIdx" column="BK_CTG_C" />
 		<result property="startDate" column="BW_END" />
 		<result property="endDate" column="BW_END" />
 		<result property="returnDate" column="BW_RETURN" />
 		<result property="overdue" column="BW_OVERDUE" />
+		<result property="cCtgNm" column="C_CTG_NM" />
+		<result property="cCtgIdx" column="C_CTG_IDX" />
+		<result property="cCtgPnt" column="C_CTG_PNT" />
 		
 		<result property="isSelect" column="isSelect" />
 		<result property="query" column="query" />
@@ -27,14 +29,16 @@
 				 , BW.BK_ISBN 
 				 , BK.BK_NM
 				 , BK.BK_WTR
-				 , BK.BK_CTG_C
+				 , C.C_CTG_NM
 				 , BW_START          
 				 , BW_END            
 				 , BW_RETURN         
 				 , BW_OVERDUE        	       
 		FROM       TBL_BORROW AS BW
 		INNER JOIN TBL_BOOK AS BK
-		ON 		   BW.BK_ISBN = BK.BK_ISBN
+			ON 	   BW.BK_ISBN = BK.BK_ISBN
+		INNER JOIN TBL_CATEGORY_C AS C
+			ON 	   BK.BK_CTG_C = C.C_CTG_IDX
 	</select>
 	
 	<insert id="insertBorrow" parameterType="BorrowVO">
@@ -67,44 +71,61 @@
 				 , BW.BK_ISBN 
 				 , BK.BK_NM
 				 , BK.BK_WTR
-				 , BK.BK_CTG_C
+				 , C.C_CTG_NM
 				 , BW_START          
 				 , BW_END            
 				 , BW_RETURN         
 				 , BW_OVERDUE        	       
 		FROM       TBL_BORROW AS BW
 		INNER JOIN TBL_BOOK AS BK
-		ON         BW.BK_ISBN = BK.BK_ISBN
+			ON 	   BW.BK_ISBN = BK.BK_ISBN
+		INNER JOIN TBL_CATEGORY_C AS C
+			ON 	   BK.BK_CTG_C = C.C_CTG_IDX
 		WHERE      BW.BW_NO = #{borrowNo} 
 	</select>
 	
 	
 	<select id="searchBorrowList" parameterType="BorrowVO" resultMap="BorrowMap">
 		SELECT 
-				   BW_NO             
-				 , BW.BK_ISBN 
-				 , BK.BK_NM
-				 , BK.BK_WTR
-				 , BK.BK_CTG_C
-				 , BW_START          
-				 , BW_END            
-				 , BW_RETURN         
-				 , BW_OVERDUE        	       
-		FROM       TBL_BORROW AS BW
-		INNER JOIN TBL_BOOK AS BK
-		ON 		   BW.BK_ISBN = BK.BK_ISBN
+					   BW_NO             
+					 , BW.BK_ISBN 
+					 , BK.BK_NM
+					 , BK.BK_WTR
+					 , C.C_CTG_NM
+					 , BW_START          
+					 , BW_END            
+					 , BW_RETURN         
+					 , BW_OVERDUE   
+					      	       
+		FROM       	   TBL_BORROW AS BW
+		
+		INNER JOIN 	   TBL_BOOK AS BK
+			ON 	  	   BW.BK_ISBN = BK.BK_ISBN
+			
+		INNER JOIN 	   TBL_CATEGORY_C AS C
+			ON 	   	   BK.BK_CTG_C = C.C_CTG_IDX
+			
+		INNER JOIN     TBL_CATEGORY_P AS P
+			ON 	   	   C.C_CTG_PNT = P.P_CTG_IDX
 		<where>
+		<if test="cCtgPnt != 0 and cCtgPnt == 0 ">
+		AND 	  	   C.C_CTG_PNT = #{cCtgPnt}
+		</if>
+		<if test="cCtgPnt != 0 and cCtgPnt != 0 ">
+		AND 	   	   C.C_CTG_PNT = #{cCtgPnt}
+		AND		       C.C_CTG_IDX = #{cCtgIdx}
+		</if>
 		<if test="option == null or option =='all' ">
 		AND (
-				BK_NM like '%' + #{query} + '%'
-		OR		BK_WTR like '%' + #{query} + '%'
+				BK.BK_NM like '%' + #{query} + '%'
+		OR		BK.BK_WTR like '%' + #{query} + '%'
 		) 
 		</if> 
 		<if test="option != null and option =='bookNm' ">
-		AND BK_NM like '%' + #{query} + '%'
+		AND 	BK.BK_NM like '%' + #{query} + '%'
 		</if> 
 		<if test="option != null and option =='bookWtr' ">
-		AND BK_WTR like '%' + #{query} + '%'
+		AND 	BK.BK_WTR like '%' + #{query} + '%'
 		</if> 
 		</where>
 	</select>
